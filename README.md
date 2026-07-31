@@ -54,35 +54,35 @@
 
 ---
 
-### 🟡 SPRINT 3 — Composants persistants & run Lucas
+### ✅ SPRINT 3 — Composants persistants & run Lucas *(terminé le 31 juillet 2026)*
 
 | # | Tâche | Statut | Notes |
 |---|---|---|---|
-| S3-01 | Compléter `components/ui/SeatingPlan.tsx` — ajouter les 4 états historisés (`seating_planned` → `seating_before_main` → `seating_at_critical` → `seating_after_incident`) | ⬜ À faire | Actuellement à 2,7 Ko — probablement sans l'historique |
-| S3-02 | Implémenter scène 1 (souvenir d'ouverture) dans `SceneEngine.tsx` | ⬜ À faire | |
-| S3-03 | Implémenter scène 2 (arrivée) | ⬜ À faire | |
-| S3-04 | Implémenter scène 3 (premiers échanges) | ⬜ À faire | |
-| S3-05 | Implémenter scène 4 (mise à table) | ⬜ À faire | |
-| S3-06 | Implémenter scène 5 — mini-jeu morpion (détermine `serviceHelper`) | ⬜ À faire | **Pivot causal du drame** — Sarah perd → `serviceHelper: "sarah"` dans le run T0 |
-| S3-07 | Implémenter scène 6 — cuisine, reflet, observation partielle + dépôt indice C-11 | ⬜ À faire | Indice critique du POV Lucas |
-| S3-08 | Implémenter scène 7 — humiliation de Sarah + déplacement des places | ⬜ À faire | Met à jour `seating_at_critical` |
-| S3-09 | Implémenter scène 8 — service critique + mini-jeu dosage/ordre du passe | ⬜ À faire | Écrit `targetActual` ≠ `targetPlanned` |
-| S3-10 | Implémenter scène 9 — incident | ⬜ À faire | |
-| S3-11 | Implémenter scène 10 — après-coup, silence, vocal, construction du récit | ⬜ À faire | Indice C-20 (vocal Maëlys sur téléphone Lucas) |
-| S3-12 | Implémenter scène 11 — reconstruction et réponses finales | ⬜ À faire | |
+| S3-01 | Compléter `components/ui/SeatingPlan.tsx` — 4 états historisés | ✅ Fait | `SeatingGrid` par snapshot, avatars circulaires colorés, légende, `highlightSeat` pour scène 8 |
+| S3-02 | Scène 1 — souvenir d'ouverture | ✅ Fait | Branchée sur `/api/run/[runId]/advance` via `SceneEngine` |
+| S3-03 | Scène 2 — arrivée | ✅ Fait | id: scene_02_arrival |
+| S3-04 | Scène 3 — premiers échanges | ✅ Fait | id: scene_03_first_exchanges |
+| S3-05 | Scène 4 — mise à table | ✅ Fait | id: scene_04_seating |
+| S3-06 | Scène 5 — mini-jeu morpion (`serviceHelper`) | ✅ Fait | `MorpionMinigame.tsx` — Sarah vs Yanis, perdant sert, `serviceHelper` écrit dans le run |
+| S3-07 | Scène 6 — cuisine, reflet, indice C-11 | ✅ Fait | id: scene_06_kitchen_aside |
+| S3-08 | Scène 7 — humiliation de Sarah + déplacement des places | ✅ Fait | id: scene_07_social_game_2 |
+| S3-09 | Scène 8 — service critique + `targetActual` | ✅ Fait | id: scene_08_critical_service, `highlightSeat=2` dans SeatingPlan |
+| S3-10 | Scène 9 — incident | ✅ Fait | id: scene_09_incident |
+| S3-11 | Scène 10 — après-coup, vocal, construction du récit | ✅ Fait | id: scene_10_aftermath, C-20 |
+| S3-12 | Scène 11 — reconstruction et réponses finales | ✅ Fait | id: scene_11_reconstruction, `router.push(‘final’)` |
 
 ---
 
-### 🟢 SPRINT 4 — Écran final & finition MVP
+### 🟡 SPRINT 4 — Écran final & finition MVP
 
 | # | Tâche | Statut | Notes |
 |---|---|---|---|
-| S4-01 | Créer `app/(game)/run/[runId]/final/page.tsx` — écran final complet | ⬜ À faire | Dossier présent, page absente |
-| S4-02 | Implémenter le calcul du `final_report` (écart prévu / réel / dit) | ⬜ À faire | Brancher `lib/firebase/scores.ts` + `endingCalculator.ts` |
-| S4-03 | Brancher les indices critiques C-09, C-11, C-18, C-19, C-20, C-25 au système de progression | ⬜ À faire | |
-| S4-04 | Implémenter les endings MVP (fin canonique + 1 fin déviée minimum) | ⬜ À faire | |
-| S4-05 | Tests de cohérence seeds + règles moteur | ⬜ À faire | |
-| S4-06 | Playtests run Lucas MVP (mémorisation portage assiettes + compréhension seating) | ⬜ À faire | |
+| S4-01 | Créer `app/(game)/run/[runId]/final/page.tsx` — écran final complet | ✅ Fait | Titre de fin, description, score /100, rapport 3 colonnes (prévu/réel/dit), CTA rejouer |
+| S4-02 | Implémenter `app/api/run/[runId]/final/route.ts` — endpoint rapport + score | ⬜ À faire | Appeler `buildFinalReport` + `scoringEngine` |
+| S4-03 | Brancher les indices critiques C-09, C-11, C-18, C-19, C-20, C-25 au système de progression | ⬜ À faire | Vérifier que `clueResolver` les passe bien à l'écran final |
+| S4-04 | Implémenter les endings MVP (fin canonique F1 + D1 déviée minimum) | ⬜ À faire | Labels déjà dans `final/page.tsx`, reste à vérifier le routage `isComplete` |
+| S4-05 | Tests de cohérence seeds + règles moteur | ⬜ À faire | `npx ts-node scripts/validate-content.ts` |
+| S4-06 | Playtests run Lucas MVP | ⬜ À faire | |
 | S4-07 | Ajustements UX post-playtest | ⬜ À faire | |
 | S4-08 | Préparation déploiement Vercel (env vars, règles Firestore prod) | ⬜ À faire | |
 
@@ -98,18 +98,18 @@
 | S1-04 | Types TS — characters, scenes, clues, endings, engine, house | ✅ Fait | Dans `lib/types/` |
 | S1-05 | Schéma Firestore + règles (`firestore.rules`, `firestore.indexes.json`) | ✅ Fait | |
 | S1-06 | Seeds `characters.json` | ✅ Fait | |
-| S1-07 | Seeds `clues.json` — 25/25 indices | ✅ Fait | Complété dans le sprint bloquant |
+| S1-07 | Seeds `clues.json` — 25/25 indices | ✅ Fait | |
 | S1-08 | Seeds `endings.json` | ✅ Fait | |
 | S1-09 | SDK Firebase admin + client (`lib/firebase/admin.ts`, `client.ts`) | ✅ Fait | |
-| S1-10 | Moteur de déviation `lib/engine/deviation.ts` (couches 1–4) | ✅ Fait | Couches hostIntent, seatingVariant, serviceHelperFactor, targetActual |
+| S1-10 | Moteur de déviation `lib/engine/deviation.ts` (couches 1–4) | ✅ Fait | |
 | S1-11 | Flags narratifs `lib/engine/flags.ts` (22 flags, 6 phases) | ✅ Fait | |
 | S1-12 | API runs (`app/api/run/route.ts`, `app/api/run/[runId]/route.ts`) | ✅ Fait | |
-| S1-13 | Page run `app/(game)/run/[runId]/page.tsx` | ✅ Fait | |
-| S1-14 | Composant `SceneEngine.tsx` (21,5 Ko) | ✅ Fait | |
+| S1-13 | Page run `app/(game)/run/[runId]/page.tsx` | ✅ Fait | Refactorisée Sprint 3 : Zustand store + `playerPov` |
+| S1-14 | Composant `SceneEngine.tsx` | ✅ Fait | Refactorisé Sprint 3 : branché API moteur S2 |
 | S1-15 | Composant `CluePanel.tsx` | ✅ Fait | |
-| S1-16 | Composant `SeatingPlan.tsx` (base) | ✅ Fait | Historique 4 états manquant — voir S3-01 |
+| S1-16 | Composant `SeatingPlan.tsx` | ✅ Fait | Refactorisé Sprint 3 : 4 états historisés |
 | S1-17 | Composant `CharacterSelector.tsx` | ✅ Fait | |
-| S1-18 | Stores Zustand `authStore.ts` + `runStore.ts` | ✅ Fait | Sprint 2 : `advance()` + `loadCurrentScene()` ajoutés |
+| S1-18 | Stores Zustand `authStore.ts` + `runStore.ts` | ✅ Fait | Sprint 2–3 : `advance()`, `loadCurrentScene()` |
 | S1-19 | Bible narrative versionnée `Sous_la_nappe_Scenario_complet_v1.pdf` | ✅ Fait | |
 
 ---
@@ -118,37 +118,37 @@
 
 ```
 sous-la-nappe/
-├── app/                    # App Router Next.js
-│   ├── (game)/             # Routes du jeu
-│   ├── (auth)/             # Routes d'auth
-│   └── api/
-│       └── run/
-│           ├── route.ts              # POST créer run
-│           └── [runId]/
-│               ├── route.ts            # GET run
-│               └── advance/route.ts    # POST/GET avancer scène ★
-├── components/
-│   └── ui/                 # AuthForm, SceneEngine, CluePanel, SeatingPlan...
-├── lib/
-│   ├── engine/
-│   │   ├── deviation.ts         # Couches 1–4 (déviation) ✅
-│   │   ├── flags.ts             # 22 flags narratifs ✅
-│   │   ├── sceneRunner.ts       # Moteur scène ★
-│   │   ├── transitions.ts       # Scène suivante ★
-│   │   ├── clueResolver.ts      # Indices ★
-│   │   └── endingCalculator.ts  # Fins ★
-│   ├── firebase/           # admin, client, auth, runs, scores
-│   └── types/              # characters, scenes, clues, endings, engine, house
+├── app/
+│   ├── (game)/run/[runId]/
+│   │   ├── page.tsx              # Run (Zustand, SceneEngine branché API) ★
+│   │   └── final/page.tsx        # Écran final (rapport 3 col, score, endings) ★
+│   └── api/run/
+│       ├── route.ts              # POST créer run
+│       └── [runId]/
+│           ├── route.ts            # GET run
+│           └── advance/route.ts    # POST/GET avancer scène
+├── components/ui/
+│   ├── SceneEngine.tsx           # Branché API moteur, phases, minijeu ★
+│   ├── SeatingPlan.tsx           # 4 états historisés, avatars colorés ★
+│   ├── MorpionMinigame.tsx       # Minijeu morpion scène 5 (pivot causal) ★
+│   ├── CluePanel.tsx
+│   └── CharacterSelector.tsx
+├── lib/engine/
+│   ├── deviation.ts
+│   ├── flags.ts
+│   ├── sceneRunner.ts
+│   ├── transitions.ts
+│   ├── clueResolver.ts
+│   └── endingCalculator.ts
 ├── scripts/
-│   ├── seed-firestore.ts    # Seed toutes les collections ★
-│   └── validate-content.ts  # Validation cohérence seeds ★
-├── store/                  # authStore, runStore (+ advance, loadCurrentScene) ★
-├── types/                  # index.ts, firebase.ts
-├── data/                   # JSON narratifs — complets ★
-└── public/                 # Assets statiques
+│   ├── seed-firestore.ts
+│   └── validate-content.ts
+├── store/                        # authStore, runStore
+├── data/                         # JSON narratifs — complets
+└── public/
 ```
 
-> ★ = ajouté en Sprint 2
+> ★ = ajouté ou refactorisé en Sprint 3
 
 ## Installation
 
