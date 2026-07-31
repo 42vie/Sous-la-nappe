@@ -1,0 +1,133 @@
+[
+  {
+    "id": "q1_real_role",
+    "index": 1,
+    "label": "Quel était le rôle réel de Maëlys ce soir ?",
+    "weight": 15,
+    "type": "multiple_choice",
+    "options": [
+      { "id": "q1_a", "label": "Hôte qui a perdu le contrôle d'une mauvaise idée", "scoreDelta": 8 },
+      { "id": "q1_b", "label": "Auteur d'un acte intentionnel mal exécuté", "scoreDelta": 15 },
+      { "id": "q1_c", "label": "Victime de sa propre panique", "scoreDelta": 3 },
+      { "id": "q1_d", "label": "Instigatrice d'un plan prémédité sur une cible précise", "scoreDelta": 15 }
+    ],
+    "canonicalAnswer": "q1_d",
+    "mappedFlag": null,
+    "mappedVariable": "hostIntent",
+    "revealedBy": ["C-22", "C-20", "C-02"]
+  },
+  {
+    "id": "q2_target_planned",
+    "index": 2,
+    "label": "Qui était la cible prévue ?",
+    "weight": 15,
+    "type": "multiple_choice",
+    "options": [
+      { "id": "q2_a", "label": "Sarah", "scoreDelta": 0 },
+      { "id": "q2_b", "label": "Noé", "scoreDelta": 15 },
+      { "id": "q2_c", "label": "Inès", "scoreDelta": 10 },
+      { "id": "q2_d", "label": "Maëlys ne visait personne précisément", "scoreDelta": 2 }
+    ],
+    "canonicalAnswer": "q2_b",
+    "mappedVariable": "targetPlanned",
+    "revealedBy": ["C-22", "C-09", "C-07"]
+  },
+  {
+    "id": "q3_target_actual",
+    "index": 3,
+    "label": "Qui a réellement été atteint ?",
+    "weight": 10,
+    "type": "multiple_choice",
+    "options": [
+      { "id": "q3_a", "label": "Noé", "scoreDelta": 0 },
+      { "id": "q3_b", "label": "Sarah", "scoreDelta": 10 },
+      { "id": "q3_c", "label": "Inès", "scoreDelta": 0 },
+      { "id": "q3_d", "label": "Personne — la soirée s'est bien passée", "scoreDelta": 0 }
+    ],
+    "canonicalAnswer": "q3_b",
+    "mappedVariable": "targetActual",
+    "revealedBy": ["C-15", "C-18", "C-09"]
+  },
+  {
+    "id": "q4_seating_at_service",
+    "index": 4,
+    "label": "Comment les places avaient-elles bougé au moment du service ?",
+    "weight": 12,
+    "type": "multiple_choice",
+    "options": [
+      { "id": "q4_a", "label": "Personne n'avait changé de place", "scoreDelta": 0 },
+      { "id": "q4_b", "label": "Inès et Sarah avaient échangé", "scoreDelta": 12 },
+      { "id": "q4_c", "label": "Noé avait changé de place", "scoreDelta": 3 },
+      { "id": "q4_d", "label": "Tout le monde avait bougé", "scoreDelta": 0 }
+    ],
+    "canonicalAnswer": "q4_b",
+    "mappedVariable": "seatingVariant",
+    "revealedBy": ["C-19", "C-07"]
+  },
+  {
+    "id": "q5_who_carried_plates",
+    "index": 5,
+    "label": "Qui a porté les assiettes lors du service critique ?",
+    "weight": 13,
+    "type": "multiple_choice",
+    "options": [
+      { "id": "q5_a", "label": "Maëlys", "scoreDelta": 0 },
+      { "id": "q5_b", "label": "Lucas", "scoreDelta": 3 },
+      { "id": "q5_c", "label": "Sarah", "scoreDelta": 13 },
+      { "id": "q5_d", "label": "Yanis et Noé", "scoreDelta": 0 }
+    ],
+    "canonicalAnswer": "q5_c",
+    "mappedVariable": "serviceHelper",
+    "revealedBy": ["C-19", "C-15"]
+  },
+  {
+    "id": "q6_witness_silent",
+    "index": 6,
+    "label": "Qui a vu un fragment du geste sans parler dans l'heure ?",
+    "weight": 12,
+    "type": "multiple_choice",
+    "options": [
+      { "id": "q6_a", "label": "Personne n'a rien vu", "scoreDelta": 0 },
+      { "id": "q6_b", "label": "Yanis", "scoreDelta": 3 },
+      { "id": "q6_c", "label": "Lucas", "scoreDelta": 12 },
+      { "id": "q6_d", "label": "Inès", "scoreDelta": 3 }
+    ],
+    "canonicalAnswer": "q6_c",
+    "mappedVariable": "witnessOfCriticalMove",
+    "mappedFlag": "lucas_temoin_service_silencieux",
+    "revealedBy": ["C-11", "C-18"]
+  },
+  {
+    "id": "q7_decisive_gap",
+    "index": 7,
+    "label": "Quel a été l'écart décisif entre le plan et la soirée ?",
+    "weight": 13,
+    "type": "multiple_choice",
+    "options": [
+      { "id": "q7_a", "label": "Maëlys a changé d'avis au dernier moment", "scoreDelta": 0 },
+      { "id": "q7_b", "label": "Noé était en retard, les places avaient bougé, et Sarah s'est retrouvée à servir", "scoreDelta": 13 },
+      { "id": "q7_c", "label": "Le vecteur n'a pas fonctionné comme prévu", "scoreDelta": 5 },
+      { "id": "q7_d", "label": "Quelqu'un a interféré volontairement", "scoreDelta": 2 }
+    ],
+    "canonicalAnswer": "q7_b",
+    "mappedVariable": "seatingVariant",
+    "revealedBy": ["C-11", "C-07", "C-19"]
+  },
+  {
+    "id": "q8_narrative_out",
+    "index": 8,
+    "label": "Quelle version des faits est sortie de la maison ?",
+    "weight": 10,
+    "type": "multiple_choice",
+    "options": [
+      { "id": "q8_a", "label": "La vérité complète", "scoreDelta": 0 },
+      { "id": "q8_b", "label": "Une version partielle avec des trous", "scoreDelta": 5 },
+      { "id": "q8_c", "label": "Un récit construit autour d'une fragilité de Sarah", "scoreDelta": 10 },
+      { "id": "q8_d", "label": "Rien — le silence total", "scoreDelta": 3 }
+    ],
+    "canonicalAnswer": "q8_c",
+    "mappedVariable": "survivingNarrative",
+    "mappedFlag": "lucas_silence_moral",
+    "revealedBy": ["C-25", "C-20"]
+  }
+]

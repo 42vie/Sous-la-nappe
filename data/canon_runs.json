@@ -1,0 +1,111 @@
+{
+  "T0": {
+    "id": "canon_T0",
+    "label": "Run canonique de référence",
+    "description": "Trajectoire de référence. Toutes les déviations sont mesurées par rapport à ce run. Ne jamais modifier ce fichier.",
+    "pov": "lucas",
+    "variables": {
+      "hostIntent": "sicken",
+      "targetPlanned": "noe",
+      "targetActual": ["sarah"],
+      "poisonVector": "sauce",
+      "serviceHelper": "sarah",
+      "witnessOfCriticalMove": "lucas",
+      "accompliceType": "none",
+      "seatingVariant": "swapB",
+      "survivingNarrative": "false_sarah_self_harm",
+      "deaths": [],
+      "survivors": ["maelys", "noe", "ines", "lucas", "sarah", "yanis"]
+    },
+    "characterState": {
+      "maelysColere": 55,
+      "maelysControle": 72,
+      "maelysPanic": 8,
+      "maelysIntoxication": 0,
+      "maelysIntention": "sicken",
+      "noePresence": "late",
+      "noeMensonge": 60,
+      "noeLachete": 70,
+      "noeCruaute": 20,
+      "noeInfluenceMaelys": 80,
+      "inesArrogance": 62,
+      "inesIrritabilite": 40,
+      "inesTensionSociale": 30,
+      "lucasLucidite": 70,
+      "lucasCourage": 32,
+      "lucasNeutralite": 78,
+      "lucasProtectionNoe": 55,
+      "sarahMedication": "forgotten",
+      "sarahStabilite": 58,
+      "sarahMemoire": 50,
+      "sarahDependanceMaelys": 80,
+      "yanisJeuSocial": 65,
+      "yanisAlcoolCollectif": 40,
+      "yanisInsouciance": 70,
+      "yanisDuoShift": false
+    },
+    "seatingHistory": {
+      "seating_planned": { "1": "maelys", "2": "noe", "3": "sarah", "4": "ines", "5": "lucas", "6": "yanis" },
+      "seating_before_main": { "1": "maelys", "2": "noe", "3": "sarah", "4": "ines", "5": "lucas", "6": "yanis" },
+      "seating_at_critical": { "1": "maelys", "2": "noe", "3": "ines", "4": "sarah", "5": "lucas", "6": "yanis" },
+      "seating_after_incident": { "1": "maelys", "2": "noe", "3": "ines", "4": "sarah", "5": "lucas", "6": "yanis" }
+    },
+    "sceneSequence": [
+      "scene_01_opening_memory",
+      "scene_02_arrival",
+      "scene_03_first_exchanges",
+      "scene_04_seating",
+      "scene_05_social_game_1",
+      "scene_06_kitchen_aside",
+      "scene_07_social_game_2",
+      "scene_08_critical_service",
+      "scene_09_incident",
+      "scene_10_aftermath",
+      "scene_11_reconstruction"
+    ],
+    "keyChoices": {
+      "scene_05_social_game_1": "s05_c01",
+      "scene_06_kitchen_aside": "s06_c01",
+      "scene_07_social_game_2": "s07_c01",
+      "scene_08_critical_service": "s08_c01",
+      "scene_10_aftermath": "s10_c01",
+      "scene_11_reconstruction": "s11_c01"
+    },
+    "cluesRevealedInOrder": ["C-20", "C-03", "C-07", "C-11", "C-15", "C-25"],
+    "endingId": "F1",
+    "finalReport": {
+      "planned": {
+        "targetWho": "Noé",
+        "targetWhy": "Maëlys voulait le rendre malade — mobile : trahison financière et émotionnelle",
+        "mechanism": "Sauce dosée, assiette en position 2 du passe (place de Noé dans le plan initial)",
+        "whoKnew": "Maëlys seule",
+        "whatsaid": "Soirée de réconciliation"
+      },
+      "actual": {
+        "targetWho": "Sarah",
+        "targetWhy": "Trois hypothèses fausses simultanées : Noé en retard (place 2 vide), échange Inès/Sarah (swapB), Sarah devient serviceHelper",
+        "mechanism": "Sarah sert les assiettes dans l'ordre du passe et récupère l'assiette chargée",
+        "whoKnew": "Lucas (lucidité partielle, silence moral)",
+        "whatsaid": "Sarah a fait une crise, probablement un mélange médicamenteux"
+      },
+      "narrated": {
+        "targetWho": "Personne — accident",
+        "targetWhy": "Fragilité de Sarah, médicaments, stress de la soirée",
+        "mechanism": "Incohérence avec son traitement",
+        "whoKnew": "Tout le monde, dans la version sortie de la maison",
+        "whatsaid": "false_sarah_self_harm"
+      }
+    },
+    "canonicalInvariants": [
+      "maelysOrganizedWithFalsePretext",
+      "intentExistedBeforeFirstGuest",
+      "vectorPreparedInAdvance",
+      "plannedTargetIsNotSarah",
+      "maelysLostControlAtService",
+      "witnessStayedSilentWithinHour",
+      "sarahAffectedInAllBranches",
+      "collectiveNarrativeBuilt",
+      "noPovHasCompleteView"
+    ]
+  }
+}

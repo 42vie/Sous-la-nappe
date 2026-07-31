@@ -1,0 +1,71 @@
+[
+  {
+    "id": "dining_room",
+    "label": "Salle à manger",
+    "narrativeFunction": "Espace central du drame — les 6 personnages y convergent pour le dîner. Le plan de table définit l'ordre de service et la proximité au passe.",
+    "visibilityRule": "Tout le monde voit tout le monde. Mais personne n'a une ligne de vue sur la cuisine sans se lever.",
+    "accessibleTo": "all",
+    "linkedScenes": ["scene_04_seating", "scene_05_social_game_1", "scene_07_social_game_2", "scene_08_critical_service", "scene_09_incident"],
+    "seats": [1, 2, 3, 4, 5, 6],
+    "passeAdjacentSeats": [2, 4],
+    "note": "Siège 2 = côté passe (Noé dans le plan T0). Siège 4 = face passe (Sarah après swapB). La proximité au passe est la variable critique pour targetActual."
+  },
+  {
+    "id": "pass_through",
+    "label": "Le passe",
+    "narrativeFunction": "Cœur mécanique du drame. C'est par ici que les assiettes transitent de la cuisine vers la salle à manger. L'ordre de passage = l'ordre de service.",
+    "visibilityRule": "Visible uniquement depuis la cuisine (Maëlys) et partiellement depuis les sièges 2 et 4. Lucas au siège 5 ne voit pas le passe directement.",
+    "accessibleTo": "none_direct",
+    "linkedScenes": ["scene_08_critical_service"],
+    "note": "La logique du passe : Maëlys prépare l'assiette chargée et la place en position définie dans la file. Elle ne peut pas contrôler qui la reçoit si l'ordre de service change."
+  },
+  {
+    "id": "kitchen",
+    "label": "Cuisine",
+    "narrativeFunction": "Espace de préparation — invisible depuis la salle à manger sauf par reflet dans la vitre du cellier. C'est là que Maëlys effectue le geste critique.",
+    "visibilityRule": "Opaque pour tous sauf si quelqu'un entre physiquement. Le reflet dans la vitre du cellier offre une vision fragmentaire depuis l'entrée cuisine — C-11.",
+    "accessibleTo": "all",
+    "linkedScenes": ["scene_06_kitchen_aside"],
+    "keyObject": {
+      "id": "cellier_window_reflection",
+      "label": "Vitre du cellier",
+      "note": "Source de l'indice C-11. Visible uniquement par quelqu'un entrant dans la cuisine au bon moment (21h34)."
+    },
+    "note": "C-09 (petit récipient en grès) et C-02 (boîtes de traitement) sont accessibles ici selon le POV."
+  },
+  {
+    "id": "living_room",
+    "label": "Salon",
+    "narrativeFunction": "Espace d'attente et de premiers échanges avant le dîner. Les tensions initiales se déploient ici.",
+    "visibilityRule": "Tous les personnages présents se voient. Conversations semi-privées possibles.",
+    "accessibleTo": "all",
+    "linkedScenes": ["scene_03_first_exchanges"]
+  },
+  {
+    "id": "terrace",
+    "label": "Terrasse",
+    "narrativeFunction": "Espace de retrait semi-privé. C-23 (messages supprimés de Noé) accessible ici.",
+    "visibilityRule": "Conversations privées possibles. Non visible depuis la salle à manger.",
+    "accessibleTo": "all",
+    "linkedScenes": [],
+    "note": "C-23 accessible : Noé consulte son téléphone sur la terrasse à 20h22."
+  },
+  {
+    "id": "hallway_bathroom",
+    "label": "Couloir / Salle de bain",
+    "narrativeFunction": "Zone de transit. C-03 (photo) visible dans le couloir. C-18 (absence du pilulier) peut être découvert ici.",
+    "visibilityRule": "Passage obligé. Accessible à tous.",
+    "accessibleTo": "all",
+    "linkedScenes": ["scene_02_arrival"],
+    "note": "La photo unique dans le couloir (C-03) est visible dès l'arrivée."
+  },
+  {
+    "id": "upstairs",
+    "label": "Étage",
+    "narrativeFunction": "Espace privé de Maëlys. C-02 (boîtes traitement Sarah) et C-22 (carnet) accessibles ici selon le POV.",
+    "visibilityRule": "Accès restreint — Maëlys peut y aller librement, les invités non sans raison.",
+    "accessibleTo": "maelys_only",
+    "linkedScenes": [],
+    "note": "C-05 (phrase répétée à voix haute) entendu depuis l'entrée à 17h05 selon le POV."
+  }
+]

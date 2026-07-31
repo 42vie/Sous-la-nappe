@@ -1,0 +1,522 @@
+[
+  {
+    "id": "scene_01_opening_memory",
+    "index": 1,
+    "title": "Souvenir d'ouverture",
+    "durationMin": 3,
+    "availablePovs": ["lucas"],
+    "narrativeBlocks": {
+      "default": "Tu te souviens d'une phrase. Quelque chose que Maëlys a dit, en voiture, un soir de l'automne dernier. Tu n'es pas sûr des mots exacts — mais tu es sûr de l'intention derrière. Ce soir, en acceptant cette invitation, tu sais que quelque chose va se fermer. Tu ne sais pas encore quoi.",
+      "lucas": "Le vocal est toujours dans ton téléphone. Tu ne l'as pas effacé. Tu ne sais pas pourquoi."
+    },
+    "choices": [
+      {
+        "id": "s01_c01",
+        "verb": "observe",
+        "label": "Garder le souvenir flou",
+        "availableFor": ["lucas"],
+        "effects": [
+          { "type": "state_delta", "key": "lucasNeutralite", "delta": 5 },
+          { "type": "narrative_note", "note": "Lucas ne force pas la mémoire. L'erreur plantée reste active." }
+        ]
+      },
+      {
+        "id": "s01_c02",
+        "verb": "listen",
+        "label": "Réécouter le vocal avant d'arriver",
+        "availableFor": ["lucas"],
+        "requiresFlag": "lucas_detient_vocal",
+        "revealsClue": "C-20",
+        "effects": [
+          { "type": "state_delta", "key": "lucasLucidite", "delta": 12 },
+          { "type": "state_delta", "key": "lucasCourage", "delta": -5 },
+          { "type": "flag_set", "key": "lucas_a_reecouté_vocal", "value": true }
+        ]
+      }
+    ],
+    "autoRevealClues": [],
+    "onEnterEffects": [
+      { "type": "flag_set", "key": "invitation_faux_pretexte", "value": true }
+    ],
+    "canonicalFacts": [
+      "Lucas détient un vocal de Maëlys datant du printemps",
+      "L'invitation est un faux prétexte",
+      "Lucas sait quelque chose mais n'a pas encore décidé quoi en faire"
+    ]
+  },
+  {
+    "id": "scene_02_arrival",
+    "index": 2,
+    "title": "Arrivée",
+    "durationMin": 5,
+    "availablePovs": ["lucas"],
+    "narrativeBlocks": {
+      "default": "La Mésangère. Tu connais cette maison depuis des années. Ce soir elle semble identique à toutes les autres fois — et pourtant quelque chose dans la lumière du couloir, dans la façon dont Maëlys t'ouvre la porte, est légèrement décalé. Une seule photo dans le couloir. Tu ne te souviens pas qu'elle en avait enlevé d'autres.",
+      "lucas": "Maëlys est souriante. Trop souriante pour quelqu'un qui vient de traverser ce qu'elle prétend avoir traversé."
+    },
+    "choices": [
+      {
+        "id": "s02_c01",
+        "verb": "observe",
+        "label": "Regarder la photo dans le couloir",
+        "availableFor": ["lucas"],
+        "revealsClue": "C-03",
+        "effects": [
+          { "type": "state_delta", "key": "lucasLucidite", "delta": 5 }
+        ]
+      },
+      {
+        "id": "s02_c02",
+        "verb": "speak",
+        "label": "Demander des nouvelles sincèrement",
+        "availableFor": ["lucas"],
+        "effects": [
+          { "type": "state_delta", "key": "lucasProtectionNoe", "delta": 8 },
+          { "type": "state_delta", "key": "lucasNeutralite", "delta": -5 }
+        ]
+      },
+      {
+        "id": "s02_c03",
+        "verb": "stay_silent",
+        "label": "Entrer sans poser de question",
+        "availableFor": ["lucas"],
+        "effects": [
+          { "type": "state_delta", "key": "lucasNeutralite", "delta": 8 },
+          { "type": "state_delta", "key": "lucasLucidite", "delta": -3 }
+        ]
+      }
+    ],
+    "autoRevealClues": [],
+    "onEnterEffects": [
+      { "type": "seating_update", "key": "seating_planned", "value": "base" }
+    ],
+    "canonicalFacts": [
+      "Une seule photo visible dans le couloir — mise en scène délibérée",
+      "Maëlys accueille les invités avec un sourire contrôlé",
+      "Le plan de table est établi dès l'arrivée (seating_planned = base)"
+    ]
+  },
+  {
+    "id": "scene_03_first_exchanges",
+    "index": 3,
+    "title": "Premiers échanges",
+    "durationMin": 8,
+    "availablePovs": ["lucas"],
+    "minigameId": "tone_puzzle",
+    "narrativeBlocks": {
+      "default": "Le salon. Les invités arrivent par vagues. Yanis est déjà là, expansif comme toujours. Inès arrive avec cinq minutes de retard et une bouteille. Noé n'est pas encore là — Maëlys dit qu'il sera 'un peu en retard'. Sarah arrive la dernière, discrète, avec un sourire qui lui coûte quelque chose.",
+      "lucas": "Tu regardes Sarah. Elle n'a pas l'air bien. Pas malade — autre chose. Comme quelqu'un qui sait qu'il ne devrait pas être là et qui est venu quand même."
+    },
+    "choices": [
+      {
+        "id": "s03_c01",
+        "verb": "speak",
+        "label": "Aller parler à Sarah en premier",
+        "availableFor": ["lucas"],
+        "effects": [
+          { "type": "state_delta", "key": "lucasLucidite", "delta": 8 },
+          { "type": "state_delta", "key": "sarahStabilite", "delta": 10 },
+          { "type": "flag_set", "key": "lucas_a_verifie_sarah", "value": true }
+        ]
+      },
+      {
+        "id": "s03_c02",
+        "verb": "observe",
+        "label": "Observer la tension entre Maëlys et Inès",
+        "availableFor": ["lucas"],
+        "effects": [
+          { "type": "state_delta", "key": "lucasLucidite", "delta": 12 },
+          { "type": "state_delta", "key": "inesTensionSociale", "delta": 5 }
+        ]
+      },
+      {
+        "id": "s03_c03",
+        "verb": "listen",
+        "label": "Écouter l'ambiance générale",
+        "availableFor": ["lucas"],
+        "effects": [
+          { "type": "state_delta", "key": "lucasNeutralite", "delta": 5 }
+        ]
+      }
+    ],
+    "autoRevealClues": [],
+    "canonicalFacts": [
+      "Noé est en retard (noePresence = late dans le run T0)",
+      "Sarah est fragile ce soir — sarahMedication = forgotten",
+      "La tension sociale commence à monter entre Maëlys et Inès"
+    ]
+  },
+  {
+    "id": "scene_04_seating",
+    "index": 4,
+    "title": "Mise à table",
+    "durationMin": 5,
+    "availablePovs": ["lucas"],
+    "updatesSeating": "seating_before_main",
+    "narrativeBlocks": {
+      "default": "Maëlys annonce qu'on passe à table. Elle indique les places — pas de cartons, mais des suggestions fermes. Noé arrive juste à ce moment. Il s'assoit ailleurs que prévu. Maëlys le ramène à sa place sans que personne ne relève vraiment.",
+      "lucas": "Tu vois Maëlys corriger la place de Noé. Ça dure deux secondes. Personne d'autre ne semble avoir remarqué. Toi oui."
+    },
+    "choices": [
+      {
+        "id": "s04_c01",
+        "verb": "observe",
+        "label": "Mémoriser les positions initiales",
+        "availableFor": ["lucas"],
+        "revealsClue": "C-07",
+        "effects": [
+          { "type": "state_delta", "key": "lucasLucidite", "delta": 10 },
+          { "type": "flag_set", "key": "lucas_a_note_placement", "value": true }
+        ]
+      },
+      {
+        "id": "s04_c02",
+        "verb": "change_seat",
+        "label": "Choisir une place différente",
+        "availableFor": ["lucas"],
+        "effects": [
+          { "type": "state_delta", "key": "lucasNeutralite", "delta": -8 },
+          { "type": "state_delta", "key": "maelysControle", "delta": -5 },
+          { "type": "narrative_note", "note": "Lucas perturbe légèrement le plan mais Maëlys l'intègre." }
+        ]
+      },
+      {
+        "id": "s04_c03",
+        "verb": "stay_silent",
+        "label": "S'asseoir à la place prévue sans un mot",
+        "availableFor": ["lucas"],
+        "effects": [
+          { "type": "state_delta", "key": "lucasNeutralite", "delta": 5 }
+        ]
+      }
+    ],
+    "autoRevealClues": [],
+    "onEnterEffects": [
+      { "type": "seating_update", "key": "seating_before_main", "value": "base" }
+    ],
+    "canonicalFacts": [
+      "Maëlys rétablit le plan de table quand Noé s'assoit ailleurs (C-07)",
+      "L'ordre des places compte pour elle — ce n'est pas de la maniaquerie",
+      "seating_before_main = base dans le run T0"
+    ]
+  },
+  {
+    "id": "scene_05_social_game_1",
+    "index": 5,
+    "title": "Mini-jeu social",
+    "durationMin": 6,
+    "availablePovs": ["lucas"],
+    "minigameId": "tictactoe_hidden",
+    "narrativeBlocks": {
+      "default": "Yanis propose un jeu. Quelque chose de simple — un morpion verbal, des questions à élimination. Le ton est léger. Maëlys sourit. L'enjeu annoncé est de desservir. Sarah joue. Sarah perd.",
+      "lucas": "Tu regardes Sarah perdre. Elle rit. Maëlys rit aussi. Mais le résultat est là : Sarah va aider au service. Tu ne dis rien."
+    },
+    "choices": [
+      {
+        "id": "s05_c01",
+        "verb": "let_pass",
+        "label": "Ne rien dire — laisser Sarah perdre",
+        "availableFor": ["lucas"],
+        "effects": [
+          { "type": "state_delta", "key": "lucasCourage", "delta": -8 },
+          { "type": "state_delta", "key": "lucasNeutralite", "delta": 8 },
+          { "type": "flag_set", "key": "lucas_temoin_morpion", "value": true }
+        ]
+      },
+      {
+        "id": "s05_c02",
+        "verb": "intervene",
+        "label": "Proposer de prendre la place de Sarah",
+        "availableFor": ["lucas"],
+        "effects": [
+          { "type": "state_delta", "key": "lucasCourage", "delta": 15 },
+          { "type": "state_delta", "key": "maelysControle", "delta": -12 },
+          { "type": "state_delta", "key": "maelysPanic", "delta": 10 },
+          { "type": "flag_set", "key": "lucas_a_interrompu_morpion", "value": true },
+          { "type": "narrative_note", "note": "Déviation majeure : serviceHelper devient lucas, non sarah. targetActual probabilité recalculée." }
+        ]
+      }
+    ],
+    "autoRevealClues": [],
+    "canonicalFacts": [
+      "Dans le run T0 : Sarah perd le jeu social et devient serviceHelper",
+      "Ce résultat est le pivot causal du drame — serviceHelper = sarah déclenche la chaîne",
+      "Lucas est témoin de la perte de Sarah et ne dit rien (run T0)"
+    ]
+  },
+  {
+    "id": "scene_06_kitchen_aside",
+    "index": 6,
+    "title": "Cuisine — le reflet",
+    "durationMin": 4,
+    "availablePovs": ["lucas"],
+    "narrativeBlocks": {
+      "default": "Tu passes par la cuisine pour te resservir en eau. Maëlys est dos à toi, penchée sur le plan de travail. Dans le reflet de la vitre du cellier, tu vois quelque chose — un geste, une main vers une assiette. Pas une assiette. Une assiette en particulier.",
+      "lucas": "Tu ne comprends pas ce que tu vois. Ou tu ne veux pas comprendre. Tu reposes ton verre et tu retournes en salle à manger."
+    },
+    "choices": [
+      {
+        "id": "s06_c01",
+        "verb": "observe",
+        "label": "Fixer le reflet — essayer de comprendre",
+        "availableFor": ["lucas"],
+        "revealsClue": "C-11",
+        "effects": [
+          { "type": "state_delta", "key": "lucasLucidite", "delta": 18 },
+          { "type": "flag_set", "key": "lucas_a_vu_reflet", "value": true },
+          { "type": "narrative_note", "note": "C-11 actif : geste dirigé vers une assiette unique. La lucidité de Lucas monte mais son courage ne suit pas encore." }
+        ]
+      },
+      {
+        "id": "s06_c02",
+        "verb": "leave_room",
+        "label": "Sortir sans regarder",
+        "availableFor": ["lucas"],
+        "effects": [
+          { "type": "state_delta", "key": "lucasNeutralite", "delta": 10 },
+          { "type": "state_delta", "key": "lucasCourage", "delta": -5 }
+        ]
+      }
+    ],
+    "autoRevealClues": [],
+    "canonicalFacts": [
+      "Maëlys effectue le geste critique vers 21h34 dans la cuisine",
+      "Le reflet dans la vitre du cellier est la seule fenêtre de Lucas sur cet instant",
+      "C-11 prouve un geste dirigé vers une assiette unique — pas une sauce"
+    ]
+  },
+  {
+    "id": "scene_07_social_game_2",
+    "index": 7,
+    "title": "Humiliation de Sarah",
+    "durationMin": 7,
+    "availablePovs": ["lucas"],
+    "updatesSeating": "seating_at_critical",
+    "narrativeBlocks": {
+      "default": "Inès dit quelque chose. Quelque chose sur Sarah — pas méchant en surface, mais ciblé. Sarah accuse le coup. La tension monte. Maëlys, au lieu de calmer, amplifie subtilement. La table se réorganise — Inès et Sarah échangent de place. Ce n'est pas anodin.",
+      "lucas": "Tu regardes le déplacement. Sarah est maintenant à la place 4 — face au passe. Inès à la place 3. Tu mémorises ça. Tu ne sais pas encore pourquoi ça compte."
+    },
+    "choices": [
+      {
+        "id": "s07_c01",
+        "verb": "stay_silent",
+        "label": "Ne pas intervenir — observer",
+        "availableFor": ["lucas"],
+        "effects": [
+          { "type": "state_delta", "key": "lucasCourage", "delta": -10 },
+          { "type": "state_delta", "key": "lucasLucidite", "delta": 8 },
+          { "type": "seating_update", "key": "seating_at_critical", "value": "swapB" },
+          { "type": "flag_set", "key": "lucas_a_note_echange_places", "value": true }
+        ]
+      },
+      {
+        "id": "s07_c02",
+        "verb": "intervene",
+        "label": "Couper court à l'humiliation",
+        "availableFor": ["lucas"],
+        "effects": [
+          { "type": "state_delta", "key": "lucasCourage", "delta": 15 },
+          { "type": "state_delta", "key": "inesTensionSociale", "delta": 15 },
+          { "type": "state_delta", "key": "maelysControle", "delta": -8 },
+          { "type": "seating_update", "key": "seating_at_critical", "value": "base" },
+          { "type": "narrative_note", "note": "Déviation : l'échange de places n'a pas lieu. seating_at_critical = base. targetActual probabilité fortement réduite." }
+        ]
+      }
+    ],
+    "autoRevealClues": [],
+    "canonicalFacts": [
+      "Inès et Sarah échangent de place à 21h44 — canon T0, swapB",
+      "Sarah se retrouve seat 4, face au passe — position critique pour le service",
+      "Ce déplacement est la troisième hypothèse fausse de Maëlys (elle n'a pas prévu cet échange)"
+    ]
+  },
+  {
+    "id": "scene_08_critical_service",
+    "index": 8,
+    "title": "Le service critique",
+    "durationMin": 8,
+    "availablePovs": ["lucas"],
+    "minigameId": "dosage_order",
+    "updatesSeating": "seating_at_critical",
+    "narrativeBlocks": {
+      "default": "Les plats arrivent du passe. Sarah sert. Elle distribue les assiettes dans l'ordre du passe — 1, 2, 3, 4. Maëlys avait prévu une position. Pas une assiette. La position 4 était censée être Noé. La position 4 est maintenant Sarah.",
+      "lucas": "Tu vois les assiettes partir. Tu as vu le reflet tout à l'heure. Tu additionnes. Et tu ne dis rien."
+    },
+    "choices": [
+      {
+        "id": "s08_c01",
+        "verb": "let_pass",
+        "label": "Laisser le service se dérouler",
+        "availableFor": ["lucas"],
+        "effects": [
+          { "type": "state_delta", "key": "lucasCourage", "delta": -15 },
+          { "type": "flag_set", "key": "lucas_temoin_service_silencieux", "value": true },
+          { "type": "narrative_note", "note": "Run T0 : targetActual = sarah (via resolveTargetActual avec swapB + serviceHelper sarah)" }
+        ]
+      },
+      {
+        "id": "s08_c02",
+        "verb": "intervene",
+        "label": "Interrompre — prendre l'assiette de Sarah",
+        "availableFor": ["lucas"],
+        "requiresFlag": "lucas_a_vu_reflet",
+        "effects": [
+          { "type": "state_delta", "key": "lucasCourage", "delta": 25 },
+          { "type": "state_delta", "key": "maelysPanic", "delta": 30 },
+          { "type": "flag_set", "key": "lucas_a_interrompu_service", "value": true },
+          { "type": "narrative_note", "note": "Déviation critique : targetActual peut changer. Fin D1 ou D2 possible." }
+        ]
+      }
+    ],
+    "autoRevealClues": [],
+    "canonicalFacts": [
+      "Maëlys n'a pas marqué une assiette — elle a marqué une position dans une file",
+      "Trois hypothèses fausses simultanées : noePresence=late, seatingVariant=swapB, serviceHelper=sarah",
+      "Dans le run T0 : targetActual = sarah malgré targetPlanned = noe",
+      "Lucas voit la convergence et se tait — c'est sa faute morale centrale"
+    ]
+  },
+  {
+    "id": "scene_09_incident",
+    "index": 9,
+    "title": "L'incident",
+    "durationMin": 5,
+    "availablePovs": ["lucas"],
+    "updatesSeating": "seating_after_incident",
+    "narrativeBlocks": {
+      "default": "Sarah va mal. Pas immédiatement — une dizaine de minutes après le service. D'abord une pâleur. Puis quelque chose de plus visible. La table se fige. Maëlys est la première à réagir — trop vite, trop précisément.",
+      "lucas": "Tu regardes Maëlys réagir. Et tu comprends quelque chose que tu ne pourras plus décomprendre : elle savait que ça allait arriver. Pas comme ça. Mais elle savait."
+    },
+    "choices": [
+      {
+        "id": "s09_c01",
+        "verb": "help_service",
+        "label": "Aider Sarah immédiatement",
+        "availableFor": ["lucas"],
+        "effects": [
+          { "type": "state_delta", "key": "lucasCourage", "delta": 10 },
+          { "type": "state_delta", "key": "sarahStabilite", "delta": 15 },
+          { "type": "seating_update", "key": "seating_after_incident", "value": "swapB" }
+        ]
+      },
+      {
+        "id": "s09_c02",
+        "verb": "observe",
+        "label": "Rester en retrait — regarder Maëlys",
+        "availableFor": ["lucas"],
+        "effects": [
+          { "type": "state_delta", "key": "lucasLucidite", "delta": 15 },
+          { "type": "state_delta", "key": "lucasCourage", "delta": -5 },
+          { "type": "seating_update", "key": "seating_after_incident", "value": "swapB" }
+        ]
+      }
+    ],
+    "autoRevealClues": ["C-15"],
+    "canonicalFacts": [
+      "Sarah est atteinte dans toutes les branches — invariant canonique",
+      "Maëlys réagit trop vite — signe d'une préparation mentale à cet événement",
+      "C-15 visible : trace sur le bord d'une assiette"
+    ]
+  },
+  {
+    "id": "scene_10_aftermath",
+    "index": 10,
+    "title": "Après-coup",
+    "durationMin": 10,
+    "availablePovs": ["lucas"],
+    "minigameId": "audio_reconstruction",
+    "narrativeBlocks": {
+      "default": "Les secours sont partis. Il reste cinq personnes dans la maison. Personne ne dit vraiment ce qui s'est passé. Noé prend la parole en premier — trois phrases, dans un ordre précis. Maëlys hoche la tête. Un récit commence à se construire.",
+      "lucas": "Tu as le vocal dans ta poche. Tu as vu le reflet. Tu as vu le service. Tu as tout. Et tu écoutes Noé construire une version propre de la soirée, et tu ne l'interromps pas."
+    },
+    "choices": [
+      {
+        "id": "s10_c01",
+        "verb": "stay_silent",
+        "label": "Laisser Noé construire le récit",
+        "availableFor": ["lucas"],
+        "revealsClue": "C-25",
+        "effects": [
+          { "type": "state_delta", "key": "lucasCourage", "delta": -12 },
+          { "type": "flag_set", "key": "lucas_silence_moral", "value": true },
+          { "type": "flag_set", "key": "survivingNarrative", "value": "false_sarah_self_harm" }
+        ]
+      },
+      {
+        "id": "s10_c02",
+        "verb": "speak",
+        "label": "Interrompre — dire ce qu'on a vu",
+        "availableFor": ["lucas"],
+        "requiresFlag": "lucas_a_vu_reflet",
+        "effects": [
+          { "type": "state_delta", "key": "lucasCourage", "delta": 30 },
+          { "type": "flag_set", "key": "lucas_a_parle", "value": true },
+          { "type": "flag_set", "key": "survivingNarrative", "value": "truth_partial" }
+        ]
+      },
+      {
+        "id": "s10_c03",
+        "verb": "listen",
+        "label": "Écouter le vocal de Maëlys — maintenant",
+        "availableFor": ["lucas"],
+        "requiresFlag": "lucas_detient_vocal",
+        "revealsClue": "C-20",
+        "effects": [
+          { "type": "state_delta", "key": "lucasLucidite", "delta": 10 },
+          { "type": "flag_set", "key": "lucas_a_reecouté_vocal", "value": true }
+        ]
+      }
+    ],
+    "autoRevealClues": [],
+    "canonicalFacts": [
+      "Noé est le premier à construire le récit collectif après l'incident",
+      "L'ordre des trois phrases de Noé révèle une construction active (C-25)",
+      "Le silence de Lucas ici est sa faute morale définitive",
+      "La survivingNarrative du run T0 = false_sarah_self_harm"
+    ]
+  },
+  {
+    "id": "scene_11_reconstruction",
+    "index": 11,
+    "title": "Reconstruction",
+    "durationMin": 6,
+    "availablePovs": ["lucas"],
+    "narrativeBlocks": {
+      "default": "La nuit avance. Vous êtes encore là, tous les cinq sauf Sarah. Quelques échanges de plus — des silences surtout. Puis chacun part. La maison se vide. Et la version qui sortira de là, c'est celle que vous avez tous laissé Noé énoncer.",
+      "lucas": "En partant, tu passes devant le couloir. La photo est toujours là. Tu te demandes si elle était là depuis le début ou si Maëlys l'a mise ce soir. Tu ne retournes pas vérifier."
+    },
+    "choices": [
+      {
+        "id": "s11_c01",
+        "verb": "leave_room",
+        "label": "Partir sans rien dire",
+        "availableFor": ["lucas"],
+        "effects": [
+          { "type": "flag_set", "key": "run_complete", "value": true },
+          { "type": "flag_set", "key": "lucas_silence_final", "value": true }
+        ],
+        "nextScene": null
+      },
+      {
+        "id": "s11_c02",
+        "verb": "confront",
+        "label": "Revenir vers Maëlys avant de partir",
+        "availableFor": ["lucas"],
+        "requiresFlag": "lucas_a_vu_reflet",
+        "effects": [
+          { "type": "state_delta", "key": "lucasCourage", "delta": 20 },
+          { "type": "state_delta", "key": "maelysPanic", "delta": 25 },
+          { "type": "flag_set", "key": "lucas_confrontation_finale", "value": true },
+          { "type": "flag_set", "key": "run_complete", "value": true }
+        ],
+        "nextScene": null
+      }
+    ],
+    "autoRevealClues": [],
+    "canonicalFacts": [
+      "La version qui quitte la maison est celle que le groupe a laissé construire",
+      "Lucas part avec tout ce qu'il faut pour comprendre — et ne l'a pas dit",
+      "Scène terminale : déclenche l'écran final"
+    ]
+  }
+]
