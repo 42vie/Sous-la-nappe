@@ -1,6 +1,6 @@
 // Store Zustand — état du run en cours
 import { create } from 'zustand'
-import type { RunState, TransitionResult } from '@/types'
+import type { RunState, TransitionResult } from '@/lib/types/engine'
 import { updateRun } from '@/lib/firebase/runs'
 
 interface AdvanceResponse {
@@ -20,7 +20,6 @@ interface RunStore {
   error: string | null
   lastResult: Omit<AdvanceResponse, 'ok'> | null
 
-  // Actions existantes
   setRun: (run: RunState) => void
   clearRun: () => void
   updateRunLocal: (updates: Partial<RunState>) => void
@@ -29,7 +28,6 @@ interface RunStore {
   recordChoice: (sceneKey: string, choice: string) => void
   setFlag: (flag: string, value: boolean | number | string) => void
 
-  // Actions moteur Sprint 2
   advance: (sceneId: string, choiceId: string) => Promise<AdvanceResponse | null>
   loadCurrentScene: () => Promise<{
     scene: {
@@ -55,7 +53,7 @@ export const useRunStore = create<RunStore>((set, get) => ({
 
   updateRunLocal: (updates) =>
     set((state) => ({
-      run: state.run ? { ...state.run, ...updates, updatedAt: Date.now() } : null,
+      run: state.run ? { ...state.run, ...updates } : null,
     })),
 
   syncToFirestore: async () => {
@@ -81,7 +79,6 @@ export const useRunStore = create<RunStore>((set, get) => ({
             ...state.run.discoveredClues,
             { clueId: clueRef, discoveredInScene: '', discoveredByChoice: '', discoveredAt: Date.now() },
           ],
-          updatedAt: Date.now(),
         },
       }
     }),
@@ -95,7 +92,6 @@ export const useRunStore = create<RunStore>((set, get) => ({
               ...state.run.sceneHistory,
               { sceneId: sceneKey, choicesMade: [choice], cluesFound: [], timestamp: Date.now(), narrativeNotes: [] },
             ],
-            updatedAt: Date.now(),
           }
         : null,
     })),
@@ -103,15 +99,9 @@ export const useRunStore = create<RunStore>((set, get) => ({
   setFlag: (flag, value) =>
     set((state) => ({
       run: state.run
-        ? {
-            ...state.run,
-            flags: { ...state.run.flags, [flag]: value },
-            updatedAt: Date.now(),
-          }
+        ? { ...state.run, flags: { ...state.run.flags, [flag]: value } }
         : null,
     })),
-
-  // --- Sprint 2 : appel API moteur ---
 
   advance: async (sceneId, choiceId) => {
     const { run } = get()
@@ -129,7 +119,6 @@ export const useRunStore = create<RunStore>((set, get) => ({
       }
       const data: AdvanceResponse = await res.json()
 
-      // Mettre à jour le store local avec les flags et indices reçus
       set((state) => {
         if (!state.run) return { isLoading: false, lastResult: data }
         const newFlags = { ...state.run.flags, ...data.flagUpdates }
@@ -152,7 +141,6 @@ export const useRunStore = create<RunStore>((set, get) => ({
             currentScene: (data.nextScene as RunState['currentScene']) ?? state.run.currentScene,
             isComplete: data.isComplete,
             ending: (data.ending as RunState['ending']) ?? state.run.ending,
-            updatedAt: Date.now(),
           },
         }
       })

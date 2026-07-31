@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { useRunStore } from '@/store/runStore'
-import type { RunState } from '@/types'
 
 const ENDING_LABELS: Record<string, { title: string; description: string }> = {
   F1: {
@@ -157,7 +156,7 @@ export default function FinalPage() {
               letterSpacing: '0.08em',
               marginBottom: 'var(--space-4)',
             }}>
-              Ce qui s'est passé
+              Ce qui s&apos;est passé
             </p>
 
             <div style={{
@@ -205,7 +204,7 @@ export default function FinalPage() {
         {/* CTA rejouer */}
         <div style={{ display: 'flex', gap: 'var(--space-4)', flexWrap: 'wrap' }}>
           <button
-            onClick={() => router.push('/dashboard')}
+            onClick={() => router.push('/')}
             style={{
               padding: 'var(--space-3) var(--space-8)',
               background: 'var(--color-primary)',
