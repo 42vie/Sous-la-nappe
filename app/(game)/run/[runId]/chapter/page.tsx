@@ -6,7 +6,7 @@ import { CharacterCard, CHARACTERS } from '@/components/ui/CharacterCard'
 import { useRunStore } from '@/store/runStore'
 import { CHAPTERS, TOTAL_CHAPTERS } from '@/lib/engine/chapters'
 import { BLIND_SPOTS } from '@/lib/engine/blindSpots'
-import { getTensionFlavor } from '@/lib/engine/tensionFlavor'
+import { getCharacterAction } from '@/lib/engine/characterActions'
 import { getManuscriptStatus } from '@/lib/engine/manuscript'
 import type { CharacterId } from '@/lib/types/characters'
 import type { RunState } from '@/lib/types/engine'
@@ -174,16 +174,20 @@ export default function ChapterSelectPage() {
             </div>
           </div>
 
-          {manuscript.some((e) => e.status !== 'locked') && (
+          {manuscript.length > 0 && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)', paddingTop: 'var(--space-3)', borderTop: '1px solid var(--color-divider)' }}>
-              {manuscript.filter((e) => e.status !== 'locked').slice(0, 3).map((e) => (
+              <p style={{ fontFamily: 'var(--font-body)', fontSize: '10px', color: 'var(--color-text-faint)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '2px' }}>
+                Le carnet
+              </p>
+              {manuscript.map((e) => (
                 <p key={e.id} style={{
                   fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)',
                   color: e.status === 'complete' ? 'var(--color-text-muted)' : 'var(--color-text-faint)',
+                  opacity: e.status === 'locked' ? 0.5 : 1,
                   fontStyle: e.status === 'complete' ? 'normal' : 'italic',
                   lineHeight: 1.5,
                 }}>
-                  {e.status === 'complete' ? '✓ ' : '· '}{e.text}
+                  {e.status === 'complete' ? '✓ ' : e.status === 'partial' ? '· ' : '— '}{e.text}
                 </p>
               ))}
             </div>
@@ -230,7 +234,7 @@ export default function ChapterSelectPage() {
             character={c}
             isSelected={selected === c.id}
             onClick={() => setSelected((prev) => (prev === c.id ? null : c.id))}
-            accrocheOverride={getTensionFlavor(c.id, tension)}
+            accrocheOverride={getCharacterAction(c.id, nextChapterNumber, tension)}
           />
         ))}
       </div>

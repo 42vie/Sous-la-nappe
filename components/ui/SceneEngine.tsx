@@ -412,7 +412,7 @@ export function SceneEngine({ runId, playerPov, initialSceneId, run }: SceneEngi
 
       {/* ── Mini-jeu lecture de tonalité (scène 3) ── */}
       {phase === 'minigame' && activeMinigame === 'tone_puzzle' && (
-        <ToneMinigame onComplete={handleToneComplete} />
+        <ToneMinigame playerPov={playerPov} onComplete={handleToneComplete} />
       )}
 
       {/* ── Mini-jeu service critique (scène 8) ── */}

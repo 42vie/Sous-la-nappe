@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { CharacterCard, CHARACTERS } from '@/components/ui/CharacterCard'
 import { TOTAL_CHAPTERS, getChapterNumberForScene } from '@/lib/engine/chapters'
+import { getCharacterAction } from '@/lib/engine/characterActions'
+import { getManuscriptStatus } from '@/lib/engine/manuscript'
 import type { CharacterId } from '@/lib/types/characters'
 import type { RunState } from '@/lib/types/engine'
 
@@ -154,6 +156,33 @@ export default function DashboardPage() {
             {(existingRun.povHistory?.length ?? 0) > 1 && ` Déjà incarné : ${existingRun.povHistory.map((c) => CHARACTER_NAMES[c]).join(', ')}.`}
           </p>
 
+          {/* Le carnet — ce qui est déjà établi dans cette partie */}
+          {(() => {
+            const manuscript = getManuscriptStatus(existingRun)
+            if (manuscript.length === 0) return null
+            const complete = manuscript.filter((e) => e.status === 'complete').length
+            return (
+              <div style={{ marginBottom: 'var(--space-5)', paddingBottom: 'var(--space-5)', borderBottom: '1px solid var(--color-divider)' }}>
+                <p style={{ fontFamily: 'var(--font-body)', fontSize: '10px', color: 'var(--color-text-faint)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 'var(--space-3)' }}>
+                  Le carnet — {complete} / {manuscript.length} vérités établies
+                </p>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
+                  {manuscript.map((e) => (
+                    <p key={e.id} style={{
+                      fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)',
+                      color: e.status === 'complete' ? 'var(--color-text-muted)' : 'var(--color-text-faint)',
+                      opacity: e.status === 'locked' ? 0.5 : 1,
+                      fontStyle: e.status === 'complete' ? 'normal' : 'italic',
+                      lineHeight: 1.5,
+                    }}>
+                      {e.status === 'complete' ? '✓ ' : e.status === 'partial' ? '· ' : '— '}{e.text}
+                    </p>
+                  ))}
+                </div>
+              </div>
+            )
+          })()}
+
           {!confirmingReset ? (
             <div style={{ display: 'flex', gap: 'var(--space-3)', flexWrap: 'wrap' }}>
               <button
@@ -236,6 +265,7 @@ export default function DashboardPage() {
             character={c}
             isSelected={selected === c.id}
             onClick={() => setSelected((prev) => (prev === c.id ? null : c.id))}
+            accrocheOverride={getCharacterAction(c.id, 1, 0)}
           />
         ))}
       </div>
@@ -281,7 +311,7 @@ export default function DashboardPage() {
                   color: 'var(--color-text-faint)',
                 }}
               >
-                {selectedChar.accroche}
+                {getCharacterAction(selectedChar.id, 1, 0)}
               </p>
             </>
           )}

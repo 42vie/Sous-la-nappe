@@ -2,13 +2,16 @@
 
 /**
  * ToneMinigame — Scène 3 : lire la vraie tonalité sous les mots.
- * Trois répliques déjà présentes dans la narration de la scène (bible,
- * chapitre 8) — le joueur doit identifier ce qu'elles cachent vraiment.
+ * Six moments observables sont possibles (bible, chapitre 8) ; chaque
+ * personnage n'en voit que 3, et jamais celui où il est lui-même l'acteur
+ * (on ne se demande pas ce que son propre sous-texte signifie). Le jeu
+ * varie donc selon qui est joué, pas seulement selon la scène — rejouer
+ * avec un autre personnage au chapitre 1 donne un vrai mini-jeu différent.
  * Bien lire la pièce apaise un peu la tension ambiante ; mal la lire
  * l'alimente — cohérent avec socialTension qui pilote déjà les fins.
  */
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import type { CharacterId } from '@/lib/types/characters'
 
 interface ToneItem {
@@ -18,8 +21,8 @@ interface ToneItem {
   correctIndex: number
 }
 
-const ITEMS: ToneItem[] = [
-  {
+const MOMENTS: Record<string, ToneItem> = {
+  noe_depasses: {
     speaker: 'noe',
     line: '« On a tous été un peu dépassés. »',
     options: [
@@ -29,7 +32,7 @@ const ITEMS: ToneItem[] = [
     ],
     correctIndex: 1,
   },
-  {
+  maelys_tu_as_raison: {
     speaker: 'maelys',
     line: '« Tu as raison. » — en réponse à Inès, sur la maison',
     options: [
@@ -39,7 +42,7 @@ const ITEMS: ToneItem[] = [
     ],
     correctIndex: 1,
   },
-  {
+  yanis_rire_seul: {
     speaker: 'yanis',
     line: 'Il rit, seul, à sa propre blague sur « un dîner ou une réunion »',
     options: [
@@ -49,17 +52,62 @@ const ITEMS: ToneItem[] = [
     ],
     correctIndex: 1,
   },
-]
+  sarah_sourire_couteux: {
+    speaker: 'sarah',
+    line: 'Elle arrive la dernière, avec un sourire qui lui coûte quelque chose.',
+    options: [
+      'Elle est simplement fatiguée',
+      'Elle tient quelque chose ensemble, et ça lui demande un effort réel',
+      'Elle est agacée d’être là',
+    ],
+    correctIndex: 1,
+  },
+  maelys_remercie: {
+    speaker: 'maelys',
+    line: 'Face à une pique d’Inès sur la vente, elle remercie plutôt que de répondre.',
+    options: [
+      'Elle apprécie sincèrement la remarque',
+      'Elle déstabilise plus par ce détour que par une vraie réponse',
+      'Elle n’a pas entendu la pique',
+    ],
+    correctIndex: 1,
+  },
+  ines_chiffres: {
+    speaker: 'ines',
+    line: '« La maison a toujours été à son nom, ce n’est pas une opinion. » — chiffres à l’appui',
+    options: [
+      'Elle énonce un fait, sans arrière-pensée',
+      'Elle teste, pour voir si quelqu’un va la contredire',
+      'Elle plaisante pour détendre l’ambiance',
+    ],
+    correctIndex: 1,
+  },
+}
+
+// Chaque personnage voit 3 des 6 moments — jamais le sien.
+const ITEMS_BY_CHARACTER: Record<CharacterId, string[]> = {
+  maelys: ['noe_depasses', 'yanis_rire_seul', 'ines_chiffres'],
+  noe:    ['maelys_tu_as_raison', 'yanis_rire_seul', 'ines_chiffres'],
+  ines:   ['noe_depasses', 'maelys_tu_as_raison', 'maelys_remercie'],
+  lucas:  ['noe_depasses', 'maelys_tu_as_raison', 'sarah_sourire_couteux'],
+  sarah:  ['maelys_tu_as_raison', 'yanis_rire_seul', 'maelys_remercie'],
+  yanis:  ['noe_depasses', 'maelys_remercie', 'ines_chiffres'],
+}
 
 const LABELS: Record<CharacterId, string> = {
   maelys: 'Maëlys', noe: 'Noé', ines: 'Inès', lucas: 'Lucas', sarah: 'Sarah', yanis: 'Yanis',
 }
 
 interface ToneMinigameProps {
+  playerPov: CharacterId
   onComplete: (result: { correctCount: number; total: number }) => void
 }
 
-export function ToneMinigame({ onComplete }: ToneMinigameProps) {
+export function ToneMinigame({ playerPov, onComplete }: ToneMinigameProps) {
+  const ITEMS = useMemo(
+    () => ITEMS_BY_CHARACTER[playerPov].map((key) => MOMENTS[key]),
+    [playerPov]
+  )
   const [answers, setAnswers] = useState<Record<number, number>>({})
   const [revealed, setRevealed] = useState(false)
   const [sent, setSent] = useState(false)
