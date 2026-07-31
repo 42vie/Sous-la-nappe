@@ -124,18 +124,28 @@ export function SceneEngine({ runId, playerPov, initialSceneId, run }: SceneEngi
     fetchScene()
   }
 
-  function handleMinigameComplete(result: { winner: CharacterId | null; serviceHelper: CharacterId }) {
-    useRunStore.getState().updateRunLocal({
-      variable: {
-        ...((storeRun ?? run).variable),
-        serviceHelper: result.serviceHelper,
-      },
-    })
+  async function handleMinigameComplete(result: { winner: CharacterId | null; serviceHelper: CharacterId }) {
+    const nextVariable = {
+      ...((storeRun ?? run).variable),
+      serviceHelper: result.serviceHelper,
+    }
+    useRunStore.getState().updateRunLocal({ variable: nextVariable })
     setActiveMinigame(null)
     setPhase('choices')
-    // Persister tout de suite : sinon le prochain advance() relit l'ancien
-    // serviceHelper depuis Firestore et perd le résultat du mini-jeu.
-    useRunStore.getState().syncToFirestore()
+    // Persister tout de suite côté serveur (route admin, pas le SDK client) :
+    // sinon le prochain advance() relit l'ancien serviceHelper depuis
+    // Firestore et perd le résultat du mini-jeu.
+    try {
+      const res = await fetch(`/api/run/${runId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ variable: nextVariable }),
+      })
+      if (!res.ok) throw new Error('sync failed')
+    } catch (err) {
+      console.error('[handleMinigameComplete] échec de synchronisation:', err)
+      setError('Erreur de synchronisation du mini-jeu. Réessayez si le comportement semble incohérent.')
+    }
   }
 
   // --- Render states ---
