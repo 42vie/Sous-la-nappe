@@ -7,6 +7,7 @@ import { CluePanel } from './CluePanel'
 import { SeatingPlan } from './SeatingPlan'
 import { MorpionMinigame } from './MorpionMinigame'
 import { VariableGauges } from './VariableGauges'
+import { ManuscriptPanel } from './ManuscriptPanel'
 import { getChapterNumberForScene } from '@/lib/engine/chapters'
 import type { CharacterId } from '@/lib/types/characters'
 import type { RunState } from '@/types'
@@ -58,6 +59,7 @@ export function SceneEngine({ runId, playerPov, initialSceneId, run }: SceneEngi
   const [showClues, setShowClues] = useState(false)
   const [showSeating, setShowSeating] = useState(false)
   const [showGauges, setShowGauges] = useState(false)
+  const [showManuscript, setShowManuscript] = useState(false)
 
   const discoveredClues = storeRun?.discoveredClues ?? run.discoveredClues ?? []
 
@@ -238,6 +240,20 @@ export function SceneEngine({ runId, playerPov, initialSceneId, run }: SceneEngi
           >
             tensions
           </button>
+          <button
+            onClick={() => setShowManuscript((v) => !v)}
+            style={{
+              fontFamily: 'var(--font-body)',
+              fontSize: 'var(--text-xs)',
+              color: 'var(--color-text-faint)',
+              textDecoration: 'underline',
+              cursor: 'pointer',
+              background: 'none',
+              border: 'none',
+            }}
+          >
+            manuscrit
+          </button>
         </div>
       </div>
 
@@ -275,6 +291,29 @@ export function SceneEngine({ runId, playerPov, initialSceneId, run }: SceneEngi
             characterState={(storeRun ?? run).variable.characterState}
             currentPov={playerPov}
           />
+        </div>
+      )}
+
+      {/* ── Manuscrit toggle ── */}
+      {showManuscript && (
+        <div style={{
+          marginBottom: 'var(--space-6)',
+          padding: 'var(--space-4)',
+          background: 'var(--color-surface-offset)',
+          borderRadius: 'var(--radius-lg)',
+          border: '1px solid var(--color-divider)',
+        }}>
+          <p style={{
+            fontFamily: 'var(--font-body)',
+            fontSize: 'var(--text-xs)',
+            color: 'var(--color-text-muted)',
+            textTransform: 'uppercase',
+            letterSpacing: '0.08em',
+            marginBottom: 'var(--space-4)',
+          }}>
+            Le manuscrit — la vérité se complète avec vos indices
+          </p>
+          <ManuscriptPanel state={storeRun ?? run} />
         </div>
       )}
 

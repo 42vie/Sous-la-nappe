@@ -211,7 +211,8 @@
             "key": "inesTensionSociale",
             "delta": 5
           }
-        ]
+        ],
+        "revealsClue": "C-09"
       },
       {
         "id": "s03_c03",
@@ -861,7 +862,8 @@
             "value": true
           }
         ],
-        "nextScene": null
+        "nextScene": null,
+        "revealsClue": "C-22"
       }
     ],
     "autoRevealClues": [],

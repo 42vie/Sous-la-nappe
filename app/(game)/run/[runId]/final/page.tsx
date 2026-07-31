@@ -6,6 +6,13 @@ import { useRunStore } from '@/store/runStore'
 import { CHARACTERS } from '@/components/ui/CharacterCard'
 import type { CharacterId } from '@/lib/types/characters'
 
+interface ManuscriptEntryData {
+  id: string
+  text: string
+  status: 'locked' | 'partial' | 'complete'
+  progress: number
+}
+
 const SEATING_QUESTION_ID = 'q4_seating_at_service'
 const SEAT_IDS = [1, 2, 3, 4, 5, 6]
 
@@ -90,6 +97,7 @@ export default function FinalPage() {
   const [questions, setQuestions] = useState<FinalQuestion[]>([])
   const [answers, setAnswers] = useState<Record<string, string>>({})
   const [seatingGuess, setSeatingGuess] = useState<Record<number, CharacterId>>({})
+  const [manuscript, setManuscript] = useState<ManuscriptEntryData[]>([])
   const [endingId, setEndingId] = useState<string | null>(null)
   const [clueCount, setClueCount] = useState<number>(0)
   const [loading, setLoading] = useState(true)
@@ -108,6 +116,7 @@ export default function FinalPage() {
         const data = await res.json()
         setReport(data.report ?? null)
         setQuestions(data.questions ?? [])
+        setManuscript(data.manuscript ?? [])
         setEndingId(data.ending ?? run?.ending ?? 'F1')
         setClueCount(data.discoveredCluesCount ?? run?.discoveredClues?.length ?? 0)
         if (data.score !== null && data.score !== undefined) {
@@ -403,6 +412,45 @@ export default function FinalPage() {
               ))}
             </div>
           </>
+        )}
+
+        {/* Le manuscrit — la vérité établie au fil de cette partie */}
+        {manuscript.length > 0 && (
+          <div style={{ marginBottom: 'var(--space-12)' }}>
+            <p style={{
+              fontFamily: 'var(--font-body)',
+              fontSize: 'var(--text-xs)',
+              color: 'var(--color-text-muted)',
+              textTransform: 'uppercase',
+              letterSpacing: '0.08em',
+              marginBottom: 'var(--space-4)',
+            }}>
+              Le manuscrit — {manuscript.filter((e) => e.status === 'complete').length} / {manuscript.length} vérités établies
+            </p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
+              {manuscript.map((entry) => (
+                <div
+                  key={entry.id}
+                  style={{
+                    padding: 'var(--space-3) var(--space-4)',
+                    borderRadius: 'var(--radius-md)',
+                    border: '1px solid var(--color-border)',
+                    background: entry.status === 'complete' ? 'var(--color-primary-highlight)' : 'var(--color-surface)',
+                  }}
+                >
+                  <p style={{
+                    fontFamily: entry.status === 'complete' ? 'var(--font-display)' : 'var(--font-body)',
+                    fontStyle: entry.status === 'complete' ? 'italic' : 'normal',
+                    fontSize: entry.status === 'complete' ? 'var(--text-sm)' : 'var(--text-xs)',
+                    color: entry.status === 'locked' ? 'var(--color-text-faint)' : 'var(--color-text-muted)',
+                    lineHeight: 1.6,
+                  }}>
+                    {entry.text}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
         )}
 
         {/* CTA rejouer */}
