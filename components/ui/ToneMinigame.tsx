@@ -82,16 +82,49 @@ const MOMENTS: Record<string, ToneItem> = {
     ],
     correctIndex: 1,
   },
+  maelys_ferme_visage: {
+    speaker: 'maelys',
+    line: 'Après la phrase de Noé, quelque chose se ferme, une seconde, dans son visage.',
+    options: [
+      'Elle est simplement fatiguée par la soirée',
+      'Quelque chose vient de se décider en elle, à cet instant précis',
+      'Elle est agacée que Noé ait pris la parole',
+    ],
+    correctIndex: 1,
+  },
+  yanis_sert_large: {
+    speaker: 'yanis',
+    line: 'Il ouvre une deuxième bouteille et sert large, dès les premiers échanges.',
+    options: [
+      'Il est simplement généreux, comme toujours',
+      'Il sent que quelque chose est tendu et essaie de le noyer',
+      'Il veut que tout le monde soit ivre pour une raison précise',
+    ],
+    correctIndex: 1,
+  },
+  lucas_regard_sarah: {
+    speaker: 'lucas',
+    line: 'Il ne quitte pas Sarah des yeux depuis qu’elle est arrivée.',
+    options: [
+      'Il apprécie simplement sa compagnie',
+      'Il a remarqué qu’elle ne va pas bien et n’ose rien dire',
+      'Il la surveille par méfiance',
+    ],
+    correctIndex: 1,
+  },
 }
 
-// Chaque personnage voit 3 des 6 moments — jamais le sien.
+// Chaque personnage voit 3 des 9 moments — jamais le sien. La répartition
+// est pensée pour qu'aucune paire de personnages ne partage plus d'1
+// question sur 3 (vérifié : maelys/yanis ne partagent qu'1 question sur 3,
+// pas 2 comme dans une première version de cette répartition).
 const ITEMS_BY_CHARACTER: Record<CharacterId, string[]> = {
-  maelys: ['noe_depasses', 'yanis_rire_seul', 'ines_chiffres'],
-  noe:    ['maelys_tu_as_raison', 'yanis_rire_seul', 'ines_chiffres'],
-  ines:   ['noe_depasses', 'maelys_tu_as_raison', 'maelys_remercie'],
-  lucas:  ['noe_depasses', 'maelys_tu_as_raison', 'sarah_sourire_couteux'],
-  sarah:  ['maelys_tu_as_raison', 'yanis_rire_seul', 'maelys_remercie'],
-  yanis:  ['noe_depasses', 'maelys_remercie', 'ines_chiffres'],
+  maelys: ['noe_depasses', 'sarah_sourire_couteux', 'lucas_regard_sarah'],
+  noe:    ['yanis_rire_seul', 'ines_chiffres', 'yanis_sert_large'],
+  yanis:  ['maelys_tu_as_raison', 'ines_chiffres', 'lucas_regard_sarah'],
+  ines:   ['maelys_tu_as_raison', 'sarah_sourire_couteux', 'yanis_sert_large'],
+  sarah:  ['noe_depasses', 'maelys_remercie', 'yanis_sert_large'],
+  lucas:  ['yanis_rire_seul', 'maelys_remercie', 'maelys_ferme_visage'],
 }
 
 const LABELS: Record<CharacterId, string> = {
