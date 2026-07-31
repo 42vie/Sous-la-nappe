@@ -1,0 +1,118 @@
+[
+  {
+    "id": "maelys",
+    "name": "Maëlys Renaud",
+    "age": 30,
+    "role": "L'hôte",
+    "tagline": "pivot · pov le plus informé · pov le plus aveugle",
+    "initialVars": {
+      "maelysColere": 55,
+      "maelysControle": 72,
+      "maelysPanic": 8,
+      "maelysIntoxication": 0,
+      "maelysIntention": "sicken"
+    },
+    "blindSpots": [
+      "L'image qu'elle renvoie (elle se croit maîtrisée, les autres la trouvent effrayante dès 20h15)",
+      "Que Lucas l'observe depuis le début",
+      "Que sa propre chaîne de service lui a échappé",
+      "Sa part d'intention concernant Sarah"
+    ],
+    "voiceSignature": "Phrases courtes. Politesse qui coupe. Baisse le ton. Prénoms en fin de phrase. Reformule froidement. Ne dit jamais 'je' pour la maison."
+  },
+  {
+    "id": "noe",
+    "name": "Noé Varnier",
+    "age": 32,
+    "role": "Le déclencheur",
+    "tagline": "cible pensée n°1 · architecte du faux récit",
+    "initialVars": {
+      "noePresence": "late",
+      "noeMensonge": 60,
+      "noeLachete": 70,
+      "noeCruaute": 20,
+      "noeInfluenceMaelys": 80
+    },
+    "blindSpots": [
+      "L'ampleur réelle de ce qu'il a déclenché",
+      "Les indices matériels",
+      "Qu'Inès parle à sa place depuis 4 ans"
+    ],
+    "voiceSignature": "Demi-aveux. Phrases inachevées. Humour défensif. Commence par 'Franchement' et 'Écoute'. Concède le petit pour protéger le grand."
+  },
+  {
+    "id": "ines",
+    "name": "Inès Varnier",
+    "age": 26,
+    "role": "L'accélérateur",
+    "tagline": "cible pensée n°2 · victime probable",
+    "initialVars": {
+      "inesArrogance": 62,
+      "inesIrritabilite": 40,
+      "inesTensionSociale": 30,
+      "inesDeplacement": "none"
+    },
+    "blindSpots": [
+      "Qu'elle désigne sa propre assiette phrase après phrase",
+      "Que sa protection de Noé le maintient dans l'état qui a tout détruit",
+      "Que Sarah, qu'elle méprise, a raison ce soir"
+    ],
+    "voiceSignature": "Franchise sèche. Syntaxe complète. Répond aux émotions par des faits. Vouvoiement ironique pour blesser. Rit rarement."
+  },
+  {
+    "id": "lucas",
+    "name": "Lucas Berthier",
+    "age": 33,
+    "role": "Le témoin qui pouvait empêcher",
+    "tagline": "témoin canonique · détenteur du vocal",
+    "initialVars": {
+      "lucasLucidite": 70,
+      "lucasCourage": 32,
+      "lucasNeutralite": 78,
+      "lucasProtectionNoe": 55
+    },
+    "blindSpots": [
+      "Son propre coût moral (problème de complicitié, pas de courage)",
+      "Ce qui se passe hors de son champ"
+    ],
+    "voiceSignature": "Posé. Transforme les accusations en questions. Questions en propositions logistiques. Attribue les émotions à la fatigue."
+  },
+  {
+    "id": "sarah",
+    "name": "Sarah Kessler",
+    "age": 30,
+    "role": "La vérité que personne ne croira",
+    "tagline": "victime canonique · témoin sensoriel",
+    "initialVars": {
+      "sarahMedication": "forgotten",
+      "sarahStabilite": 58,
+      "sarahMemoire": 50,
+      "sarahDependanceMaelys": 80
+    },
+    "blindSpots": [
+      "L'ordre exact des choses (elle a tout, sauf la séquence)",
+      "La solidité de sa propre reconstruction",
+      "Qu'elle est en danger. À aucun moment."
+    ],
+    "voiceSignature": "Affect clair. Syntaxe parfois fragmentée. Décrit le monde par les sens. S'excuse d'être précise. Dit souvent 'enfin je crois'."
+  },
+  {
+    "id": "yanis",
+    "name": "Yanis Amrani",
+    "age": 27,
+    "role": "Le perturbateur innocent",
+    "tagline": "agent du placement fatal · témoin accidentel",
+    "initialVars": {
+      "yanisJeuSocial": 65,
+      "yanisAlcoolCollectif": 40,
+      "yanisInsouciance": 70,
+      "yanisDuoShift": false
+    },
+    "blindSpots": [
+      "Les vraies lignes de faute",
+      "Que ses initiatives ont des effets structurels",
+      "Ce qu'il a photographié à 21h47"
+    ],
+    "voiceSignature": "Relance, rythme, blague désaméorante. Questions ouvertes et impératifs joyeux. Commente l'ambiance qu'il essaie de changer."
+  }
+]

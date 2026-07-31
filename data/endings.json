@@ -1,0 +1,58 @@
+[
+  {
+    "id": "F1",
+    "title": "La cible atteinte",
+    "description": "Le plan a fonctionné. C'est la fin la plus vide du jeu.",
+    "playerMessage": "Vous avez obtenu exactement ce qui était prévu et n'avez rien appris.",
+    "conditions": { "seatingVariant": "base", "serviceHelper": "maelys" }
+  },
+  {
+    "id": "F2",
+    "title": "La mauvaise personne",
+    "description": "Sarah meurt, Inès survit, Noé n'est pas touché. Personne n'a eu ce qu'il voulait.",
+    "playerMessage": "Vous avez compris qui voulait punir. Pas qui a payé.",
+    "conditions": { "seatingVariant": "swapB", "serviceHelper": "sarah" }
+  },
+  {
+    "id": "F3",
+    "title": "Le faux coupable crédible",
+    "description": "La version 'Sarah s'est fait du mal' s'impose et tient.",
+    "playerMessage": "Vous avez vu le bon geste. Vous avez cru le mauvais récit.",
+    "conditions": { "accompliceType": "moral" }
+  },
+  {
+    "id": "F4",
+    "title": "Le silence collectif",
+    "description": "Plusieurs ont compris. Aucun n'assume.",
+    "playerMessage": "Vous avez identifié la blessure de départ, pas l'erreur de trajectoire.",
+    "conditions": {}
+  },
+  {
+    "id": "F5",
+    "title": "La vérité trop tard",
+    "description": "Le joueur a raison et a déjà agi contre sa propre conclusion.",
+    "playerMessage": "Vous avez gagné une partie de morpion à 21h26.",
+    "conditions": {}
+  },
+  {
+    "id": "D1",
+    "title": "Double victime",
+    "description": "Inès et Sarah. Le plan devient méconnaissable.",
+    "playerMessage": "L'enquête réelle commence après le jeu.",
+    "conditions": { "seatingVariant": "chaos" }
+  },
+  {
+    "id": "D2",
+    "title": "L'auto-contamination",
+    "description": "Maëlys est atteinte elle-même.",
+    "playerMessage": "La seule fin où elle est physiquement punie. Ce n'est pas une rédemption.",
+    "conditions": {}
+  },
+  {
+    "id": "S1",
+    "title": "L'interruption",
+    "description": "Le seul run où personne ne meurt. Le prix : Lucas accuse publiquement Maëlys sans preuve.",
+    "playerMessage": "Vous ne saurez jamais avec certitude si vous aviez raison.",
+    "conditions": { "playerCharacter": "lucas", "accompliceType": "none" }
+  }
+]
