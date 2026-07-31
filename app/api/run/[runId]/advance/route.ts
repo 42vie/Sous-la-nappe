@@ -62,14 +62,14 @@ export async function POST(
 
     // 5. Construire les nouveaux indices découverts
     const newDiscoveredClues = result.cluesRevealed.map((clueId) =>
-      buildDiscoveredClue(clueId, sceneId, choiceId)
+      buildDiscoveredClue(clueId, state.playerPov, scene.index)
     )
 
     // 6. Préparer le nouveau state
     const updatedSceneHistory = [
       ...state.sceneHistory,
       {
-        sceneId,
+        sceneId: scene.id,
         choicesMade: [choiceId],
         cluesFound: result.cluesRevealed,
         timestamp: Date.now(),
@@ -86,11 +86,10 @@ export async function POST(
       ...result.stateUpdates,
       flags: updatedFlags,
       currentScene: result.nextScene ?? state.currentScene,
-      visitedScenes: [...new Set([...state.visitedScenes, sceneId])],
-      completedScenes: [...new Set([...state.completedScenes, sceneId])],
+      visitedScenes: [...new Set([...state.visitedScenes, scene.id])],
+      completedScenes: [...new Set([...state.completedScenes, scene.id])],
       discoveredClues: [...state.discoveredClues, ...newDiscoveredClues],
       sceneHistory: updatedSceneHistory,
-      updatedAt: Date.now(),
     }
 
     // 7. Vérifier si le run est maintenant terminé
@@ -105,7 +104,7 @@ export async function POST(
     await adminDb
       .collection(COLLECTIONS.runs)
       .doc(runId)
-      .update(updatedState)
+      .update({ ...updatedState, updatedAt: Date.now() })
 
     return NextResponse.json({
       ok: true,

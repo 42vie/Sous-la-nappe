@@ -1,7 +1,8 @@
 // Dépôt et déverrouillage d'indices
-import type { RunState } from '@/types'
+import type { RunState, DiscoveredClue } from '@/types'
 import type { SceneData, SceneChoice } from '@/lib/types/scenes'
 import type { ClueId } from '@/lib/types/clues'
+import type { CharacterId } from '@/lib/types/characters'
 
 /**
  * Calculer tous les indices révélés par un choix donné dans une scène
@@ -44,14 +45,13 @@ export function isAlreadyDiscovered(
 /** Construire un objet DiscoveredClue pour ajout dans le run */
 export function buildDiscoveredClue(
   clueId: ClueId,
-  sceneId: string,
-  choiceId: string
-): { clueId: ClueId; discoveredInScene: string; discoveredByChoice: string; discoveredAt: number } {
+  discoveredByPov: CharacterId,
+  discoveredAtScene: number
+): DiscoveredClue {
   return {
     clueId,
-    discoveredInScene: sceneId,
-    discoveredByChoice: choiceId,
-    discoveredAt: Date.now(),
+    discoveredByPov,
+    discoveredAtScene,
   }
 }
 

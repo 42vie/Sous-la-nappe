@@ -1,5 +1,6 @@
 // Moteur de déviation — couches 1–5
-import type { RunState, HostIntent, SeatingVariant } from '@/types'
+import type { HostIntent, SeatingVariant, CharacterId, TargetPlanned } from '@/types'
+import type { SeatId, SeatingSnapshot } from '@/lib/types/house'
 
 /**
  * Couche 1 — Détermination du plan de Maëlys
@@ -62,8 +63,15 @@ export const SERVICE_HELPER_FACTOR: Record<string, number> = {
  * Couche 4 — Résolution complète de la cible atteinte
  */
 export function resolveTargetActual(
-  state: Pick<RunState, 'seatingVariant' | 'serviceHelper' | 'witnessOfCriticalMove' | 'maelysControle' | 'maelysIntoxication' | 'targetPlanned' | 'seatingAtCritical'>
-): string[] {
+  state: {
+    seatingVariant: SeatingVariant
+    serviceHelper: CharacterId
+    maelysControle: number
+    maelysIntoxication: number
+    targetPlanned: TargetPlanned
+    seatingAtCritical: SeatingSnapshot
+  }
+): CharacterId[] {
   // Probabilité de base selon la variante de sièges
   const baseRisk: Record<SeatingVariant, number> = {
     base:  0.12,
@@ -93,6 +101,6 @@ export function resolveTargetActual(
   if (!targetSeat) return [state.targetPlanned]
 
   // La cible est la personne assise à la place prévue
-  const actualSeat = String(2) // position 2 = assiette chargée dans l'ordre
-  return [criticalSeating[actualSeat as unknown as number] ?? state.targetPlanned]
+  const actualSeatId: SeatId = 2 // position 2 = assiette chargée dans l'ordre
+  return [criticalSeating[actualSeatId] ?? state.targetPlanned]
 }

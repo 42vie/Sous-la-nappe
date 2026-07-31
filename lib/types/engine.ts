@@ -99,7 +99,7 @@ export interface SceneHistoryEntry {
 /** Engine transition result */
 export interface TransitionResult {
   nextScene: SceneId | null;
-  stateUpdates: Partial<VariableLayer>;
+  stateUpdates: Partial<RunState>;
   flagUpdates: Record<string, boolean | string | number>;
   cluesRevealed: ClueId[];
   narrativeInjections: string[]; // text lines to append

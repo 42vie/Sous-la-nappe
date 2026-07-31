@@ -11,13 +11,8 @@ export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl
   const session = req.cookies.get('__session')?.value
 
-  // Note : app/(game)/page.tsx est servie à l'URL /
-  // Le dashboard réel est app/(game)/page.tsx (route groupée sans segment URL)
-  // On protège aussi /dashboard si cette route existe
-
   const isProtected = PROTECTED_PREFIXES.some((p) => pathname.startsWith(p))
   const isAuthRoute  = AUTH_ROUTES.some((p) => pathname.startsWith(p))
-  const isRoot = pathname === '/'
 
   // Route protégée sans session → login
   if (isProtected && !session) {

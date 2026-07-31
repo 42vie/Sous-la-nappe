@@ -1,26 +1,10 @@
 // Types Firestore — structure des documents
 
-import type { RunState, FinalScore, Scene, Character, Clue } from './index'
+import type { RunState } from './index'
 
 // Collections Firestore
 export interface FirestoreRun extends RunState {
   __type: 'run'
-}
-
-export interface FirestoreScore extends FinalScore {
-  __type: 'score'
-}
-
-export interface FirestoreScene extends Scene {
-  __type: 'scene'
-}
-
-export interface FirestoreCharacter extends Character {
-  __type: 'character'
-}
-
-export interface FirestoreClue extends Clue {
-  __type: 'clue'
 }
 
 // Noms des collections

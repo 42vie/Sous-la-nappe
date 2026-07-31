@@ -11,7 +11,12 @@ import {
 } from 'firebase/firestore'
 import { db } from './client'
 import { COLLECTIONS } from '@/types/firebase'
-import type { FinalScore } from '@/types'
+import type { FinalScreenData } from '@/types'
+
+interface FinalScore extends FinalScreenData {
+  playerId: string
+  completedAt: number
+}
 
 const scoresRef = () => collection(db, COLLECTIONS.scores)
 

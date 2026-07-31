@@ -113,7 +113,7 @@ function applyEffects(
     if (effect.type === 'state_delta' && effect.key && effect.delta !== undefined) {
       const current = (charState as Record<string, unknown>)[effect.key]
       if (typeof current === 'number') {
-        ;(charState as Record<string, number>)[effect.key] = Math.max(
+        ;(charState as unknown as Record<string, number>)[effect.key] = Math.max(
           0,
           Math.min(100, current + effect.delta)
         )

@@ -1,7 +1,10 @@
 // Store Zustand — état du run en cours
 import { create } from 'zustand'
-import type { RunState, TransitionResult } from '@/lib/types/engine'
+import type { RunState } from '@/lib/types/engine'
+import type { SceneId } from '@/lib/types/scenes'
+import type { ClueId } from '@/lib/types/clues'
 import { updateRun } from '@/lib/firebase/runs'
+import { getScene } from '@/lib/engine/sceneRunner'
 
 interface AdvanceResponse {
   ok: boolean
@@ -77,7 +80,11 @@ export const useRunStore = create<RunStore>((set, get) => ({
           ...state.run,
           discoveredClues: [
             ...state.run.discoveredClues,
-            { clueId: clueRef, discoveredInScene: '', discoveredByChoice: '', discoveredAt: Date.now() },
+            {
+              clueId: clueRef as ClueId,
+              discoveredByPov: state.run.playerPov,
+              discoveredAtScene: getScene(state.run.currentScene)?.index ?? 0,
+            },
           ],
         },
       }
@@ -90,7 +97,7 @@ export const useRunStore = create<RunStore>((set, get) => ({
             ...state.run,
             sceneHistory: [
               ...state.run.sceneHistory,
-              { sceneId: sceneKey, choicesMade: [choice], cluesFound: [], timestamp: Date.now(), narrativeNotes: [] },
+              { sceneId: sceneKey as SceneId, choicesMade: [choice], cluesFound: [] as ClueId[], timestamp: Date.now(), narrativeNotes: [] },
             ],
           }
         : null,
@@ -125,10 +132,9 @@ export const useRunStore = create<RunStore>((set, get) => ({
         const newClues = [
           ...state.run.discoveredClues,
           ...data.cluesRevealed.map((clueId) => ({
-            clueId,
-            discoveredInScene: sceneId,
-            discoveredByChoice: choiceId,
-            discoveredAt: Date.now(),
+            clueId: clueId as ClueId,
+            discoveredByPov: state.run!.playerPov,
+            discoveredAtScene: getScene(sceneId)?.index ?? 0,
           })),
         ]
         return {
