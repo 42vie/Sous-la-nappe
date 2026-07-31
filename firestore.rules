@@ -1,0 +1,54 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ─── Runs (parties) ─────────────────────────────────────────────
+    match /runs/{runId} {
+      // Lecture : joueur authentifié qui est le propriétaire du run
+      allow read: if request.auth != null
+        && request.auth.uid == resource.data.playerId;
+
+      // Création : joueur authentifié, avec son uid
+      allow create: if request.auth != null
+        && request.resource.data.playerId == request.auth.uid;
+
+      // Mise à jour : uniquement le propriétaire, pas de changement d'uid
+      allow update: if request.auth != null
+        && request.auth.uid == resource.data.playerId
+        && request.resource.data.playerId == resource.data.playerId;
+
+      // Suppression interdite
+      allow delete: if false;
+    }
+
+    // ─── Scores & écran final ────────────────────────────────────────
+    match /scores/{scoreId} {
+      allow read: if request.auth != null
+        && request.auth.uid == resource.data.playerId;
+      allow create: if request.auth != null
+        && request.resource.data.playerId == request.auth.uid;
+      allow update, delete: if false;
+    }
+
+    // ─── Données narratives (lecture publique) ───────────────────────
+    match /scenes/{sceneId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    match /characters/{characterId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    match /clues/{clueId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // ─── Bloquer tout le reste ───────────────────────────────────────
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
