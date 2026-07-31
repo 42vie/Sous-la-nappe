@@ -27,15 +27,15 @@
 
 ---
 
-### 🔴 BLOQUANT — Données canoniques manquantes
+### ✅ BLOQUANT — Données canoniques *(terminé le 31 juillet 2026)*
 
 | # | Tâche | Statut | Notes |
 |---|---|---|---|
-| B-01 | Créer `data/scenes.json` — 11 scènes run Lucas (conditions, choix, effets, indices) | ⬜ À faire | Fichier le plus critique, Sprint 2 bloqué sans lui |
-| B-02 | Créer `data/canon_runs.json` — run T0 comme trajectoire de référence | ⬜ À faire | Nécessaire pour le moteur de déviation |
-| B-03 | Créer `data/questions_final.json` — 8 questions pondérées de l'écran final | ⬜ À faire | Nécessaire pour l'écran final |
-| B-04 | Compléter `data/clues.json` — ajouter les 11 indices manquants (C-04, C-06, C-08, C-10, C-12, C-13, C-16, C-17, C-21, C-24 + vérifier C-25) | ⬜ À faire | 15/26 indices présents actuellement |
-| B-05 | Créer `data/locations.json` — maison, pièces, visibilités, règles d'observation | ⬜ À faire | Lié au type `house.ts` déjà existant |
+| B-01 | Créer `data/scenes.json` — 11 scènes run Lucas (conditions, choix, effets, indices) | ✅ Fait | 11 scènes complètes avec choices, effects, canonicalFacts, autoRevealClues |
+| B-02 | Créer `data/canon_runs.json` — run T0 comme trajectoire de référence | ✅ Fait | T0 complet : variables, seatingHistory, keyChoices, finalReport 3 colonnes |
+| B-03 | Créer `data/questions_final.json` — 8 questions pondérées de l'écran final | ✅ Fait | 8 questions avec options, scoreDelta, canonicalAnswer, mappedVariable, revealedBy |
+| B-04 | Compléter `data/clues.json` — 25 indices (C-01 à C-25) | ✅ Fait | 25/25 indices — C-04, C-06, C-08, C-10, C-12, C-13, C-16, C-17, C-21, C-24 ajoutés |
+| B-05 | Créer `data/locations.json` — maison, pièces, visibilités, règles d'observation | ✅ Fait | 7 pièces avec narrativeFunction, visibilityRule, linkedScenes, keyObjects |
 
 ---
 
@@ -98,14 +98,14 @@
 | S1-04 | Types TS — characters, scenes, clues, endings, engine, house | ✅ Fait | Dans `lib/types/` |
 | S1-05 | Schéma Firestore + règles (`firestore.rules`, `firestore.indexes.json`) | ✅ Fait | |
 | S1-06 | Seeds `characters.json` | ✅ Fait | |
-| S1-07 | Seeds `clues.json` (partiel — 15/26) | ✅ Fait | Voir B-04 pour compléter |
+| S1-07 | Seeds `clues.json` — 25/25 indices | ✅ Fait | Complété dans le sprint bloquant |
 | S1-08 | Seeds `endings.json` | ✅ Fait | |
 | S1-09 | SDK Firebase admin + client (`lib/firebase/admin.ts`, `client.ts`) | ✅ Fait | |
 | S1-10 | Moteur de déviation `lib/engine/deviation.ts` (couches 1–4) | ✅ Fait | Couches hostIntent, seatingVariant, serviceHelperFactor, targetActual |
 | S1-11 | Flags narratifs `lib/engine/flags.ts` (22 flags, 6 phases) | ✅ Fait | |
 | S1-12 | API runs (`app/api/run/route.ts`, `app/api/run/[runId]/route.ts`) | ✅ Fait | |
 | S1-13 | Page run `app/(game)/run/[runId]/page.tsx` | ✅ Fait | |
-| S1-14 | Composant `SceneEngine.tsx` (21,5 Ko) | ✅ Fait | Profondeur à valider |
+| S1-14 | Composant `SceneEngine.tsx` (21,5 Ko) | ✅ Fait | Profondeur à valider en Sprint 2 |
 | S1-15 | Composant `CluePanel.tsx` | ✅ Fait | |
 | S1-16 | Composant `SeatingPlan.tsx` (base) | ✅ Fait | Historique 4 états manquant — voir S3-01 |
 | S1-17 | Composant `CharacterSelector.tsx` | ✅ Fait | |
@@ -130,7 +130,7 @@ sous-la-nappe/
 │   └── types/              # characters, scenes, clues, endings, engine, house
 ├── store/                  # authStore, runStore
 ├── types/                  # index.ts, firebase.ts
-├── data/                   # JSON narratifs (seeds)
+├── data/                   # JSON narratifs (seeds) — complets
 └── public/                 # Assets statiques
 ```
 
