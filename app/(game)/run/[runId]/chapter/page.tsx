@@ -6,6 +6,8 @@ import { CharacterCard, CHARACTERS } from '@/components/ui/CharacterCard'
 import { useRunStore } from '@/store/runStore'
 import { CHAPTERS, TOTAL_CHAPTERS } from '@/lib/engine/chapters'
 import { BLIND_SPOTS } from '@/lib/engine/blindSpots'
+import { getTensionFlavor } from '@/lib/engine/tensionFlavor'
+import { getManuscriptStatus } from '@/lib/engine/manuscript'
 import type { CharacterId } from '@/lib/types/characters'
 import type { RunState } from '@/lib/types/engine'
 
@@ -49,6 +51,10 @@ export default function ChapterSelectPage() {
   const justPlayed = povHistory[povHistory.length - 1]
   const justPlayedName = justPlayed ? CHARACTER_NAMES[justPlayed].split(' ')[0] : null
   const blindSpots = justPlayed ? BLIND_SPOTS[justPlayed] : []
+  const tension = run?.variable?.socialTension ?? 0
+  const manuscript = run ? getManuscriptStatus(run) : []
+  const truthsEstablished = manuscript.filter((e) => e.status === 'complete').length
+  const cluesFound = run?.discoveredClues?.length ?? 0
 
   // Tous les chapitres ont déjà un personnage : rien à choisir, retour au run.
   useEffect(() => {
@@ -127,6 +133,64 @@ export default function ChapterSelectPage() {
         )}
       </header>
 
+      {/* Bel accueil — résumé de ce qu'on sait déjà, avant de choisir la suite */}
+      {povHistory.length > 0 && (
+        <div style={{
+          width: '100%', maxWidth: 'var(--content-narrow)',
+          padding: 'var(--space-5) var(--space-6)',
+          marginBottom: 'var(--space-8)',
+          background: 'var(--color-surface)',
+          border: '1px solid var(--color-divider)',
+          borderRadius: 'var(--radius-lg)',
+        }}>
+          <div style={{ display: 'flex', gap: 'var(--space-8)', marginBottom: 'var(--space-4)' }}>
+            <div>
+              <p style={{ fontFamily: 'var(--font-body)', fontSize: '10px', color: 'var(--color-text-faint)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '2px' }}>
+                Vérités établies
+              </p>
+              <p style={{ fontFamily: 'var(--font-display)', fontSize: 'var(--text-xl)', color: 'var(--color-text)' }}>
+                {truthsEstablished}<span style={{ fontSize: 'var(--text-sm)', color: 'var(--color-text-faint)' }}>/{manuscript.length}</span>
+              </p>
+            </div>
+            <div>
+              <p style={{ fontFamily: 'var(--font-body)', fontSize: '10px', color: 'var(--color-text-faint)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '2px' }}>
+                Indices trouvés
+              </p>
+              <p style={{ fontFamily: 'var(--font-display)', fontSize: 'var(--text-xl)', color: 'var(--color-text)' }}>
+                {cluesFound}<span style={{ fontSize: 'var(--text-sm)', color: 'var(--color-text-faint)' }}>/25</span>
+              </p>
+            </div>
+            <div style={{ flex: 1 }}>
+              <p style={{ fontFamily: 'var(--font-body)', fontSize: '10px', color: 'var(--color-text-faint)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '2px' }}>
+                Tension dans la maison
+              </p>
+              <div style={{ height: 6, background: 'var(--color-surface-offset)', borderRadius: 999, overflow: 'hidden', marginTop: 'var(--space-2)' }}>
+                <div style={{
+                  height: '100%', width: `${tension}%`,
+                  background: tension >= 65 ? 'var(--color-error, #a01f1f)' : 'var(--color-primary)',
+                  transition: 'width 300ms ease',
+                }} />
+              </div>
+            </div>
+          </div>
+
+          {manuscript.some((e) => e.status !== 'locked') && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)', paddingTop: 'var(--space-3)', borderTop: '1px solid var(--color-divider)' }}>
+              {manuscript.filter((e) => e.status !== 'locked').slice(0, 3).map((e) => (
+                <p key={e.id} style={{
+                  fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)',
+                  color: e.status === 'complete' ? 'var(--color-text-muted)' : 'var(--color-text-faint)',
+                  fontStyle: e.status === 'complete' ? 'normal' : 'italic',
+                  lineHeight: 1.5,
+                }}>
+                  {e.status === 'complete' ? '✓ ' : '· '}{e.text}
+                </p>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
       {justPlayedName && blindSpots.length > 0 && (
         <div style={{
           width: '100%', maxWidth: 'var(--content-narrow)',
@@ -166,6 +230,7 @@ export default function ChapterSelectPage() {
             character={c}
             isSelected={selected === c.id}
             onClick={() => setSelected((prev) => (prev === c.id ? null : c.id))}
+            accrocheOverride={getTensionFlavor(c.id, tension)}
           />
         ))}
       </div>

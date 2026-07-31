@@ -1,40 +1,36 @@
-// GET /api/run/[runId]/final — rapport 3 colonnes + questions du quiz final
-// POST /api/run/[runId]/final — soumettre les réponses, calculer et persister le score
+// GET /api/run/[runId]/final — rapport 3 colonnes, manuscrit, épilogue, score
+// POST /api/run/[runId]/final — soumettre le plan de table deviné (bonus optionnel)
+//
+// Pas de questionnaire : le score se calcule depuis ce que le joueur a
+// réellement découvert en jouant (le manuscrit), pas depuis un QCM rempli
+// après coup. Le seul geste qui reste à la fin est optionnel et concret :
+// reconstituer le plan de table du moment critique.
 import { NextRequest, NextResponse } from 'next/server'
 import { adminDb } from '@/lib/firebase/admin'
 import { COLLECTIONS } from '@/types/firebase'
 import { buildFinalReport } from '@/lib/engine/endingCalculator'
 import { getManuscriptStatus } from '@/lib/engine/manuscript'
 import { getPovSummaries } from '@/lib/engine/povSummary'
+import { buildEpilogue } from '@/lib/engine/epilogue'
 import type { RunState } from '@/types'
-import questionsRaw from '@/data/questions_final.json'
 
-interface QuestionOption {
-  id: string
-  label: string
-  scoreDelta: number
-}
-
-interface QuestionData {
-  id: string
-  index: number
-  label: string
-  weight: number
-  options: QuestionOption[]
-  canonicalAnswer: string
-}
-
-const QUESTIONS = questionsRaw as unknown as QuestionData[]
-const SEATING_QUESTION_ID = 'q4_seating_at_service'
 const SEAT_IDS = [1, 2, 3, 4, 5, 6]
+const MANUSCRIPT_WEIGHT = 85
+const SEATING_WEIGHT = 15
 
 type StoredRun = RunState & {
   finalScore?: number
-  finalAnswers?: Record<string, string>
   finalSeatingGuess?: Record<string, string>
 }
 
-/** GET — rapport final + questions (sans le barème, pour ne pas exposer les réponses) */
+function manuscriptScore(state: RunState): number {
+  const manuscript = getManuscriptStatus(state)
+  if (manuscript.length === 0) return 0
+  const ratio = manuscript.reduce((sum, e) => sum + e.progress, 0) / manuscript.length
+  return Math.round(ratio * MANUSCRIPT_WEIGHT)
+}
+
+/** GET — rapport final, manuscrit, épilogue et score (calculé, pas déclaré) */
 export async function GET(
   _req: NextRequest,
   { params }: { params: { runId: string } }
@@ -50,27 +46,22 @@ export async function GET(
     }
 
     const report = buildFinalReport(state)
+    const baseScore = manuscriptScore(state)
+    const seatingSubmitted = state.finalSeatingGuess != null
+    const score = seatingSubmitted ? (state.finalScore ?? baseScore) : baseScore
 
     return NextResponse.json({
       report,
       ending: state.ending ?? null,
       discoveredCluesCount: state.discoveredClues?.length ?? 0,
-      score: state.finalScore ?? null,
-      answers: state.finalAnswers ?? null,
+      score,
+      baseScore,
+      seatingBonusAvailable: !seatingSubmitted,
       seatingGuess: state.finalSeatingGuess ?? null,
       manuscript: getManuscriptStatus(state),
+      epilogue: buildEpilogue(state),
       povHistory: state.povHistory ?? [state.playerPov],
       povSummaries: getPovSummaries(state),
-      // Question 4 ("où était chacun au moment du service ?") se joue comme
-      // un vrai plan de table à reconstituer (6 sièges à remplir), pas un
-      // QCM — pas d'options à envoyer, seatingGuess est traité à part.
-      questions: QUESTIONS.map((q) => ({
-        id: q.id,
-        index: q.index,
-        label: q.label,
-        weight: q.weight,
-        options: q.id === SEATING_QUESTION_ID ? [] : q.options.map((o) => ({ id: o.id, label: o.label })),
-      })),
     })
   } catch (err) {
     console.error('[GET /api/run/[runId]/final]', err)
@@ -78,7 +69,7 @@ export async function GET(
   }
 }
 
-/** POST — soumettre les réponses au quiz de reconstruction (chapitre 14 de la bible) */
+/** POST — soumettre le plan de table deviné (bonus optionnel, +15 pts max) */
 export async function POST(
   req: NextRequest,
   { params }: { params: { runId: string } }
@@ -90,41 +81,24 @@ export async function POST(
     }
     const state = snap.data() as StoredRun
 
-    const { answers, seatingGuess } = await req.json() as {
-      answers: Record<string, string>
-      seatingGuess?: Record<string, string>
-    }
-    if (!answers || typeof answers !== 'object') {
-      return NextResponse.json({ error: 'Réponses manquantes' }, { status: 400 })
+    const { seatingGuess } = await req.json() as { seatingGuess?: Record<string, string> }
+    if (!seatingGuess || typeof seatingGuess !== 'object') {
+      return NextResponse.json({ error: 'Plan de table manquant' }, { status: 400 })
     }
 
     const trueSeating = state.variable?.seatingHistory?.seating_at_critical ?? {}
-
-    let score = 0
-    const breakdown = QUESTIONS.map((q) => {
-      if (q.id === SEATING_QUESTION_ID) {
-        const correctSeats = SEAT_IDS.filter(
-          (seat) => seatingGuess?.[String(seat)] && seatingGuess[String(seat)] === trueSeating[seat as unknown as keyof typeof trueSeating]
-        ).length
-        const scoreDelta = Math.round((correctSeats / SEAT_IDS.length) * q.weight)
-        score += scoreDelta
-        return { questionId: q.id, correct: correctSeats === SEAT_IDS.length, scoreDelta, correctSeats }
-      }
-      const chosenId = answers[q.id]
-      const option = q.options.find((o) => o.id === chosenId)
-      const scoreDelta = option?.scoreDelta ?? 0
-      score += scoreDelta
-      return { questionId: q.id, correct: chosenId === q.canonicalAnswer, scoreDelta }
-    })
-    score = Math.max(0, Math.min(100, Math.round(score)))
+    const correctSeats = SEAT_IDS.filter(
+      (seat) => seatingGuess[String(seat)] && seatingGuess[String(seat)] === trueSeating[seat as unknown as keyof typeof trueSeating]
+    ).length
+    const seatingBonus = Math.round((correctSeats / SEAT_IDS.length) * SEATING_WEIGHT)
+    const score = Math.max(0, Math.min(100, manuscriptScore(state) + seatingBonus))
 
     await adminDb.collection(COLLECTIONS.runs).doc(params.runId).update({
       finalScore: score,
-      finalAnswers: answers,
-      finalSeatingGuess: seatingGuess ?? null,
+      finalSeatingGuess: seatingGuess,
     })
 
-    return NextResponse.json({ score, breakdown })
+    return NextResponse.json({ score, correctSeats })
   } catch (err) {
     console.error('[POST /api/run/[runId]/final]', err)
     return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 })

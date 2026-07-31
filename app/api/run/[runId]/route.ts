@@ -51,3 +51,38 @@ export async function PATCH(
     return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 })
   }
 }
+
+/** DELETE — effacer la sauvegarde d'un run (recommencer à zéro) */
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: { runId: string } }
+) {
+  try {
+    const session = req.cookies.get('__session')?.value
+    if (!session) {
+      return NextResponse.json({ error: 'Non authentifié' }, { status: 401 })
+    }
+    let uid: string
+    try {
+      const decoded = await adminAuth.verifySessionCookie(session, true)
+      uid = decoded.uid
+    } catch {
+      return NextResponse.json({ error: 'Session invalide' }, { status: 401 })
+    }
+
+    const runRef = adminDb.collection(COLLECTIONS.runs).doc(params.runId)
+    const snap = await runRef.get()
+    if (!snap.exists) {
+      return NextResponse.json({ error: 'Run introuvable' }, { status: 404 })
+    }
+    if (snap.data()?.playerId !== uid) {
+      return NextResponse.json({ error: 'Non autorisé' }, { status: 403 })
+    }
+
+    await runRef.delete()
+    return NextResponse.json({ success: true })
+  } catch (err) {
+    console.error('[DELETE /api/run/:id]', err)
+    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 })
+  }
+}

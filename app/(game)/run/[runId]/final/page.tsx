@@ -20,8 +20,30 @@ interface PovSummaryData {
   choiceLabels: string[]
 }
 
-const SEATING_QUESTION_ID = 'q4_seating_at_service'
+type CharacterCondition = 'indemne' | 'ebranle' | 'blesse' | 'critique' | 'decede'
+
+interface EpilogueStatusData {
+  character: CharacterId
+  condition: CharacterCondition
+  detail: string
+}
+
+interface EpilogueData {
+  gravity: number
+  headline: string
+  paragraph: string
+  statuses: EpilogueStatusData[]
+}
+
 const SEAT_IDS = [1, 2, 3, 4, 5, 6]
+
+const CONDITION_LABELS: Record<CharacterCondition, { label: string; color: string }> = {
+  indemne: { label: 'Indemne', color: 'var(--color-text-faint)' },
+  ebranle: { label: 'Ébranlé·e', color: '#a67c1f' },
+  blesse: { label: 'Blessé·e', color: '#b5651d' },
+  critique: { label: 'État critique', color: '#a01f1f' },
+  decede: { label: 'N’a pas survécu', color: '#6b0f0f' },
+}
 
 const ENDING_LABELS: Record<string, { title: string; description: string }> = {
   F1: {
@@ -64,19 +86,6 @@ interface FinalReport {
   narrated: Record<string, string>
 }
 
-interface FinalQuestionOption {
-  id: string
-  label: string
-}
-
-interface FinalQuestion {
-  id: string
-  index: number
-  label: string
-  weight: number
-  options: FinalQuestionOption[]
-}
-
 const COLUMN_LABELS: Record<string, string> = {
   targetWho: 'Qui',
   targetWhy: 'Pourquoi',
@@ -101,17 +110,17 @@ export default function FinalPage() {
   const { run } = useRunStore()
 
   const [report, setReport] = useState<FinalReport | null>(null)
-  const [questions, setQuestions] = useState<FinalQuestion[]>([])
-  const [answers, setAnswers] = useState<Record<string, string>>({})
-  const [seatingGuess, setSeatingGuess] = useState<Record<number, CharacterId>>({})
   const [manuscript, setManuscript] = useState<ManuscriptEntryData[]>([])
+  const [epilogue, setEpilogue] = useState<EpilogueData | null>(null)
   const [povHistory, setPovHistory] = useState<CharacterId[]>([])
   const [povSummaries, setPovSummaries] = useState<PovSummaryData[]>([])
   const [endingId, setEndingId] = useState<string | null>(null)
   const [clueCount, setClueCount] = useState<number>(0)
   const [loading, setLoading] = useState(true)
-  const [submitting, setSubmitting] = useState(false)
   const [score, setScore] = useState<number | null>(null)
+  const [seatingBonusAvailable, setSeatingBonusAvailable] = useState(false)
+  const [seatingGuess, setSeatingGuess] = useState<Record<number, CharacterId>>({})
+  const [submittingSeating, setSubmittingSeating] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
@@ -124,49 +133,43 @@ export default function FinalPage() {
         }
         const data = await res.json()
         setReport(data.report ?? null)
-        setQuestions(data.questions ?? [])
         setManuscript(data.manuscript ?? [])
+        setEpilogue(data.epilogue ?? null)
         setPovHistory(data.povHistory ?? [])
         setPovSummaries(data.povSummaries ?? [])
         setEndingId(data.ending ?? run?.ending ?? 'F1')
         setClueCount(data.discoveredCluesCount ?? run?.discoveredClues?.length ?? 0)
-        if (data.score !== null && data.score !== undefined) {
-          setScore(data.score)
-          setAnswers(data.answers ?? {})
-          if (data.seatingGuess) setSeatingGuess(data.seatingGuess)
-        }
+        setScore(data.score ?? null)
+        setSeatingBonusAvailable(Boolean(data.seatingBonusAvailable))
       })
       .catch((err) => setError(err instanceof Error ? err.message : 'Erreur inconnue'))
       .finally(() => setLoading(false))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [runId])
 
-  async function handleSubmitQuiz() {
-    if (submitting) return
-    setSubmitting(true)
+  async function handleSubmitSeating() {
+    if (submittingSeating) return
+    setSubmittingSeating(true)
     setError(null)
     try {
       const res = await fetch(`/api/run/${runId}/final`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ answers, seatingGuess }),
+        body: JSON.stringify({ seatingGuess }),
       })
-      if (!res.ok) throw new Error('Erreur lors du calcul du score')
+      if (!res.ok) throw new Error('Erreur lors du calcul du bonus')
       const data = await res.json()
       setScore(data.score)
+      setSeatingBonusAvailable(false)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erreur inconnue')
     } finally {
-      setSubmitting(false)
+      setSubmittingSeating(false)
     }
   }
 
   const ending = ENDING_LABELS[endingId ?? 'F1'] ?? ENDING_LABELS.F1
   const seatingComplete = SEAT_IDS.every((seat) => seatingGuess[seat])
-  const quizComplete = questions.length > 0 && questions.every((q) =>
-    q.id === SEATING_QUESTION_ID ? seatingComplete : answers[q.id]
-  )
-  const quizPending = score === null
 
   if (loading) {
     return (
@@ -197,116 +200,6 @@ export default function FinalPage() {
           }}>{error}</p>
         )}
 
-        {/* ── Quiz de reconstruction (chapitre 14) ── */}
-        {quizPending && questions.length > 0 && (
-          <>
-            <p style={{
-              fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', color: 'var(--color-text-faint)',
-              textTransform: 'uppercase', letterSpacing: '0.12em', marginBottom: 'var(--space-4)',
-            }}>
-              Avant le rapport
-            </p>
-            <h1 style={{
-              fontFamily: 'var(--font-display)', fontSize: 'var(--text-2xl)', color: 'var(--color-text)',
-              fontWeight: 400, fontStyle: 'italic', marginBottom: 'var(--space-8)', lineHeight: 1.2,
-            }}>
-              Qu&apos;avez-vous vraiment compris de cette soirée ?
-            </h1>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-8)', marginBottom: 'var(--space-8)' }}>
-              {questions.map((q) => (
-                <div key={q.id}>
-                  <p style={{
-                    fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)', color: 'var(--color-text)',
-                    marginBottom: 'var(--space-3)',
-                  }}>
-                    {q.index}. {q.label}
-                  </p>
-                  {q.id === SEATING_QUESTION_ID ? (
-                    <div style={{
-                      display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'var(--space-3)',
-                      maxWidth: 360,
-                    }}>
-                      {SEAT_IDS.map((seat) => (
-                        <div key={seat} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-1)' }}>
-                          <label style={{ fontFamily: 'var(--font-body)', fontSize: '10px', color: 'var(--color-text-faint)' }}>
-                            Siège {seat}
-                          </label>
-                          <select
-                            value={seatingGuess[seat] ?? ''}
-                            onChange={(e) => setSeatingGuess((prev) => ({ ...prev, [seat]: e.target.value as CharacterId }))}
-                            style={{
-                              padding: 'var(--space-2) var(--space-3)',
-                              background: 'var(--color-surface)',
-                              border: '1px solid var(--color-border)',
-                              borderRadius: 'var(--radius-md)',
-                              fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', color: 'var(--color-text)',
-                            }}
-                          >
-                            <option value="">—</option>
-                            {CHARACTERS.map((c) => (
-                              <option key={c.id} value={c.id}>{c.firstName}</option>
-                            ))}
-                          </select>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
-                    {q.options.map((opt) => (
-                      <label
-                        key={opt.id}
-                        style={{
-                          display: 'flex', alignItems: 'center', gap: 'var(--space-3)',
-                          padding: 'var(--space-3) var(--space-4)',
-                          background: answers[q.id] === opt.id ? 'var(--color-surface-offset)' : 'var(--color-surface)',
-                          border: `1px solid ${answers[q.id] === opt.id ? 'var(--color-primary)' : 'var(--color-border)'}`,
-                          borderRadius: 'var(--radius-md)', cursor: 'pointer',
-                        }}
-                      >
-                        <input
-                          type="radio"
-                          name={q.id}
-                          value={opt.id}
-                          checked={answers[q.id] === opt.id}
-                          onChange={() => setAnswers((prev) => ({ ...prev, [q.id]: opt.id }))}
-                        />
-                        <span style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)', color: 'var(--color-text-muted)' }}>
-                          {opt.label}
-                        </span>
-                      </label>
-                    ))}
-                  </div>
-                  )}
-                </div>
-              ))}
-            </div>
-
-            <button
-              onClick={handleSubmitQuiz}
-              disabled={!quizComplete || submitting}
-              style={{
-                padding: 'var(--space-3) var(--space-8)',
-                background: 'var(--color-primary)',
-                color: 'var(--color-text-inverse)',
-                border: 'none',
-                borderRadius: 'var(--radius-md)',
-                fontFamily: 'var(--font-body)',
-                fontSize: 'var(--text-sm)',
-                letterSpacing: '0.04em',
-                cursor: quizComplete && !submitting ? 'pointer' : 'not-allowed',
-                opacity: quizComplete && !submitting ? 1 : 0.5,
-                marginBottom: 'var(--space-12)',
-              }}
-            >
-              {submitting ? 'Calcul…' : 'Valider'}
-            </button>
-          </>
-        )}
-
-        {/* ── Résultat ── */}
-        {!quizPending && (
-        <>
         {/* Titre fin */}
         <p style={{
           fontFamily: 'var(--font-body)',
@@ -360,7 +253,7 @@ export default function FinalPage() {
           {score !== null && (
             <div>
               <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', color: 'var(--color-text-faint)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 'var(--space-1)' }}>
-                Score
+                Score — ce que vous avez vraiment compris
               </p>
               <p style={{ fontFamily: 'var(--font-display)', fontSize: 'var(--text-2xl)', color: 'var(--color-text)' }}>
                 {score}<span style={{ fontSize: 'var(--text-sm)', color: 'var(--color-text-faint)' }}>/100</span>
@@ -369,8 +262,63 @@ export default function FinalPage() {
           )}
         </div>
 
+        {/* Bilan de la soirée — épilogue selon la tension accumulée */}
+        {epilogue && (
+          <div style={{ marginBottom: 'var(--space-12)' }}>
+            <p style={{
+              fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', color: 'var(--color-text-muted)',
+              textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 'var(--space-4)',
+            }}>
+              Bilan de la soirée
+            </p>
+            <div style={{
+              padding: 'var(--space-5)',
+              background: 'var(--color-surface)',
+              border: '1px solid var(--color-border)',
+              borderRadius: 'var(--radius-lg)',
+              marginBottom: 'var(--space-4)',
+            }}>
+              <p style={{
+                fontFamily: 'var(--font-display)', fontStyle: 'italic', fontSize: 'var(--text-lg)',
+                color: 'var(--color-text)', marginBottom: 'var(--space-3)',
+              }}>
+                {epilogue.headline}
+              </p>
+              <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)', color: 'var(--color-text-muted)', lineHeight: 1.8 }}>
+                {epilogue.paragraph}
+              </p>
+            </div>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--space-3)' }}>
+              {epilogue.statuses.map((s) => {
+                const character = CHARACTERS.find((c) => c.id === s.character)
+                const cond = CONDITION_LABELS[s.condition]
+                return (
+                  <div
+                    key={s.character}
+                    title={s.detail}
+                    style={{
+                      display: 'flex', alignItems: 'center', gap: 'var(--space-2)',
+                      padding: 'var(--space-2) var(--space-3)',
+                      borderRadius: 'var(--radius-md)',
+                      border: `1px solid ${character?.color ?? 'var(--color-border)'}30`,
+                      background: 'var(--color-surface-offset)',
+                    }}
+                  >
+                    <span style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', color: character?.color ?? 'var(--color-text)' }}>
+                      {character?.firstName ?? s.character}
+                    </span>
+                    <span style={{ fontFamily: 'var(--font-body)', fontSize: '10px', color: cond.color, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                      {cond.label}
+                    </span>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        )}
+
         {/* Rapport final 3 colonnes */}
-        {!loading && report && (
+        {report && (
           <>
             <p style={{
               fontFamily: 'var(--font-body)',
@@ -423,6 +371,64 @@ export default function FinalPage() {
               ))}
             </div>
           </>
+        )}
+
+        {/* Bonus optionnel — reconstituer le plan de table du moment critique */}
+        {seatingBonusAvailable && (
+          <div style={{ marginBottom: 'var(--space-12)' }}>
+            <p style={{
+              fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', color: 'var(--color-text-muted)',
+              textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 'var(--space-2)',
+            }}>
+              Bonus — +15 points possibles
+            </p>
+            <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)', color: 'var(--color-text-faint)', fontStyle: 'italic', marginBottom: 'var(--space-4)' }}>
+              Qui était où, au moment critique du service ? Placez les six convives, si vous vous en souvenez.
+            </p>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'var(--space-3)', maxWidth: 360, marginBottom: 'var(--space-4)' }}>
+              {SEAT_IDS.map((seat) => (
+                <div key={seat} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-1)' }}>
+                  <label style={{ fontFamily: 'var(--font-body)', fontSize: '10px', color: 'var(--color-text-faint)' }}>
+                    Siège {seat}
+                  </label>
+                  <select
+                    value={seatingGuess[seat] ?? ''}
+                    onChange={(e) => setSeatingGuess((prev) => ({ ...prev, [seat]: e.target.value as CharacterId }))}
+                    style={{
+                      padding: 'var(--space-2) var(--space-3)',
+                      background: 'var(--color-surface)',
+                      border: '1px solid var(--color-border)',
+                      borderRadius: 'var(--radius-md)',
+                      fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', color: 'var(--color-text)',
+                    }}
+                  >
+                    <option value="">—</option>
+                    {CHARACTERS.map((c) => (
+                      <option key={c.id} value={c.id}>{c.firstName}</option>
+                    ))}
+                  </select>
+                </div>
+              ))}
+            </div>
+            <button
+              onClick={handleSubmitSeating}
+              disabled={!seatingComplete || submittingSeating}
+              style={{
+                padding: 'var(--space-3) var(--space-8)',
+                background: 'var(--color-primary)',
+                color: 'var(--color-text-inverse)',
+                border: 'none',
+                borderRadius: 'var(--radius-md)',
+                fontFamily: 'var(--font-body)',
+                fontSize: 'var(--text-sm)',
+                letterSpacing: '0.04em',
+                cursor: seatingComplete && !submittingSeating ? 'pointer' : 'not-allowed',
+                opacity: seatingComplete && !submittingSeating ? 1 : 0.5,
+              }}
+            >
+              {submittingSeating ? 'Calcul…' : 'Valider le plan de table'}
+            </button>
+          </div>
         )}
 
         {/* Ma vérité — un résumé par personnage joué, sur ce qu'il a choisi */}
@@ -581,8 +587,6 @@ export default function FinalPage() {
         }}>
           {lastLine(endingId ?? 'F1')}
         </p>
-        </>
-        )}
 
       </div>
     </main>

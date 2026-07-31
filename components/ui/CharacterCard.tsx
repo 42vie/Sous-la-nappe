@@ -92,10 +92,13 @@ interface CharacterCardProps {
   character: CharacterDef
   isSelected: boolean
   onClick: () => void
+  /** Remplace l'accroche statique — utilisé pour une accroche réactive à l'état de la partie (tension...) */
+  accrocheOverride?: string
 }
 
-export function CharacterCard({ character, isSelected, onClick }: CharacterCardProps) {
-  const { firstName, accroche, color, initial, silhouettePath } = character
+export function CharacterCard({ character, isSelected, onClick, accrocheOverride }: CharacterCardProps) {
+  const { firstName, accroche: baseAccroche, color, initial, silhouettePath } = character
+  const accroche = accrocheOverride ?? baseAccroche
 
   return (
     <button

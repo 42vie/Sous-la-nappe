@@ -285,7 +285,6 @@ export function SceneEngine({ runId, playerPov, initialSceneId, run }: SceneEngi
         <div style={{ marginBottom: 'var(--space-6)' }}>
           <SeatingPlan
             state={storeRun ?? run}
-            showHistory
             highlightSeat={scene?.id === 'scene_08_critical_service' ? 2 : undefined}
           />
         </div>

@@ -1,15 +1,55 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { CharacterCard, CHARACTERS } from '@/components/ui/CharacterCard'
+import { TOTAL_CHAPTERS, getChapterNumberForScene } from '@/lib/engine/chapters'
 import type { CharacterId } from '@/lib/types/characters'
+import type { RunState } from '@/lib/types/engine'
+
+const CHARACTER_NAMES: Record<CharacterId, string> = {
+  maelys: 'Maëlys', noe: 'Noé', ines: 'Inès', lucas: 'Lucas', sarah: 'Sarah', yanis: 'Yanis',
+}
+
+type ExistingRun = RunState & { id: string }
 
 export default function DashboardPage() {
   const router = useRouter()
   const [selected, setSelected] = useState<CharacterId | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+  const [existingRun, setExistingRun] = useState<ExistingRun | null>(null)
+  const [checkingExisting, setCheckingExisting] = useState(true)
+  const [confirmingReset, setConfirmingReset] = useState(false)
+  const [resetting, setResetting] = useState(false)
+
+  useEffect(() => {
+    fetch('/api/run/current')
+      .then(async (res) => {
+        if (!res.ok) return
+        const data = await res.json()
+        setExistingRun(data.run ?? null)
+      })
+      .catch(() => {})
+      .finally(() => setCheckingExisting(false))
+  }, [])
+
+  async function handleResetSave() {
+    if (!existingRun || resetting) return
+    setResetting(true)
+    setError(null)
+    try {
+      const res = await fetch(`/api/run/${existingRun.id}`, { method: 'DELETE' })
+      if (!res.ok) throw new Error('Impossible de supprimer la sauvegarde')
+      setExistingRun(null)
+      setConfirmingReset(false)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Erreur inconnue')
+    } finally {
+      setResetting(false)
+    }
+  }
 
   async function handleStart() {
     if (!selected || loading) return
@@ -93,7 +133,93 @@ export default function DashboardPage() {
         </p>
       </header>
 
-      {/* Grille de cartes */}
+      {/* Partie en cours — reprendre ou recommencer à zéro */}
+      {existingRun && (
+        <div style={{
+          width: '100%', maxWidth: 'var(--content-narrow)',
+          padding: 'var(--space-6)',
+          marginBottom: 'var(--space-10)',
+          background: 'var(--color-surface)',
+          border: '1px solid var(--color-divider)',
+          borderRadius: 'var(--radius-lg)',
+        }}>
+          <p style={{
+            fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', color: 'var(--color-text-faint)',
+            textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 'var(--space-3)',
+          }}>
+            Une soirée est déjà en cours
+          </p>
+          <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)', color: 'var(--color-text-muted)', marginBottom: 'var(--space-5)', lineHeight: 1.6 }}>
+            Chapitre {getChapterNumberForScene(existingRun.currentScene) ?? 1} / {TOTAL_CHAPTERS} · vous incarniez {CHARACTER_NAMES[existingRun.playerPov]}.
+            {(existingRun.povHistory?.length ?? 0) > 1 && ` Déjà incarné : ${existingRun.povHistory.map((c) => CHARACTER_NAMES[c]).join(', ')}.`}
+          </p>
+
+          {!confirmingReset ? (
+            <div style={{ display: 'flex', gap: 'var(--space-3)', flexWrap: 'wrap' }}>
+              <button
+                onClick={() => router.push(`/run/${existingRun.id}`)}
+                style={{
+                  padding: 'var(--space-3) var(--space-6)', background: 'var(--color-primary)',
+                  color: 'var(--color-text-inverse)', border: 'none', borderRadius: 'var(--radius-md)',
+                  fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)', letterSpacing: '0.04em', cursor: 'pointer',
+                }}
+              >
+                Reprendre la partie
+              </button>
+              <button
+                onClick={() => setConfirmingReset(true)}
+                style={{
+                  padding: 'var(--space-3) var(--space-6)', background: 'transparent',
+                  color: 'var(--color-text-faint)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-md)',
+                  fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)', letterSpacing: '0.04em', cursor: 'pointer',
+                }}
+              >
+                Recommencer à zéro
+              </button>
+            </div>
+          ) : (
+            <div>
+              <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', color: 'var(--color-error)', marginBottom: 'var(--space-4)' }}>
+                Cette action efface définitivement la progression actuelle. Confirmer ?
+              </p>
+              <div style={{ display: 'flex', gap: 'var(--space-3)' }}>
+                <button
+                  onClick={handleResetSave}
+                  disabled={resetting}
+                  style={{
+                    padding: 'var(--space-3) var(--space-6)', background: 'var(--color-error, #a01f1f)',
+                    color: '#fff', border: 'none', borderRadius: 'var(--radius-md)',
+                    fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)', letterSpacing: '0.04em',
+                    cursor: resetting ? 'wait' : 'pointer', opacity: resetting ? 0.7 : 1,
+                  }}
+                >
+                  {resetting ? 'Suppression…' : 'Oui, tout effacer'}
+                </button>
+                <button
+                  onClick={() => setConfirmingReset(false)}
+                  disabled={resetting}
+                  style={{
+                    padding: 'var(--space-3) var(--space-6)', background: 'transparent',
+                    color: 'var(--color-text-muted)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-md)',
+                    fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)', letterSpacing: '0.04em', cursor: 'pointer',
+                  }}
+                >
+                  Annuler
+                </button>
+              </div>
+            </div>
+          )}
+          {error && (
+            <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', color: 'var(--color-error)', marginTop: 'var(--space-4)' }}>
+              {error}
+            </p>
+          )}
+        </div>
+      )}
+
+      {/* Grille de cartes — nouvelle partie, visible si pas de sauvegarde en cours */}
+      {!existingRun && !checkingExisting && (
+      <>
       <div
         style={{
           width: '100%',
@@ -187,6 +313,8 @@ export default function DashboardPage() {
           {loading ? 'Chargement…' : 'Jouer ce rôle →'}
         </button>
       </div>
+      </>
+      )}
     </main>
   )
 }
