@@ -3,9 +3,11 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { CharacterCard, CHARACTERS } from '@/components/ui/CharacterCard'
+import { DeducedSeatingPlan } from '@/components/ui/DeducedSeatingPlan'
 import { TOTAL_CHAPTERS, getChapterNumberForScene } from '@/lib/engine/chapters'
-import { getCharacterAction } from '@/lib/engine/characterActions'
-import { getManuscriptStatus } from '@/lib/engine/manuscript'
+import { getCharacterAction, formatCharacterAction } from '@/lib/engine/characterActions'
+import { getManuscriptStatus, getEmptyManuscriptStatus } from '@/lib/engine/manuscript'
+import { getDeducedSeating } from '@/lib/engine/deducedSeating'
 import type { CharacterId } from '@/lib/types/characters'
 import type { RunState } from '@/lib/types/engine'
 
@@ -15,11 +17,40 @@ const CHARACTER_NAMES: Record<CharacterId, string> = {
 
 type ExistingRun = RunState & { id: string }
 
+function ManuscriptCarnet({ manuscript }: { manuscript: ReturnType<typeof getEmptyManuscriptStatus> }) {
+  const complete = manuscript.filter((e) => e.status === 'complete').length
+  return (
+    <div>
+      <p style={{
+        fontFamily: 'var(--font-body)', fontSize: '10px', color: 'var(--color-text-faint)',
+        textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 'var(--space-3)',
+      }}>
+        Le carnet — {complete} / {manuscript.length} vérités établies
+      </p>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
+        {manuscript.map((e) => (
+          <p key={e.id} style={{
+            fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)',
+            color: e.status === 'complete' ? 'var(--color-text-muted)' : 'var(--color-text-faint)',
+            fontStyle: e.status === 'complete' ? 'normal' : 'italic',
+            lineHeight: 1.5,
+            filter: e.status === 'locked' ? 'blur(3px)' : 'none',
+            userSelect: e.status === 'locked' ? 'none' : 'auto',
+          }}>
+            {e.status === 'complete' ? '✓ ' : e.status === 'partial' ? '· ' : '— '}{e.text}
+          </p>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 export default function DashboardPage() {
   const router = useRouter()
   const [selected, setSelected] = useState<CharacterId | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [showCharacterSelect, setShowCharacterSelect] = useState(false)
 
   const [existingRun, setExistingRun] = useState<ExistingRun | null>(null)
   const [checkingExisting, setCheckingExisting] = useState(true)
@@ -77,6 +108,8 @@ export default function DashboardPage() {
   }
 
   const selectedChar = CHARACTERS.find((c) => c.id === selected)
+  const manuscript = existingRun ? getManuscriptStatus(existingRun) : getEmptyManuscriptStatus()
+  const deducedSeats = getDeducedSeating(existingRun)
 
   return (
     <main
@@ -94,7 +127,7 @@ export default function DashboardPage() {
           width: '100%',
           maxWidth: 'var(--content-wide)',
           textAlign: 'center',
-          marginBottom: 'var(--space-12)',
+          marginBottom: 'var(--space-10)',
         }}
       >
         <p
@@ -119,7 +152,7 @@ export default function DashboardPage() {
             marginBottom: 'var(--space-4)',
           }}
         >
-          Qui étiez-vous ce soir-là ?
+          Ce que vous savez de cette soirée
         </h1>
         <p
           style={{
@@ -131,219 +164,241 @@ export default function DashboardPage() {
             lineHeight: 1.7,
           }}
         >
-          Choisissez votre point de vue. Chaque personnage a vu la soirée différemment.
+          {existingRun
+            ? 'Le carnet et le plan de table se complètent au fil de la partie.'
+            : 'Rien n’est encore écrit. Choisissez un point de vue pour commencer.'}
         </p>
       </header>
 
-      {/* Partie en cours — reprendre ou recommencer à zéro */}
-      {existingRun && (
-        <div style={{
-          width: '100%', maxWidth: 'var(--content-narrow)',
-          padding: 'var(--space-6)',
-          marginBottom: 'var(--space-10)',
-          background: 'var(--color-surface)',
-          border: '1px solid var(--color-divider)',
-          borderRadius: 'var(--radius-lg)',
-        }}>
-          <p style={{
-            fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', color: 'var(--color-text-faint)',
-            textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 'var(--space-3)',
+      {!checkingExisting && (
+        <>
+          {/* ── Accueil : carnet + plan de table déduit, avant tout choix ── */}
+          <div style={{
+            width: '100%', maxWidth: 'var(--content-narrow)',
+            padding: 'var(--space-6)',
+            marginBottom: 'var(--space-8)',
+            background: 'var(--color-surface)',
+            border: '1px solid var(--color-divider)',
+            borderRadius: 'var(--radius-lg)',
+            display: 'flex', flexDirection: 'column', gap: 'var(--space-6)',
           }}>
-            Une soirée est déjà en cours
-          </p>
-          <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)', color: 'var(--color-text-muted)', marginBottom: 'var(--space-5)', lineHeight: 1.6 }}>
-            Chapitre {getChapterNumberForScene(existingRun.currentScene) ?? 1} / {TOTAL_CHAPTERS} · vous incarniez {CHARACTER_NAMES[existingRun.playerPov]}.
-            {(existingRun.povHistory?.length ?? 0) > 1 && ` Déjà incarné : ${existingRun.povHistory.map((c) => CHARACTER_NAMES[c]).join(', ')}.`}
-          </p>
+            <ManuscriptCarnet manuscript={manuscript} />
+            <div style={{ paddingTop: 'var(--space-5)', borderTop: '1px solid var(--color-divider)' }}>
+              <p style={{
+                fontFamily: 'var(--font-body)', fontSize: '10px', color: 'var(--color-text-faint)',
+                textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 'var(--space-3)',
+              }}>
+                Plan de table reconstitué
+              </p>
+              <DeducedSeatingPlan seats={deducedSeats} />
+            </div>
+          </div>
 
-          {/* Le carnet — ce qui est déjà établi dans cette partie */}
-          {(() => {
-            const manuscript = getManuscriptStatus(existingRun)
-            if (manuscript.length === 0) return null
-            const complete = manuscript.filter((e) => e.status === 'complete').length
-            return (
-              <div style={{ marginBottom: 'var(--space-5)', paddingBottom: 'var(--space-5)', borderBottom: '1px solid var(--color-divider)' }}>
-                <p style={{ fontFamily: 'var(--font-body)', fontSize: '10px', color: 'var(--color-text-faint)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 'var(--space-3)' }}>
-                  Le carnet — {complete} / {manuscript.length} vérités établies
-                </p>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
-                  {manuscript.map((e) => (
-                    <p key={e.id} style={{
-                      fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)',
-                      color: e.status === 'complete' ? 'var(--color-text-muted)' : 'var(--color-text-faint)',
-                      opacity: e.status === 'locked' ? 0.5 : 1,
-                      fontStyle: e.status === 'complete' ? 'normal' : 'italic',
-                      lineHeight: 1.5,
-                    }}>
-                      {e.status === 'complete' ? '✓ ' : e.status === 'partial' ? '· ' : '— '}{e.text}
-                    </p>
-                  ))}
+          {/* ── Partie en cours — reprendre ou recommencer à zéro ── */}
+          {existingRun && (
+            <div style={{
+              width: '100%', maxWidth: 'var(--content-narrow)',
+              padding: 'var(--space-6)',
+              marginBottom: 'var(--space-10)',
+              background: 'var(--color-surface)',
+              border: '1px solid var(--color-divider)',
+              borderRadius: 'var(--radius-lg)',
+            }}>
+              <p style={{
+                fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', color: 'var(--color-text-faint)',
+                textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 'var(--space-3)',
+              }}>
+                Une soirée est déjà en cours
+              </p>
+              <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)', color: 'var(--color-text-muted)', marginBottom: 'var(--space-5)', lineHeight: 1.6 }}>
+                Chapitre {getChapterNumberForScene(existingRun.currentScene) ?? 1} / {TOTAL_CHAPTERS} · vous incarniez {CHARACTER_NAMES[existingRun.playerPov]}.
+                {(existingRun.povHistory?.length ?? 0) > 1 && ` Déjà incarné : ${existingRun.povHistory.map((c) => CHARACTER_NAMES[c]).join(', ')}.`}
+              </p>
+
+              {!confirmingReset ? (
+                <div style={{ display: 'flex', gap: 'var(--space-3)', flexWrap: 'wrap' }}>
+                  <button
+                    onClick={() => router.push(`/run/${existingRun.id}`)}
+                    style={{
+                      padding: 'var(--space-3) var(--space-6)', background: 'var(--color-primary)',
+                      color: 'var(--color-text-inverse)', border: 'none', borderRadius: 'var(--radius-md)',
+                      fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)', letterSpacing: '0.04em', cursor: 'pointer',
+                    }}
+                  >
+                    Reprendre la partie
+                  </button>
+                  <button
+                    onClick={() => setConfirmingReset(true)}
+                    style={{
+                      padding: 'var(--space-3) var(--space-6)', background: 'transparent',
+                      color: 'var(--color-text-faint)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-md)',
+                      fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)', letterSpacing: '0.04em', cursor: 'pointer',
+                    }}
+                  >
+                    Recommencer à zéro
+                  </button>
                 </div>
-              </div>
-            )
-          })()}
-
-          {!confirmingReset ? (
-            <div style={{ display: 'flex', gap: 'var(--space-3)', flexWrap: 'wrap' }}>
-              <button
-                onClick={() => router.push(`/run/${existingRun.id}`)}
-                style={{
-                  padding: 'var(--space-3) var(--space-6)', background: 'var(--color-primary)',
-                  color: 'var(--color-text-inverse)', border: 'none', borderRadius: 'var(--radius-md)',
-                  fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)', letterSpacing: '0.04em', cursor: 'pointer',
-                }}
-              >
-                Reprendre la partie
-              </button>
-              <button
-                onClick={() => setConfirmingReset(true)}
-                style={{
-                  padding: 'var(--space-3) var(--space-6)', background: 'transparent',
-                  color: 'var(--color-text-faint)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-md)',
-                  fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)', letterSpacing: '0.04em', cursor: 'pointer',
-                }}
-              >
-                Recommencer à zéro
-              </button>
-            </div>
-          ) : (
-            <div>
-              <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', color: 'var(--color-error)', marginBottom: 'var(--space-4)' }}>
-                Cette action efface définitivement la progression actuelle. Confirmer ?
-              </p>
-              <div style={{ display: 'flex', gap: 'var(--space-3)' }}>
-                <button
-                  onClick={handleResetSave}
-                  disabled={resetting}
-                  style={{
-                    padding: 'var(--space-3) var(--space-6)', background: 'var(--color-error, #a01f1f)',
-                    color: '#fff', border: 'none', borderRadius: 'var(--radius-md)',
-                    fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)', letterSpacing: '0.04em',
-                    cursor: resetting ? 'wait' : 'pointer', opacity: resetting ? 0.7 : 1,
-                  }}
-                >
-                  {resetting ? 'Suppression…' : 'Oui, tout effacer'}
-                </button>
-                <button
-                  onClick={() => setConfirmingReset(false)}
-                  disabled={resetting}
-                  style={{
-                    padding: 'var(--space-3) var(--space-6)', background: 'transparent',
-                    color: 'var(--color-text-muted)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-md)',
-                    fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)', letterSpacing: '0.04em', cursor: 'pointer',
-                  }}
-                >
-                  Annuler
-                </button>
-              </div>
+              ) : (
+                <div>
+                  <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', color: 'var(--color-error)', marginBottom: 'var(--space-4)' }}>
+                    Cette action efface définitivement la progression actuelle. Confirmer ?
+                  </p>
+                  <div style={{ display: 'flex', gap: 'var(--space-3)' }}>
+                    <button
+                      onClick={handleResetSave}
+                      disabled={resetting}
+                      style={{
+                        padding: 'var(--space-3) var(--space-6)', background: 'var(--color-error, #a01f1f)',
+                        color: '#fff', border: 'none', borderRadius: 'var(--radius-md)',
+                        fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)', letterSpacing: '0.04em',
+                        cursor: resetting ? 'wait' : 'pointer', opacity: resetting ? 0.7 : 1,
+                      }}
+                    >
+                      {resetting ? 'Suppression…' : 'Oui, tout effacer'}
+                    </button>
+                    <button
+                      onClick={() => setConfirmingReset(false)}
+                      disabled={resetting}
+                      style={{
+                        padding: 'var(--space-3) var(--space-6)', background: 'transparent',
+                        color: 'var(--color-text-muted)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-md)',
+                        fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)', letterSpacing: '0.04em', cursor: 'pointer',
+                      }}
+                    >
+                      Annuler
+                    </button>
+                  </div>
+                </div>
+              )}
+              {error && (
+                <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', color: 'var(--color-error)', marginTop: 'var(--space-4)' }}>
+                  {error}
+                </p>
+              )}
             </div>
           )}
-          {error && (
-            <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', color: 'var(--color-error)', marginTop: 'var(--space-4)' }}>
-              {error}
-            </p>
-          )}
-        </div>
-      )}
 
-      {/* Grille de cartes — nouvelle partie, visible si pas de sauvegarde en cours */}
-      {!existingRun && !checkingExisting && (
-      <>
-      <div
-        style={{
-          width: '100%',
-          maxWidth: 'var(--content-wide)',
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(min(200px, 100%), 1fr))',
-          gap: 'var(--space-4)',
-          marginBottom: 'var(--space-12)',
-        }}
-      >
-        {CHARACTERS.map((c) => (
-          <CharacterCard
-            key={c.id}
-            character={c}
-            isSelected={selected === c.id}
-            onClick={() => setSelected((prev) => (prev === c.id ? null : c.id))}
-            accrocheOverride={getCharacterAction(c.id, 1, 0)}
-          />
-        ))}
-      </div>
-
-      {/* Bandeau bas fixe — apparaît quand un perso est sélectionné */}
-      <div
-        style={{
-          position: 'fixed',
-          bottom: 0,
-          left: 0,
-          right: 0,
-          padding: 'var(--space-4) var(--space-8)',
-          background: 'var(--color-surface)',
-          borderTop: '1px solid var(--color-divider)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          gap: 'var(--space-4)',
-          transform: selected ? 'translateY(0)' : 'translateY(100%)',
-          transition: 'transform 240ms cubic-bezier(0.16, 1, 0.3, 1)',
-          zIndex: 10,
-          boxShadow: 'var(--shadow-lg)',
-        }}
-      >
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-1)' }}>
-          {selectedChar && (
-            <>
-              <p
-                style={{
-                  fontFamily: 'var(--font-display)',
-                  fontSize: 'var(--text-lg)',
-                  color: selectedChar.color,
-                  fontStyle: 'italic',
-                  lineHeight: 1,
-                }}
-              >
-                {selectedChar.firstName}
-              </p>
-              <p
-                style={{
-                  fontFamily: 'var(--font-body)',
-                  fontSize: 'var(--text-xs)',
-                  color: 'var(--color-text-faint)',
-                }}
-              >
-                {getCharacterAction(selectedChar.id, 1, 0)}
-              </p>
-            </>
+          {/* ── Pas de partie en cours : CTA pour révéler la sélection de personnage ── */}
+          {!existingRun && !showCharacterSelect && (
+            <button
+              onClick={() => setShowCharacterSelect(true)}
+              style={{
+                padding: 'var(--space-3) var(--space-8)',
+                background: 'var(--color-primary)',
+                color: 'var(--color-text-inverse)',
+                border: 'none',
+                borderRadius: 'var(--radius-md)',
+                fontFamily: 'var(--font-body)',
+                fontSize: 'var(--text-sm)',
+                letterSpacing: '0.04em',
+                cursor: 'pointer',
+                marginBottom: 'var(--space-12)',
+              }}
+            >
+              Commencer une nouvelle soirée →
+            </button>
           )}
-          {error && (
-            <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', color: 'var(--color-error)' }}>
-              {error}
-            </p>
-          )}
-        </div>
 
-        <button
-          onClick={handleStart}
-          disabled={loading || !selected}
-          style={{
-            flexShrink: 0,
-            padding: 'var(--space-3) var(--space-8)',
-            background: selectedChar ? selectedChar.color : 'var(--color-primary)',
-            color: '#fff',
-            border: 'none',
-            borderRadius: 'var(--radius-md)',
-            fontFamily: 'var(--font-body)',
-            fontSize: 'var(--text-sm)',
-            letterSpacing: '0.04em',
-            cursor: loading ? 'wait' : 'pointer',
-            opacity: loading ? 0.7 : 1,
-            transition: 'all var(--transition)',
-          }}
-        >
-          {loading ? 'Chargement…' : 'Jouer ce rôle →'}
-        </button>
-      </div>
-      </>
+          {/* ── Grille de cartes — sélection de personnage ── */}
+          {!existingRun && showCharacterSelect && (
+          <>
+          <div
+            style={{
+              width: '100%',
+              maxWidth: 'var(--content-wide)',
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(min(200px, 100%), 1fr))',
+              gap: 'var(--space-4)',
+              marginBottom: 'var(--space-12)',
+            }}
+          >
+            {CHARACTERS.map((c) => (
+              <CharacterCard
+                key={c.id}
+                character={c}
+                isSelected={selected === c.id}
+                onClick={() => setSelected((prev) => (prev === c.id ? null : c.id))}
+                accrocheOverride={formatCharacterAction(getCharacterAction(c.id, 1, 0))}
+              />
+            ))}
+          </div>
+
+          {/* Bandeau bas fixe — apparaît quand un perso est sélectionné */}
+          <div
+            style={{
+              position: 'fixed',
+              bottom: 0,
+              left: 0,
+              right: 0,
+              padding: 'var(--space-4) var(--space-8)',
+              background: 'var(--color-surface)',
+              borderTop: '1px solid var(--color-divider)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: 'var(--space-4)',
+              transform: selected ? 'translateY(0)' : 'translateY(100%)',
+              transition: 'transform 240ms cubic-bezier(0.16, 1, 0.3, 1)',
+              zIndex: 10,
+              boxShadow: 'var(--shadow-lg)',
+            }}
+          >
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-1)' }}>
+              {selectedChar && (
+                <>
+                  <p
+                    style={{
+                      fontFamily: 'var(--font-display)',
+                      fontSize: 'var(--text-lg)',
+                      color: selectedChar.color,
+                      fontStyle: 'italic',
+                      lineHeight: 1,
+                    }}
+                  >
+                    {selectedChar.firstName}
+                  </p>
+                  <p
+                    style={{
+                      fontFamily: 'var(--font-body)',
+                      fontSize: 'var(--text-xs)',
+                      color: 'var(--color-text-faint)',
+                    }}
+                  >
+                    {formatCharacterAction(getCharacterAction(selectedChar.id, 1, 0))}
+                  </p>
+                </>
+              )}
+              {error && (
+                <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', color: 'var(--color-error)' }}>
+                  {error}
+                </p>
+              )}
+            </div>
+
+            <button
+              onClick={handleStart}
+              disabled={loading || !selected}
+              style={{
+                flexShrink: 0,
+                padding: 'var(--space-3) var(--space-8)',
+                background: selectedChar ? selectedChar.color : 'var(--color-primary)',
+                color: '#fff',
+                border: 'none',
+                borderRadius: 'var(--radius-md)',
+                fontFamily: 'var(--font-body)',
+                fontSize: 'var(--text-sm)',
+                letterSpacing: '0.04em',
+                cursor: loading ? 'wait' : 'pointer',
+                opacity: loading ? 0.7 : 1,
+                transition: 'all var(--transition)',
+              }}
+            >
+              {loading ? 'Chargement…' : 'Jouer ce rôle →'}
+            </button>
+          </div>
+          </>
+          )}
+        </>
       )}
     </main>
   )

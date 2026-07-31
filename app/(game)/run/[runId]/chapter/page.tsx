@@ -6,7 +6,7 @@ import { CharacterCard, CHARACTERS } from '@/components/ui/CharacterCard'
 import { useRunStore } from '@/store/runStore'
 import { CHAPTERS, TOTAL_CHAPTERS } from '@/lib/engine/chapters'
 import { BLIND_SPOTS } from '@/lib/engine/blindSpots'
-import { getCharacterAction } from '@/lib/engine/characterActions'
+import { getCharacterAction, formatCharacterAction } from '@/lib/engine/characterActions'
 import { getManuscriptStatus } from '@/lib/engine/manuscript'
 import type { CharacterId } from '@/lib/types/characters'
 import type { RunState } from '@/lib/types/engine'
@@ -183,7 +183,8 @@ export default function ChapterSelectPage() {
                 <p key={e.id} style={{
                   fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)',
                   color: e.status === 'complete' ? 'var(--color-text-muted)' : 'var(--color-text-faint)',
-                  opacity: e.status === 'locked' ? 0.5 : 1,
+                  filter: e.status === 'locked' ? 'blur(3px)' : 'none',
+                  userSelect: e.status === 'locked' ? 'none' : 'auto',
                   fontStyle: e.status === 'complete' ? 'normal' : 'italic',
                   lineHeight: 1.5,
                 }}>
@@ -234,7 +235,7 @@ export default function ChapterSelectPage() {
             character={c}
             isSelected={selected === c.id}
             onClick={() => setSelected((prev) => (prev === c.id ? null : c.id))}
-            accrocheOverride={getCharacterAction(c.id, nextChapterNumber, tension)}
+            accrocheOverride={formatCharacterAction(getCharacterAction(c.id, nextChapterNumber, tension))}
           />
         ))}
       </div>

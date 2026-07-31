@@ -95,6 +95,11 @@ export interface ManuscriptEntryStatus {
   progress: number // 0–1
 }
 
+/** Version "aucune partie en cours" — tout est verrouillé, pour l'accueil avant la première partie */
+export function getEmptyManuscriptStatus(): ManuscriptEntryStatus[] {
+  return ENTRIES.map((entry) => ({ id: entry.id, text: entry.teaser, status: 'locked' as const, progress: 0 }))
+}
+
 export function getManuscriptStatus(state: RunState): ManuscriptEntryStatus[] {
   const discovered = new Set(state.discoveredClues.map((dc) => dc.clueId))
 

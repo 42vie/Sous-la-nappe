@@ -16,6 +16,8 @@ import type { CharacterId } from '@/lib/types/characters'
 
 interface ToneItem {
   speaker: CharacterId
+  time: string
+  room: string
   line: string
   options: string[]
   correctIndex: number
@@ -24,6 +26,7 @@ interface ToneItem {
 const MOMENTS: Record<string, ToneItem> = {
   noe_depasses: {
     speaker: 'noe',
+    time: '20h18', room: 'Salon',
     line: '« On a tous été un peu dépassés. »',
     options: [
       'Une observation neutre sur la soirée',
@@ -34,6 +37,7 @@ const MOMENTS: Record<string, ToneItem> = {
   },
   maelys_tu_as_raison: {
     speaker: 'maelys',
+    time: '20h20', room: 'Salon',
     line: '« Tu as raison. » — en réponse à Inès, sur la maison',
     options: [
       'Elle est vraiment d’accord, soulagée',
@@ -44,6 +48,7 @@ const MOMENTS: Record<string, ToneItem> = {
   },
   yanis_rire_seul: {
     speaker: 'yanis',
+    time: '20h19', room: 'Salon',
     line: 'Il rit, seul, à sa propre blague sur « un dîner ou une réunion »',
     options: [
       'Il détend vraiment l’ambiance',
@@ -54,6 +59,7 @@ const MOMENTS: Record<string, ToneItem> = {
   },
   sarah_sourire_couteux: {
     speaker: 'sarah',
+    time: '20h14', room: 'Entrée',
     line: 'Elle arrive la dernière, avec un sourire qui lui coûte quelque chose.',
     options: [
       'Elle est simplement fatiguée',
@@ -64,6 +70,7 @@ const MOMENTS: Record<string, ToneItem> = {
   },
   maelys_remercie: {
     speaker: 'maelys',
+    time: '20h17', room: 'Salon',
     line: 'Face à une pique d’Inès sur la vente, elle remercie plutôt que de répondre.',
     options: [
       'Elle apprécie sincèrement la remarque',
@@ -74,6 +81,7 @@ const MOMENTS: Record<string, ToneItem> = {
   },
   ines_chiffres: {
     speaker: 'ines',
+    time: '20h16', room: 'Salon',
     line: '« La maison a toujours été à son nom, ce n’est pas une opinion. » — chiffres à l’appui',
     options: [
       'Elle énonce un fait, sans arrière-pensée',
@@ -84,6 +92,7 @@ const MOMENTS: Record<string, ToneItem> = {
   },
   maelys_ferme_visage: {
     speaker: 'maelys',
+    time: '20h18', room: 'Salon',
     line: 'Après la phrase de Noé, quelque chose se ferme, une seconde, dans son visage.',
     options: [
       'Elle est simplement fatiguée par la soirée',
@@ -94,6 +103,7 @@ const MOMENTS: Record<string, ToneItem> = {
   },
   yanis_sert_large: {
     speaker: 'yanis',
+    time: '20h13', room: 'Salon',
     line: 'Il ouvre une deuxième bouteille et sert large, dès les premiers échanges.',
     options: [
       'Il est simplement généreux, comme toujours',
@@ -104,6 +114,7 @@ const MOMENTS: Record<string, ToneItem> = {
   },
   lucas_regard_sarah: {
     speaker: 'lucas',
+    time: '20h15', room: 'Salon',
     line: 'Il ne quitte pas Sarah des yeux depuis qu’elle est arrivée.',
     options: [
       'Il apprécie simplement sa compagnie',
@@ -185,6 +196,12 @@ export function ToneMinigame({ playerPov, onComplete }: ToneMinigameProps) {
       <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-5)', marginBottom: 'var(--space-6)' }}>
         {ITEMS.map((item, i) => (
           <div key={i}>
+            <p style={{
+              fontFamily: 'var(--font-body)', fontSize: '10px', color: 'var(--color-text-faint)',
+              textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 'var(--space-1)',
+            }}>
+              {item.time} · {item.room}
+            </p>
             <p style={{
               fontFamily: 'var(--font-display)', fontStyle: 'italic', fontSize: 'var(--text-sm)',
               color: 'var(--color-text)', marginBottom: 'var(--space-3)',
