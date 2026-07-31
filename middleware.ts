@@ -22,10 +22,10 @@ export function middleware(req: NextRequest) {
     return NextResponse.redirect(url)
   }
 
-  // Page de login avec session active → accueil
+  // Page de login avec session active → dashboard
   if (isAuthRoute && session) {
     const url = req.nextUrl.clone()
-    url.pathname = '/'
+    url.pathname = '/dashboard'
     return NextResponse.redirect(url)
   }
 

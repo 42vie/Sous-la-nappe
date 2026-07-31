@@ -117,7 +117,7 @@ export default function LandingPage() {
 
         {/* CTA */}
         <Link
-          href="/login"
+          href="/login?next=/dashboard"
           style={{
             display: 'inline-block',
             padding: 'var(--space-4) var(--space-12)',

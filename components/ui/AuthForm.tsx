@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useRef, type FormEvent } from 'react'
-import { useRouter } from 'next/navigation'
 import { signIn, signUp, resetPassword } from '@/lib/firebase/auth'
 import { getIdToken } from 'firebase/auth'
 import { auth } from '@/lib/firebase/client'
@@ -41,7 +40,6 @@ async function createSession(): Promise<void> {
 }
 
 export function AuthForm() {
-  const router = useRouter()
   const [mode, setMode] = useState<Mode>('login')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -77,10 +75,12 @@ export function AuthForm() {
       // Créer le cookie de session côté serveur (pour le middleware)
       await createSession()
 
-      // Rediriger vers la page demandée ou l'accueil
+      // Rediriger vers la page demandée ou le dashboard.
+      // Navigation complète (pas router.push) : le cache client du routeur
+      // peut sinon réafficher la landing page mise en cache avant la connexion.
       const params = new URLSearchParams(window.location.search)
-      const next = params.get('next') ?? '/'
-      router.push(next)
+      const next = params.get('next') ?? '/dashboard'
+      window.location.href = next
     } catch (err: unknown) {
       const code = (err as { code?: string }).code ?? ''
       setError(friendlyError(code))

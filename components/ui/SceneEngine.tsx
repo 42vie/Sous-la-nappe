@@ -35,6 +35,12 @@ interface SceneEngineProps {
 
 type Phase = 'loading' | 'narrative' | 'choices' | 'minigame' | 'transition' | 'done'
 
+// Mini-jeux effectivement implémentés en UI. Les autres (tone_puzzle,
+// dosage_order, audio_reconstruction — voir README Sprint 5 / AU-03) n'ont
+// pas encore de composant : on ne bloque pas la scène dessus, la narration
+// et les choix s'affichent normalement à la place.
+const IMPLEMENTED_MINIGAMES = ['tictactoe_hidden']
+
 export function SceneEngine({ runId, playerPov, initialSceneId, run }: SceneEngineProps) {
   const router = useRouter()
   const { advance, loadCurrentScene, setFlag, run: storeRun } = useRunStore()
@@ -62,7 +68,9 @@ export function SceneEngine({ runId, playerPov, initialSceneId, run }: SceneEngi
       const data = await res.json()
       setScene(data.scene)
       setChoices(data.choices)
-      setPhase(data.scene.minigameId ? 'minigame' : 'narrative')
+      const hasMinigame = Boolean(data.scene.minigameId) && IMPLEMENTED_MINIGAMES.includes(data.scene.minigameId)
+      setActiveMinigame(hasMinigame ? data.scene.minigameId : null)
+      setPhase(hasMinigame ? 'minigame' : 'narrative')
       // Appliquer les effets d'entrée de scène en local
       if (data.onEnterUpdates && Object.keys(data.onEnterUpdates).length > 0) {
         useRunStore.getState().updateRunLocal(data.onEnterUpdates)
@@ -96,7 +104,7 @@ export function SceneEngine({ runId, playerPov, initialSceneId, run }: SceneEngi
       return
     }
 
-    if (result.minigameToLaunch) {
+    if (result.minigameToLaunch && IMPLEMENTED_MINIGAMES.includes(result.minigameToLaunch)) {
       setActiveMinigame(result.minigameToLaunch)
       setPhase('minigame')
       return

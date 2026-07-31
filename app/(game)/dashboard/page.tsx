@@ -23,7 +23,7 @@ export default function DashboardPage() {
       })
       if (!res.ok) {
         const data = await res.json()
-        if (res.status === 401) { router.push('/login'); return }
+        if (res.status === 401) { router.push('/login?next=/dashboard'); return }
         throw new Error(data.error ?? 'Erreur serveur')
       }
       const { runId } = await res.json()

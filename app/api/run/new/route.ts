@@ -4,6 +4,10 @@ import { adminDb, adminAuth } from '@/lib/firebase/admin'
 import { COLLECTIONS } from '@/types/firebase'
 import { INITIAL_CHARACTER_STATE } from '@/lib/types/characters'
 import type { CharacterId } from '@/lib/types/characters'
+import { BASE_SEATING } from '@/lib/types/house'
+import { resolveHostIntent, resolveSeatingVariant } from '@/lib/engine/deviation'
+import { initBackgroundFlags } from '@/lib/engine/flags'
+import type { RunState } from '@/types'
 
 export async function POST(req: NextRequest) {
   try {
@@ -31,43 +35,66 @@ export async function POST(req: NextRequest) {
     const runRef = adminDb.collection(COLLECTIONS.runs).doc()
     const now = Date.now()
 
-    await runRef.set({
-      id: runRef.id,
-      playerId: uid,
-      playerCharacter: character,
-      currentScene: 1,
-      discoveredClues: [],
-      flags: {
-        // Flags de fond (chapitre 3) activés dès le début
-        groupe_mythe_actif: true,
-        lucas_role_confident: true,
-        ines_admiration_maelys: true,
-        maison_titre_noe_seul: true,
-        maelys_preuves_financieres: true,
-        maelys_investissement_invisible: true,
-        lucas_savait_dettes: true,
-        ines_intrusion_telephone: true,
-        ines_participation_vente: true,
-        noe_dettes_dissimulees: true,
-        maelys_invalidation_publique: true,
-        sarah_episode_hiver: true,
-        noe_sarah_messages_nuit: true,
-        maelys_soin_sarah: true,
-        maelys_a_vu_captures: true,
-        maelys_a_vu_messages: true,
-        lucas_detient_vocal: true,
-        sarah_silence_coupable: true,
-        noe_promesses_non_tenues: true,
-        vente_engagee: true,
-        yanis_version_edulcoree: true,
-        invitation_faux_pretexte: true,
-      },
-      sceneChoices: {},
-      characterState: INITIAL_CHARACTER_STATE,
-      isComplete: false,
+    const seatingHistory = {
+      seating_planned: BASE_SEATING,
+      seating_before_main: BASE_SEATING,
+      seating_at_critical: BASE_SEATING,
+      seating_after_incident: BASE_SEATING,
+    }
+
+    const run: RunState = {
+      runId: runRef.id,
       createdAt: now,
-      updatedAt: now,
-    })
+      playerPov: character,
+      canon: {
+        maelysOrganizedWithFalsePretext: true,
+        intentExistedBeforeFirstGuest: true,
+        vectorPreparedInAdvance: true,
+        plannedTargetIsNotSarah: true,
+        maelysLostControlAtService: true,
+        witnessStayedSilentWithinHour: true,
+        sarahAffectedInAllBranches: true,
+        collectiveNarrativeBuilt: true,
+        noPovHasCompleteView: true,
+      },
+      variable: {
+        hostIntent: resolveHostIntent(
+          INITIAL_CHARACTER_STATE.maelysControle,
+          INITIAL_CHARACTER_STATE.maelysColere
+        ),
+        targetPlanned: 'noe',
+        targetActual: [],
+        poisonVector: 'sauce',
+        serviceHelper: 'maelys',
+        witnessOfCriticalMove: null,
+        accompliceType: 'none',
+        seatingVariant: resolveSeatingVariant(0, INITIAL_CHARACTER_STATE.yanisJeuSocial),
+        seatingHistory,
+        deaths: [],
+        survivors: [],
+        survivingNarrative: 'truth_complete',
+        characterState: INITIAL_CHARACTER_STATE,
+        socialTension: 0,
+        memoryDistortion: 0,
+      },
+      subjective: {
+        believedTargetPlanned: null,
+        believedTargetActual: null,
+        believedNarrative: 'truth_complete',
+        ownRoleBelieved: '',
+        openingMemoryError: '',
+      },
+      currentScene: 'scene_01_opening_memory',
+      visitedScenes: [],
+      completedScenes: [],
+      sceneHistory: [],
+      // Flags de fond (chapitre 3) activés dès le début
+      flags: initBackgroundFlags(),
+      discoveredClues: [],
+      isComplete: false,
+    }
+
+    await runRef.set({ ...run, playerId: uid, updatedAt: now })
 
     return NextResponse.json({ runId: runRef.id })
   } catch (err) {
