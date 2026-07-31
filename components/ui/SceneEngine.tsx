@@ -6,6 +6,8 @@ import { useRunStore } from '@/store/runStore'
 import { CluePanel } from './CluePanel'
 import { SeatingPlan } from './SeatingPlan'
 import { MorpionMinigame } from './MorpionMinigame'
+import { ToneMinigame } from './ToneMinigame'
+import { DosageMinigame } from './DosageMinigame'
 import { VariableGauges } from './VariableGauges'
 import { ManuscriptPanel } from './ManuscriptPanel'
 import { getChapterNumberForScene } from '@/lib/engine/chapters'
@@ -39,11 +41,11 @@ interface SceneEngineProps {
 
 type Phase = 'loading' | 'narrative' | 'choices' | 'minigame' | 'transition' | 'done'
 
-// Mini-jeux effectivement implémentés en UI. Les autres (tone_puzzle,
-// dosage_order, audio_reconstruction — voir README Sprint 5 / AU-03) n'ont
-// pas encore de composant : on ne bloque pas la scène dessus, la narration
-// et les choix s'affichent normalement à la place.
-const IMPLEMENTED_MINIGAMES = ['tictactoe_hidden']
+// Mini-jeux effectivement implémentés en UI. audio_reconstruction (scènes
+// 10-11) n'est volontairement pas ici : il a été remplacé par les
+// conversations entendues en texte (lib/engine/overheard.ts), pas par un
+// mini-jeu — la narration et les choix s'affichent normalement à sa place.
+const IMPLEMENTED_MINIGAMES = ['tictactoe_hidden', 'tone_puzzle', 'dosage_order']
 
 export function SceneEngine({ runId, playerPov, initialSceneId, run }: SceneEngineProps) {
   const router = useRouter()
@@ -110,12 +112,11 @@ export function SceneEngine({ runId, playerPov, initialSceneId, run }: SceneEngi
       return
     }
 
-    if (result.minigameToLaunch && IMPLEMENTED_MINIGAMES.includes(result.minigameToLaunch)) {
-      setActiveMinigame(result.minigameToLaunch)
-      setPhase('minigame')
-      return
-    }
-
+    // Le mini-jeu de la prochaine scène (s'il y en a un) se lance quand la
+    // scène est chargée via fetchScene() (bouton "Continuer" → handleNext),
+    // pas ici : ça garantit que scene/choices sont toujours à jour avant
+    // d'afficher quoi que ce soit, et ça évite de relancer le mini-jeu de la
+    // scène qu'on quitte quand elle a des choix après lui (scènes 5, 3, 8).
     setPhase('transition')
   }
 
@@ -146,12 +147,39 @@ export function SceneEngine({ runId, playerPov, initialSceneId, run }: SceneEngi
       ...((storeRun ?? run).variable),
       serviceHelper: result.serviceHelper,
     }
+    await syncMinigameVariable(nextVariable)
+  }
+
+  async function handleToneComplete(result: { correctCount: number; total: number }) {
+    // Bien lire le sous-texte apaise un peu la tension ; la mal lire l'alimente.
+    const wrongCount = result.total - result.correctCount
+    const delta = result.correctCount * -3 + wrongCount * 4
+    const current = (storeRun ?? run).variable
+    const nextVariable = {
+      ...current,
+      socialTension: Math.max(0, Math.min(100, (current.socialTension ?? 0) + delta)),
+    }
+    await syncMinigameVariable(nextVariable)
+  }
+
+  async function handleDosageComplete(result: { orderedCorrectly: boolean; mistakes: number }) {
+    // Service maîtrisé : léger apaisement. Service confus : la tension monte.
+    const delta = result.orderedCorrectly ? -3 : result.mistakes * 3
+    const current = (storeRun ?? run).variable
+    const nextVariable = {
+      ...current,
+      socialTension: Math.max(0, Math.min(100, (current.socialTension ?? 0) + delta)),
+    }
+    await syncMinigameVariable(nextVariable)
+  }
+
+  // Persister le résultat d'un mini-jeu tout de suite côté serveur (route
+  // admin, pas le SDK client) : sinon le prochain advance() relit l'ancien
+  // variable depuis Firestore et perd le résultat du mini-jeu.
+  async function syncMinigameVariable(nextVariable: RunState['variable']) {
     useRunStore.getState().updateRunLocal({ variable: nextVariable })
     setActiveMinigame(null)
     setPhase('choices')
-    // Persister tout de suite côté serveur (route admin, pas le SDK client) :
-    // sinon le prochain advance() relit l'ancien serviceHelper depuis
-    // Firestore et perd le résultat du mini-jeu.
     try {
       const res = await fetch(`/api/run/${runId}`, {
         method: 'PATCH',
@@ -160,7 +188,7 @@ export function SceneEngine({ runId, playerPov, initialSceneId, run }: SceneEngi
       })
       if (!res.ok) throw new Error('sync failed')
     } catch (err) {
-      console.error('[handleMinigameComplete] échec de synchronisation:', err)
+      console.error('[syncMinigameVariable] échec de synchronisation:', err)
       setError('Erreur de synchronisation du mini-jeu. Réessayez si le comportement semble incohérent.')
     }
   }
@@ -379,6 +407,19 @@ export function SceneEngine({ runId, playerPov, initialSceneId, run }: SceneEngi
           players={['sarah', 'yanis']}
           playerPov={playerPov}
           onComplete={handleMinigameComplete}
+        />
+      )}
+
+      {/* ── Mini-jeu lecture de tonalité (scène 3) ── */}
+      {phase === 'minigame' && activeMinigame === 'tone_puzzle' && (
+        <ToneMinigame onComplete={handleToneComplete} />
+      )}
+
+      {/* ── Mini-jeu service critique (scène 8) ── */}
+      {phase === 'minigame' && activeMinigame === 'dosage_order' && (
+        <DosageMinigame
+          seatingBeforeMain={(storeRun ?? run).variable.seatingHistory?.seating_before_main}
+          onComplete={handleDosageComplete}
         />
       )}
 

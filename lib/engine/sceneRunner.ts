@@ -123,7 +123,11 @@ export function applyChoice(
     flagUpdates,
     cluesRevealed,
     narrativeInjections,
-    minigameToLaunch: scene.minigameId,
+    // Le mini-jeu à lancer est celui de la scène qu'on rejoint, pas celui de
+    // la scène qu'on quitte — sinon un choix fait après un mini-jeu (ex.
+    // s05_c01/c02 après le morpion, s08_c01/c02 après le service) relance
+    // le même mini-jeu en boucle au lieu de faire avancer la partie.
+    minigameToLaunch: nextScene ? getScene(nextScene)?.minigameId : undefined,
   }
 }
 
