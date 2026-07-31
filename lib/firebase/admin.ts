@@ -1,17 +1,21 @@
-// Firebase Admin — server-side uniquement (API routes, Server Components)
-import { getApps, initializeApp, cert, getApp } from 'firebase-admin/app'
+// Firebase Admin — initialisation singleton
+import { initializeApp, getApps, cert, type App } from 'firebase-admin/app'
+import { getAuth } from 'firebase-admin/auth'
 import { getFirestore } from 'firebase-admin/firestore'
 
-function getAdminApp() {
-  if (getApps().length > 0) return getApp()
+function initAdmin(): App {
+  if (getApps().length > 0) return getApps()[0]
 
   return initializeApp({
     credential: cert({
       projectId:   process.env.FIREBASE_ADMIN_PROJECT_ID,
       clientEmail: process.env.FIREBASE_ADMIN_CLIENT_EMAIL,
+      // Remplacer les \\n littéraux qui peuvent apparaître dans les env vars
       privateKey:  process.env.FIREBASE_ADMIN_PRIVATE_KEY?.replace(/\\n/g, '\n'),
     }),
   })
 }
 
-export const adminDb = getFirestore(getAdminApp())
+const adminApp = initAdmin()
+export const adminAuth = getAuth(adminApp)
+export const adminDb   = getFirestore(adminApp)
