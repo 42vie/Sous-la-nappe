@@ -39,18 +39,18 @@
 
 ---
 
-### 🟠 SPRINT 2 — Moteur narratif
+### ✅ SPRINT 2 — Moteur narratif *(terminé le 31 juillet 2026)*
 
 | # | Tâche | Statut | Notes |
 |---|---|---|---|
-| S2-01 | Créer `lib/engine/sceneRunner.ts` — chargeur de scène + résolveur de conditions | ⬜ À faire | Pièce centrale du moteur, tout en dépend |
-| S2-02 | Créer `lib/engine/transitions.ts` — calcul de la scène suivante | ⬜ À faire | |
-| S2-03 | Créer `lib/engine/clueResolver.ts` — dépôt/déverrouillage d'indices par scène | ⬜ À faire | |
-| S2-04 | Créer `lib/engine/endingCalculator.ts` — calcul des fins selon variables | ⬜ À faire | |
-| S2-05 | Créer `app/api/run/[runId]/advance/route.ts` — endpoint d'avancement de scène | ⬜ À faire | Manquant dans l'API actuelle |
-| S2-06 | Compléter `store/runStore.ts` — brancher les appels moteur | ⬜ À faire | Store présent mais couplage moteur à vérifier |
-| S2-07 | Créer `scripts/seed-firestore.ts` — script de seed automatisé | ⬜ À faire | |
-| S2-08 | Créer `scripts/validate-content.ts` — vérification cohérence seeds + clés manquantes | ⬜ À faire | |
+| S2-01 | Créer `lib/engine/sceneRunner.ts` — chargeur de scène + résolveur de conditions | ✅ Fait | `getScene`, `getAvailableChoices`, `applyChoice`, `applyOnEnterEffects` |
+| S2-02 | Créer `lib/engine/transitions.ts` — calcul de la scène suivante | ✅ Fait | `resolveTransition` avec bifurcations lucas_a_interrompu_service + confrontation |
+| S2-03 | Créer `lib/engine/clueResolver.ts` — dépôt/déverrouillage d'indices par scène | ✅ Fait | `resolveClues`, `buildDiscoveredClue`, `countCriticalClues` (7 indices critiques) |
+| S2-04 | Créer `lib/engine/endingCalculator.ts` — calcul des fins selon variables | ✅ Fait | `calculateEnding` (F1–F5, D1–D2, S1) + `buildFinalReport` (3 colonnes) |
+| S2-05 | Créer `app/api/run/[runId]/advance/route.ts` — endpoint d'avancement de scène | ✅ Fait | POST (appliquer choix) + GET (charger scène courante + choix disponibles) |
+| S2-06 | Compléter `store/runStore.ts` — brancher les appels moteur | ✅ Fait | `advance()` + `loadCurrentScene()` ajoutés, sync Firestore via `run.runId` |
+| S2-07 | Créer `scripts/seed-firestore.ts` — script de seed automatisé | ✅ Fait | Seed 7 collections + canon_runs, batch Firestore, `npx ts-node scripts/seed-firestore.ts` |
+| S2-08 | Créer `scripts/validate-content.ts` — vérification cohérence seeds + clés manquantes | ✅ Fait | Vérifie clues (25), scenes (11), poids questions (= 100), canon T0, pièces requises |
 
 ---
 
@@ -105,11 +105,11 @@
 | S1-11 | Flags narratifs `lib/engine/flags.ts` (22 flags, 6 phases) | ✅ Fait | |
 | S1-12 | API runs (`app/api/run/route.ts`, `app/api/run/[runId]/route.ts`) | ✅ Fait | |
 | S1-13 | Page run `app/(game)/run/[runId]/page.tsx` | ✅ Fait | |
-| S1-14 | Composant `SceneEngine.tsx` (21,5 Ko) | ✅ Fait | Profondeur à valider en Sprint 2 |
+| S1-14 | Composant `SceneEngine.tsx` (21,5 Ko) | ✅ Fait | |
 | S1-15 | Composant `CluePanel.tsx` | ✅ Fait | |
 | S1-16 | Composant `SeatingPlan.tsx` (base) | ✅ Fait | Historique 4 états manquant — voir S3-01 |
 | S1-17 | Composant `CharacterSelector.tsx` | ✅ Fait | |
-| S1-18 | Stores Zustand `authStore.ts` + `runStore.ts` | ✅ Fait | |
+| S1-18 | Stores Zustand `authStore.ts` + `runStore.ts` | ✅ Fait | Sprint 2 : `advance()` + `loadCurrentScene()` ajoutés |
 | S1-19 | Bible narrative versionnée `Sous_la_nappe_Scenario_complet_v1.pdf` | ✅ Fait | |
 
 ---
@@ -121,18 +121,34 @@ sous-la-nappe/
 ├── app/                    # App Router Next.js
 │   ├── (game)/             # Routes du jeu
 │   ├── (auth)/             # Routes d'auth
-│   └── api/                # API Routes
-├── components/             # Composants React
+│   └── api/
+│       └── run/
+│           ├── route.ts              # POST créer run
+│           └── [runId]/
+│               ├── route.ts            # GET run
+│               └── advance/route.ts    # POST/GET avancer scène ★
+├── components/
 │   └── ui/                 # AuthForm, SceneEngine, CluePanel, SeatingPlan...
 ├── lib/
-│   ├── engine/             # deviation.ts, flags.ts (+ à créer)
+│   ├── engine/
+│   │   ├── deviation.ts         # Couches 1–4 (déviation) ✅
+│   │   ├── flags.ts             # 22 flags narratifs ✅
+│   │   ├── sceneRunner.ts       # Moteur scène ★
+│   │   ├── transitions.ts       # Scène suivante ★
+│   │   ├── clueResolver.ts      # Indices ★
+│   │   └── endingCalculator.ts  # Fins ★
 │   ├── firebase/           # admin, client, auth, runs, scores
 │   └── types/              # characters, scenes, clues, endings, engine, house
-├── store/                  # authStore, runStore
+├── scripts/
+│   ├── seed-firestore.ts    # Seed toutes les collections ★
+│   └── validate-content.ts  # Validation cohérence seeds ★
+├── store/                  # authStore, runStore (+ advance, loadCurrentScene) ★
 ├── types/                  # index.ts, firebase.ts
-├── data/                   # JSON narratifs (seeds) — complets
+├── data/                   # JSON narratifs — complets ★
 └── public/                 # Assets statiques
 ```
+
+> ★ = ajouté en Sprint 2
 
 ## Installation
 
@@ -144,6 +160,13 @@ Copier `.env.local.example` en `.env.local` et remplir les variables Firebase.
 
 ```bash
 npm run dev
+```
+
+## Seed Firestore (une seule fois)
+
+```bash
+npx ts-node scripts/validate-content.ts   # vérifier avant
+npx ts-node scripts/seed-firestore.ts      # seeder
 ```
 
 ## Variables d'environnement
