@@ -3,6 +3,8 @@
 import { useState, useRef, type FormEvent } from 'react'
 import { useRouter } from 'next/navigation'
 import { signIn, signUp, resetPassword } from '@/lib/firebase/auth'
+import { getIdToken } from 'firebase/auth'
+import { auth } from '@/lib/firebase/client'
 
 type Mode = 'login' | 'register' | 'reset'
 
@@ -12,19 +14,30 @@ const LABELS: Record<Mode, string> = {
   reset: 'Réinitialiser le mot de passe',
 }
 
-// Messages d'erreur Firebase → français
 function friendlyError(code: string): string {
   switch (code) {
-    case 'auth/invalid-email':         return 'Adresse e-mail invalide.'
-    case 'auth/user-not-found':        return 'Aucun compte trouvé pour cet e-mail.'
-    case 'auth/wrong-password':        return 'Mot de passe incorrect.'
-    case 'auth/invalid-credential':    return 'E-mail ou mot de passe incorrect.'
-    case 'auth/email-already-in-use':  return 'Cette adresse est déjà utilisée.'
-    case 'auth/weak-password':         return 'Mot de passe trop court (6 caractères minimum).'
-    case 'auth/too-many-requests':     return 'Trop de tentatives. Réessayez dans quelques minutes.'
-    case 'auth/network-request-failed':return 'Problème réseau. Vérifiez votre connexion.'
+    case 'auth/invalid-email':          return 'Adresse e-mail invalide.'
+    case 'auth/user-not-found':         return 'Aucun compte trouvé pour cet e-mail.'
+    case 'auth/wrong-password':         return 'Mot de passe incorrect.'
+    case 'auth/invalid-credential':     return 'E-mail ou mot de passe incorrect.'
+    case 'auth/email-already-in-use':   return 'Cette adresse est déjà utilisée.'
+    case 'auth/weak-password':          return 'Mot de passe trop court (6 caractères minimum).'
+    case 'auth/too-many-requests':      return 'Trop de tentatives. Réessayez dans quelques minutes.'
+    case 'auth/network-request-failed': return 'Problème réseau. Vérifiez votre connexion.'
     default: return 'Une erreur est survenue. Réessayez.'
   }
+}
+
+/** Échange l'idToken Firebase contre un cookie de session httpOnly */
+async function createSession(): Promise<void> {
+  const user = auth.currentUser
+  if (!user) return
+  const idToken = await getIdToken(user)
+  await fetch('/api/auth/session', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ idToken }),
+  })
 }
 
 export function AuthForm() {
@@ -61,7 +74,13 @@ export function AuthForm() {
         await signIn(email, password)
       }
 
-      router.push('/')
+      // Créer le cookie de session côté serveur (pour le middleware)
+      await createSession()
+
+      // Rediriger vers la page demandée ou l'accueil
+      const params = new URLSearchParams(window.location.search)
+      const next = params.get('next') ?? '/'
+      router.push(next)
     } catch (err: unknown) {
       const code = (err as { code?: string }).code ?? ''
       setError(friendlyError(code))
@@ -70,19 +89,9 @@ export function AuthForm() {
     }
   }
 
-  // ─── Styles inline (cohérents avec le design system du projet) ───────────
   const s = {
-    form: {
-      display: 'flex',
-      flexDirection: 'column' as const,
-      gap: 'var(--space-5)',
-      width: '100%',
-    },
-    fieldGroup: {
-      display: 'flex',
-      flexDirection: 'column' as const,
-      gap: 'var(--space-2)',
-    },
+    form: { display: 'flex', flexDirection: 'column' as const, gap: 'var(--space-5)' },
+    fieldGroup: { display: 'flex', flexDirection: 'column' as const, gap: 'var(--space-2)' },
     label: {
       fontFamily: 'var(--font-body)',
       fontSize: 'var(--text-xs)',
@@ -147,7 +156,10 @@ export function AuthForm() {
     return (
       <div style={s.success}>
         E-mail de réinitialisation envoyé. Vérifiez votre boîte.
-        <button style={{ ...s.ghost, display: 'block', marginTop: 'var(--space-3)' }} onClick={() => { setResetSent(false); setMode('login') }}>
+        <button
+          style={{ ...s.ghost, display: 'block', marginTop: 'var(--space-3)' }}
+          onClick={() => { setResetSent(false); setMode('login') }}
+        >
           Retour à la connexion
         </button>
       </div>
@@ -157,85 +169,67 @@ export function AuthForm() {
   return (
     <form onSubmit={handleSubmit} style={s.form} noValidate>
 
-      {/* Champ nom (inscription uniquement) */}
       {mode === 'register' && (
         <div style={s.fieldGroup}>
           <label htmlFor="auth-name" style={s.label}>Prénom ou pseudonyme</label>
           <input
-            id="auth-name"
-            ref={nameRef}
-            type="text"
-            autoComplete="name"
-            placeholder="Marie"
-            style={s.input}
+            id="auth-name" ref={nameRef} type="text"
+            autoComplete="name" placeholder="Marie" style={s.input}
           />
         </div>
       )}
 
-      {/* Champ e-mail */}
       <div style={s.fieldGroup}>
         <label htmlFor="auth-email" style={s.label}>Adresse e-mail</label>
         <input
-          id="auth-email"
-          ref={emailRef}
-          type="email"
+          id="auth-email" ref={emailRef} type="email"
           autoComplete={mode === 'login' ? 'email' : 'new-email'}
-          required
-          placeholder="marie@exemple.fr"
-          style={s.input}
+          required placeholder="marie@exemple.fr" style={s.input}
         />
       </div>
 
-      {/* Champ mot de passe (pas sur reset) */}
       {mode !== 'reset' && (
         <div style={s.fieldGroup}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
             <label htmlFor="auth-password" style={s.label}>Mot de passe</label>
             {mode === 'login' && (
-              <button type="button" style={s.ghost} onClick={() => { setMode('reset'); setError(null) }}>
-                Mot de passe oublié ?
+              <button type="button" style={s.ghost}
+                onClick={() => { setMode('reset'); setError(null) }}>
+                Mot de passe oublié ?
               </button>
             )}
           </div>
           <input
-            id="auth-password"
-            ref={passwordRef}
-            type="password"
+            id="auth-password" ref={passwordRef} type="password"
             autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
-            required
-            minLength={6}
-            placeholder="••••••••"
-            style={s.input}
+            required minLength={6} placeholder="••••••••" style={s.input}
           />
         </div>
       )}
 
-      {/* Message d'erreur */}
       {error && <p style={s.error} role="alert">{error}</p>}
 
-      {/* Bouton principal */}
-      <button
-        type="submit"
-        disabled={loading}
-        style={{ ...s.btn, opacity: loading ? 0.6 : 1 }}
-      >
+      <button type="submit" disabled={loading}
+        style={{ ...s.btn, opacity: loading ? 0.6 : 1 }}>
         {loading ? 'Chargement…' : LABELS[mode]}
       </button>
 
-      {/* Liens de changement de mode */}
       <div style={{ display: 'flex', justifyContent: 'center', gap: 'var(--space-4)' }}>
         {mode !== 'login' && (
-          <button type="button" style={s.ghost} onClick={() => { setMode('login'); setError(null) }}>
-            J'ai déjà un compte
+          <button type="button" style={s.ghost}
+            onClick={() => { setMode('login'); setError(null) }}>
+            J’ai déjà un compte
           </button>
         )}
         {mode !== 'register' && mode !== 'reset' && (
-          <button type="button" style={s.ghost} onClick={() => { setMode('register'); setError(null) }}>
+          <button type="button" style={s.ghost}
+            onClick={() => { setMode('register'); setError(null) }}>
             Créer un compte
           </button>
         )}
         {mode === 'reset' && (
-          <button type="button" style={s.ghost} onClick={() => { setMode('login'); setError(null) }}>
+          <button type="button" style={s.ghost}
+            onClick={() => { setMode('login'); setError(null) }}>
             Retour à la connexion
           </button>
         )}

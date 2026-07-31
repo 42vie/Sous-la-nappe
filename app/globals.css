@@ -1,5 +1,5 @@
 /* === DESIGN TOKENS — Sous la nappe ===========================
-   Palette : noir profond + rouge sang + blanc cassé
+   Palette : ivoire profond + rouge sang + fond noir
    Ton : naturalisme sec, thriller psychologique
    Typography : Cormorant (display) + Inter (body)
    ============================================================ */
@@ -13,6 +13,8 @@
   --color-surface:          #f8f6f1;
   --color-surface-2:        #faf9f5;
   --color-surface-offset:   #ede9e1;
+  --color-surface-offset-2: #e5e0d7;
+  --color-surface-dynamic:  #ddd7cc;
   --color-divider:          #d8d2c7;
   --color-border:           #cec7b9;
 
@@ -30,15 +32,31 @@
 
   /* États */
   --color-error:            #a12c2c;
+  --color-error-hover:      #7d1e1e;
+  --color-error-highlight:  #f0dede;
+
   --color-warning:          #8b5e1a;
+  --color-warning-hover:    #6b4812;
+  --color-warning-highlight:#ecddc9;
+
   --color-success:          #2d6b2d;
+  --color-success-hover:    #1f4f1f;
+  --color-success-highlight:#d4e8d4;
+
+  --color-blue:             #1a4e8b;
+  --color-blue-hover:       #143d6e;
+  --color-blue-highlight:   #d4dff0;
+
+  --color-orange:           #b55a10;
+  --color-orange-hover:     #8e450c;
+  --color-orange-highlight: #f2e0cc;
 
   /* Radius */
   --radius-sm:  0.25rem;
   --radius-md:  0.375rem;
   --radius-lg:  0.5rem;
   --radius-xl:  0.75rem;
-  --radius-full:9999px;
+  --radius-full: 9999px;
 
   /* Transitions */
   --transition: 180ms cubic-bezier(0.16, 1, 0.3, 1);
@@ -66,11 +84,15 @@
   --space-2:  0.5rem;
   --space-3:  0.75rem;
   --space-4:  1rem;
+  --space-5:  1.25rem;
   --space-6:  1.5rem;
   --space-8:  2rem;
+  --space-10: 2.5rem;
   --space-12: 3rem;
   --space-16: 4rem;
   --space-20: 5rem;
+  --space-24: 6rem;
+  --space-32: 8rem;
 
   /* Conteneurs */
   --content-narrow:  640px;
@@ -83,19 +105,40 @@
   --color-surface:          #161310;
   --color-surface-2:        #1c1915;
   --color-surface-offset:   #1e1b17;
+  --color-surface-offset-2: #232019;
+  --color-surface-dynamic:  #2a261f;
   --color-divider:          #2a2520;
   --color-border:           #333028;
   --color-text:             #d4cfc8;
   --color-text-muted:       #786e65;
   --color-text-faint:       #504840;
   --color-text-inverse:     #1c1915;
+
   --color-primary:          #c94040;
   --color-primary-hover:    #a83030;
   --color-primary-active:   #872020;
   --color-primary-highlight:#3d2020;
+
   --color-error:            #c94040;
+  --color-error-hover:      #a83030;
+  --color-error-highlight:  #3d2020;
+
   --color-warning:          #c8882a;
+  --color-warning-hover:    #a86e1e;
+  --color-warning-highlight:#3d2e18;
+
   --color-success:          #5a9e5a;
+  --color-success-hover:    #448044;
+  --color-success-highlight:#1e3020;
+
+  --color-blue:             #4a7ec8;
+  --color-blue-hover:       #3564a8;
+  --color-blue-highlight:   #1a2840;
+
+  --color-orange:           #e07830;
+  --color-orange-hover:     #c06020;
+  --color-orange-highlight: #3d2410;
+
   --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.25);
   --shadow-md: 0 4px 12px rgb(0 0 0 / 0.35);
   --shadow-lg: 0 12px 32px rgb(0 0 0 / 0.45);
@@ -117,6 +160,7 @@ html {
   text-rendering: optimizeLegibility;
   scroll-behavior: smooth;
   scroll-padding-top: var(--space-16);
+  hanging-punctuation: first last;
 }
 
 body {
@@ -128,37 +172,11 @@ body {
   background-color: var(--color-bg);
 }
 
-img,
-video,
-canvas,
-svg {
-  display: block;
-  max-width: 100%;
-  height: auto;
-}
-
-input,
-button,
-textarea,
-select {
-  font: inherit;
-  color: inherit;
-}
-
-h1,
-h2,
-h3,
-h4 {
-  text-wrap: balance;
-  line-height: 1.15;
-  font-family: var(--font-display);
-}
-
-p,
-li {
-  text-wrap: pretty;
-  max-width: 72ch;
-}
+img, video, canvas, svg { display: block; max-width: 100%; height: auto; }
+ul[role='list'], ol[role='list'] { list-style: none; }
+input, button, textarea, select { font: inherit; color: inherit; }
+h1, h2, h3, h4 { text-wrap: balance; line-height: 1.15; }
+p, li { text-wrap: pretty; max-width: 72ch; }
 
 ::selection {
   background: color-mix(in oklch, var(--color-primary) 25%, transparent);
@@ -172,29 +190,24 @@ li {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
+  *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
 
-button {
-  cursor: pointer;
-  background: none;
-  border: none;
+button { cursor: pointer; background: none; border: none; }
+
+a, button, [role='button'], input, textarea, select {
+  transition: color var(--transition),
+              background var(--transition),
+              border-color var(--transition),
+              box-shadow var(--transition);
 }
 
 .sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border-width: 0;
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border-width: 0;
 }
