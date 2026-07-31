@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation'
 import { CharacterCard, CHARACTERS } from '@/components/ui/CharacterCard'
 import { useRunStore } from '@/store/runStore'
 import { CHAPTERS, TOTAL_CHAPTERS } from '@/lib/engine/chapters'
+import { BLIND_SPOTS } from '@/lib/engine/blindSpots'
 import type { CharacterId } from '@/lib/types/characters'
 import type { RunState } from '@/lib/types/engine'
 
@@ -45,6 +46,9 @@ export default function ChapterSelectPage() {
   const nextChapterNumber = povHistory.length + 1
   const chapter = CHAPTERS[nextChapterNumber - 1]
   const available = CHARACTERS.filter((c) => !povHistory.includes(c.id))
+  const justPlayed = povHistory[povHistory.length - 1]
+  const justPlayedName = justPlayed ? CHARACTER_NAMES[justPlayed].split(' ')[0] : null
+  const blindSpots = justPlayed ? BLIND_SPOTS[justPlayed] : []
 
   // Tous les chapitres ont déjà un personnage : rien à choisir, retour au run.
   useEffect(() => {
@@ -122,6 +126,34 @@ export default function ChapterSelectPage() {
           </p>
         )}
       </header>
+
+      {justPlayedName && blindSpots.length > 0 && (
+        <div style={{
+          width: '100%', maxWidth: 'var(--content-narrow)',
+          padding: 'var(--space-5) var(--space-6)',
+          marginBottom: 'var(--space-10)',
+          background: 'var(--color-surface)',
+          border: '1px solid var(--color-divider)',
+          borderRadius: 'var(--radius-lg)',
+        }}>
+          <p style={{
+            fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', color: 'var(--color-text-faint)',
+            textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 'var(--space-3)',
+          }}>
+            Ce que {justPlayedName} n&apos;a jamais vu, ce soir-là
+          </p>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
+            {blindSpots.map((spot, i) => (
+              <p key={i} style={{
+                fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)', color: 'var(--color-text-muted)',
+                fontStyle: 'italic', lineHeight: 1.6,
+              }}>
+                — {spot}
+              </p>
+            ))}
+          </div>
+        </div>
+      )}
 
       <div style={{
         width: '100%', maxWidth: 'var(--content-wide)',

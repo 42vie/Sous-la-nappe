@@ -42,6 +42,14 @@ export function calculateEnding(state: RunState): EndingId {
   // F4 : confrontation mais sans avoir tout dit
   if (flags['lucas_confrontation_finale']) return 'F4'
 
+  // Au-delà des déclencheurs explicites ci-dessus, la tension sociale
+  // accumulée pendant la soirée (state.variable.socialTension, 0–100)
+  // pousse vers une sortie plus dramatique même sans confrontation directe :
+  // plus la pression est montée, plus la fin est dure.
+  const tension = state.variable.socialTension
+  if (tension >= 70) return 'F5'
+  if (tension >= 45) return 'F4'
+
   // F2 : Lucas a parlé, narrative = truth_partial
   if (
     flags['lucas_a_parle'] &&

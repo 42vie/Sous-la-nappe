@@ -176,8 +176,30 @@ export function SceneEngine({ runId, playerPov, initialSceneId, run }: SceneEngi
     )
   }
 
+  const socialTension = (storeRun ?? run).variable.socialTension ?? 0
+
   return (
     <div style={{ width: '100%', maxWidth: 'var(--content-narrow)' }}>
+
+      {/* ── Tension — toujours visible, pas un toggle ── */}
+      <div
+        title={`Tension sociale : ${Math.round(socialTension)}/100`}
+        style={{
+          width: '100%',
+          height: 3,
+          borderRadius: 2,
+          background: 'var(--color-surface-offset)',
+          overflow: 'hidden',
+          marginBottom: 'var(--space-4)',
+        }}
+      >
+        <div style={{
+          width: `${Math.max(0, Math.min(100, socialTension))}%`,
+          height: '100%',
+          background: socialTension >= 70 ? 'var(--color-error)' : 'var(--color-primary)',
+          transition: 'width 500ms ease, background 500ms ease',
+        }} />
+      </div>
 
       {/* ── Barre supérieure ── */}
       <div style={{

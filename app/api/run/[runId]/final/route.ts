@@ -5,6 +5,7 @@ import { adminDb } from '@/lib/firebase/admin'
 import { COLLECTIONS } from '@/types/firebase'
 import { buildFinalReport } from '@/lib/engine/endingCalculator'
 import { getManuscriptStatus } from '@/lib/engine/manuscript'
+import { getPovSummaries } from '@/lib/engine/povSummary'
 import type { RunState } from '@/types'
 import questionsRaw from '@/data/questions_final.json'
 
@@ -58,6 +59,8 @@ export async function GET(
       answers: state.finalAnswers ?? null,
       seatingGuess: state.finalSeatingGuess ?? null,
       manuscript: getManuscriptStatus(state),
+      povHistory: state.povHistory ?? [state.playerPov],
+      povSummaries: getPovSummaries(state),
       // Question 4 ("où était chacun au moment du service ?") se joue comme
       // un vrai plan de table à reconstituer (6 sièges à remplir), pas un
       // QCM — pas d'options à envoyer, seatingGuess est traité à part.

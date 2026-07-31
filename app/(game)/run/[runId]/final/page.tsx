@@ -13,6 +13,13 @@ interface ManuscriptEntryData {
   progress: number
 }
 
+interface PovSummaryData {
+  character: CharacterId
+  chapterNumber: number
+  chapterTitle: string
+  choiceLabels: string[]
+}
+
 const SEATING_QUESTION_ID = 'q4_seating_at_service'
 const SEAT_IDS = [1, 2, 3, 4, 5, 6]
 
@@ -98,6 +105,8 @@ export default function FinalPage() {
   const [answers, setAnswers] = useState<Record<string, string>>({})
   const [seatingGuess, setSeatingGuess] = useState<Record<number, CharacterId>>({})
   const [manuscript, setManuscript] = useState<ManuscriptEntryData[]>([])
+  const [povHistory, setPovHistory] = useState<CharacterId[]>([])
+  const [povSummaries, setPovSummaries] = useState<PovSummaryData[]>([])
   const [endingId, setEndingId] = useState<string | null>(null)
   const [clueCount, setClueCount] = useState<number>(0)
   const [loading, setLoading] = useState(true)
@@ -117,6 +126,8 @@ export default function FinalPage() {
         setReport(data.report ?? null)
         setQuestions(data.questions ?? [])
         setManuscript(data.manuscript ?? [])
+        setPovHistory(data.povHistory ?? [])
+        setPovSummaries(data.povSummaries ?? [])
         setEndingId(data.ending ?? run?.ending ?? 'F1')
         setClueCount(data.discoveredCluesCount ?? run?.discoveredClues?.length ?? 0)
         if (data.score !== null && data.score !== undefined) {
@@ -414,6 +425,61 @@ export default function FinalPage() {
           </>
         )}
 
+        {/* Ma vérité — un résumé par personnage joué, sur ce qu'il a choisi */}
+        {povSummaries.length > 0 && (
+          <div style={{ marginBottom: 'var(--space-12)' }}>
+            <p style={{
+              fontFamily: 'var(--font-body)',
+              fontSize: 'var(--text-xs)',
+              color: 'var(--color-text-muted)',
+              textTransform: 'uppercase',
+              letterSpacing: '0.08em',
+              marginBottom: 'var(--space-4)',
+            }}>
+              Ma vérité
+            </p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
+              {povSummaries.map((s) => {
+                const character = CHARACTERS.find((c) => c.id === s.character)
+                return (
+                  <div
+                    key={s.chapterNumber}
+                    style={{
+                      padding: 'var(--space-4)',
+                      borderRadius: 'var(--radius-md)',
+                      border: `1px solid ${character?.color ?? 'var(--color-border)'}30`,
+                      background: 'var(--color-surface)',
+                    }}
+                  >
+                    <p style={{
+                      fontFamily: 'var(--font-display)', fontStyle: 'italic', fontSize: 'var(--text-base)',
+                      color: character?.color ?? 'var(--color-text)', marginBottom: 'var(--space-2)',
+                    }}>
+                      {character?.firstName ?? s.character} — chapitre {s.chapterNumber} · {s.chapterTitle}
+                    </p>
+                    {s.choiceLabels.length > 0 ? (
+                      <ul style={{ margin: 0, paddingLeft: 'var(--space-5)' }}>
+                        {s.choiceLabels.map((label, i) => (
+                          <li key={i} style={{
+                            fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)', color: 'var(--color-text-muted)',
+                            marginBottom: 'var(--space-1)',
+                          }}>
+                            {label}
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', color: 'var(--color-text-faint)', fontStyle: 'italic' }}>
+                        Aucun choix enregistré.
+                      </p>
+                    )}
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        )}
+
         {/* Le manuscrit — la vérité établie au fil de cette partie */}
         {manuscript.length > 0 && (
           <div style={{ marginBottom: 'var(--space-12)' }}>
@@ -452,6 +518,20 @@ export default function FinalPage() {
             </div>
           </div>
         )}
+
+        {/* Teaser de rejouabilité — sans spoiler, juste avant le bouton */}
+        {povHistory.length > 0 && (() => {
+          const unplayed = CHARACTERS.filter((c) => !povHistory.includes(c.id))
+          if (unplayed.length === 0) return null
+          return (
+            <p style={{
+              fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)', fontStyle: 'italic',
+              color: 'var(--color-text-faint)', marginBottom: 'var(--space-4)',
+            }}>
+              {unplayed.map((c) => c.firstName).join(' et ')} n&apos;{unplayed.length > 1 ? 'ont' : 'a'} pas pris la parole cette fois-ci. Ce qu&apos;{unplayed.length > 1 ? 'ils ont' : 'elle a'} vu reste à découvrir.
+            </p>
+          )
+        })()}
 
         {/* CTA rejouer */}
         <div style={{ display: 'flex', gap: 'var(--space-4)', flexWrap: 'wrap', marginBottom: 'var(--space-12)' }}>
