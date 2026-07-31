@@ -1,6 +1,8 @@
 // API Route — créer / supprimer le cookie de session Firebase Admin
 import { NextRequest, NextResponse } from 'next/server'
-import { adminAuth } from '@/lib/firebase/admin'
+import { getAdminAuth } from '@/lib/firebase/admin'
+
+export const runtime = 'nodejs'
 
 const SESSION_DURATION_MS = 60 * 60 * 24 * 14 * 1000 // 14 jours
 
@@ -10,7 +12,7 @@ export async function POST(req: NextRequest) {
     const { idToken } = await req.json()
     if (!idToken) return NextResponse.json({ error: 'idToken manquant' }, { status: 400 })
 
-    const sessionCookie = await adminAuth.createSessionCookie(idToken, {
+    const sessionCookie = await getAdminAuth().createSessionCookie(idToken, {
       expiresIn: SESSION_DURATION_MS,
     })
 
