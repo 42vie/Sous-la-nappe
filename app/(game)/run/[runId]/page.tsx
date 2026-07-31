@@ -5,7 +5,7 @@ import { useParams } from 'next/navigation'
 import { SceneEngine } from '@/components/ui/SceneEngine'
 import { useRunStore } from '@/store/runStore'
 import type { CharacterId } from '@/lib/types/characters'
-import type { RunState } from '@/types'
+import type { RunState } from '@/lib/types/engine'
 
 const CHARACTER_NAMES: Record<CharacterId, string> = {
   maelys: 'Maëlys Renaud',
@@ -24,13 +24,12 @@ export default function RunPage() {
 
   useEffect(() => {
     if (!runId) return
-    // Si le run est déjà en store et correspond, pas de refetch
     if (run?.runId === runId) return
 
     fetch(`/api/run/${runId}`)
       .then(async (res) => {
         if (!res.ok) throw new Error('Run introuvable')
-        const data: RunState = await res.json()
+        const data = await res.json() as RunState
         setRun(data)
       })
       .catch((err) => {
@@ -77,7 +76,7 @@ export default function RunPage() {
     )
   }
 
-  const pov = run.playerPov ?? run.playerCharacter
+  const pov = run.playerPov
 
   return (
     <main style={{
@@ -117,7 +116,7 @@ export default function RunPage() {
         </p>
       </header>
 
-      {/* Moteur de scènes — branché sur l'API S2 */}
+      {/* Moteur de scènes */}
       <SceneEngine
         runId={runId}
         playerPov={pov}
