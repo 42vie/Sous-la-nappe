@@ -30,6 +30,10 @@
             "type": "narrative_note",
             "note": "Lucas ne force pas la mémoire. L'erreur plantée reste active."
           }
+        ],
+        "revealsClue": [
+          "C-05",
+          "C-14"
         ]
       },
       {
@@ -95,7 +99,10 @@
         "verb": "observe",
         "label": "Regarder la photo dans le couloir",
         "availableFor": "all",
-        "revealsClue": "C-03",
+        "revealsClue": [
+          "C-03",
+          "C-18"
+        ],
         "effects": [
           {
             "type": "state_delta",
@@ -120,7 +127,8 @@
             "key": "lucasNeutralite",
             "delta": -5
           }
-        ]
+        ],
+        "revealsClue": "C-01"
       },
       {
         "id": "s02_c03",
@@ -257,7 +265,10 @@
         "verb": "observe",
         "label": "Mémoriser les positions initiales",
         "availableFor": "all",
-        "revealsClue": "C-07",
+        "revealsClue": [
+          "C-07",
+          "C-06"
+        ],
         "effects": [
           {
             "type": "state_delta",
@@ -458,7 +469,8 @@
             "key": "lucasCourage",
             "delta": -5
           }
-        ]
+        ],
+        "revealsClue": "C-23"
       }
     ],
     "autoRevealClues": [],
@@ -511,7 +523,8 @@
             "key": "lucas_a_note_echange_places",
             "value": true
           }
-        ]
+        ],
+        "revealsClue": "C-19"
       },
       {
         "id": "s07_c02",
@@ -691,11 +704,13 @@
             "key": "seating_after_incident",
             "value": "swapB"
           }
-        ]
+        ],
+        "revealsClue": "C-16"
       }
     ],
     "autoRevealClues": [
-      "C-15"
+      "C-15",
+      "C-24"
     ],
     "canonicalFacts": [
       "Sarah est atteinte dans toutes les branches — invariant canonique",
@@ -725,7 +740,10 @@
         "verb": "stay_silent",
         "label": "Laisser Noé construire le récit",
         "availableFor": "all",
-        "revealsClue": "C-25",
+        "revealsClue": [
+          "C-25",
+          "C-02"
+        ],
         "effects": [
           {
             "type": "state_delta",

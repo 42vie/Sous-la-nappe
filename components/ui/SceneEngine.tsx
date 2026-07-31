@@ -20,6 +20,7 @@ interface SceneData {
   narrative: string
   minigameId?: string | null
   canonicalFacts: string[]
+  overheard?: string | null
 }
 
 interface ChoiceData {
@@ -407,6 +408,30 @@ export function SceneEngine({ runId, playerPov, initialSceneId, run }: SceneEngi
           }}>
             {scene.narrative}
           </p>
+
+          {/* Conversation entendue — différente selon le personnage, dégradée par l'ivresse */}
+          {scene.overheard && (
+            <div style={{
+              marginBottom: 'var(--space-8)',
+              padding: 'var(--space-4) var(--space-5)',
+              background: 'var(--color-surface-offset)',
+              borderLeft: '2px solid var(--color-primary)',
+              borderRadius: 'var(--radius-sm)',
+            }}>
+              <p style={{
+                fontFamily: 'var(--font-body)', fontSize: '10px', color: 'var(--color-text-faint)',
+                textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 'var(--space-2)',
+              }}>
+                Vous entendez
+              </p>
+              <p style={{
+                fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)', fontStyle: 'italic',
+                color: 'var(--color-text-muted)', lineHeight: 1.7,
+              }}>
+                {scene.overheard}
+              </p>
+            </div>
+          )}
 
           {/* Faits canoniques (petite note de bas de scène) */}
           {scene.canonicalFacts.length > 0 && phase === 'transition' && (

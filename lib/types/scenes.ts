@@ -42,7 +42,7 @@ export interface SceneChoice {
   availableFor: CharacterId[] | 'all';
   requiresFlag?: string;        // Game flag required
   effects: ChoiceEffect[];
-  revealsClue?: ClueId;
+  revealsClue?: ClueId | ClueId[];
   nextScene?: SceneId;          // Override next scene
 }
 

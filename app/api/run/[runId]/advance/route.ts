@@ -7,6 +7,7 @@ import { getScene, getAvailableChoices, applyChoice, applyOnEnterEffects } from 
 import { isRunComplete } from '@/lib/engine/transitions'
 import { buildDiscoveredClue } from '@/lib/engine/clueResolver'
 import { calculateEnding } from '@/lib/engine/endingCalculator'
+import { getOverheardConversation } from '@/lib/engine/overheard'
 import type { RunState } from '@/types'
 
 interface AdvanceBody {
@@ -150,6 +151,7 @@ export async function GET(
         narrative: scene.narrativeBlocks[state.playerPov] ?? scene.narrativeBlocks.default,
         minigameId: scene.minigameId ?? null,
         canonicalFacts: scene.canonicalFacts,
+        overheard: getOverheardConversation(scene.id, state.playerPov, state),
       },
       choices: availableChoices.map((c) => ({
         id: c.id,

@@ -24,9 +24,14 @@ export function resolveClues(
     }
   }
 
-  // Indice spécifique au choix
-  if (choice.revealsClue && !isAlreadyDiscovered(choice.revealsClue, state)) {
-    clues.push(choice.revealsClue)
+  // Indice(s) spécifique(s) au choix
+  if (choice.revealsClue) {
+    const revealed = Array.isArray(choice.revealsClue) ? choice.revealsClue : [choice.revealsClue]
+    for (const clueId of revealed) {
+      if (!isAlreadyDiscovered(clueId, state) && !clues.includes(clueId)) {
+        clues.push(clueId)
+      }
+    }
   }
 
   return clues
