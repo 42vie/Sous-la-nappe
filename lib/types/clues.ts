@@ -1,0 +1,34 @@
+/**
+ * Clues — 26 items from chapter 11 of the PDF.
+ * fiabilite: 'low' | 'medium' | 'high' | 'very_high'
+ * The 'misleads' field is the most important column: what it makes you believe (often wrong).
+ */
+
+export type ClueId =
+  | 'C-01' | 'C-02' | 'C-03' | 'C-04' | 'C-05'
+  | 'C-06' | 'C-07' | 'C-08' | 'C-09' | 'C-10'
+  | 'C-11' | 'C-12' | 'C-13' | 'C-14' | 'C-15'
+  | 'C-16' | 'C-17' | 'C-18' | 'C-19' | 'C-20'
+  | 'C-21' | 'C-22' | 'C-23' | 'C-24' | 'C-25' | 'C-26';
+
+export type ClueReliability = 'low' | 'medium' | 'high' | 'very_high';
+
+export interface ClueData {
+  id: ClueId;
+  label: string;
+  location: string;
+  accessibleTo: string;   // who can find it
+  reliability: ClueReliability;
+  proves: string;         // what it actually proves
+  misleads: string;       // what it makes the player believe (often wrong)
+  /** Internal hidden reliability score — not shown to player */
+  _hiddenScore: number;  // 0–100
+}
+
+/** A clue discovered in a run */
+export interface DiscoveredClue {
+  clueId: ClueId;
+  discoveredByPov: import('./characters').CharacterId;
+  discoveredAtScene: number;
+  playerInterpretation?: string; // what the player noted
+}
