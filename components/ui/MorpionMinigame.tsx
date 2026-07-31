@@ -46,16 +46,24 @@ function aiMove(board: Board, aiChar: CharacterId): number {
   return free[Math.floor(Math.random() * free.length)]
 }
 
+function label(id: CharacterId): string {
+  return id.charAt(0).toUpperCase() + id.slice(1)
+}
+
 interface MorpionMinigameProps {
   players: [CharacterId, CharacterId] // [0] = X (joue en premier), [1] = O
+  playerPov: CharacterId
   onComplete: (result: { winner: CharacterId | null; serviceHelper: CharacterId }) => void
 }
 
-export function MorpionMinigame({ players, onComplete }: MorpionMinigameProps) {
+export function MorpionMinigame({ players, playerPov, onComplete }: MorpionMinigameProps) {
   const [sarah, yanis] = players as [CharacterId, CharacterId]
-  // Dans le run T0 : Sarah joue X, Yanis joue O et est l'IA
-  const playerChar = sarah  // le joueur humain joue Sarah
-  const aiChar = yanis
+  // La partie oppose toujours Sarah et Yanis (canon T0). Le joueur humain
+  // contrôle son propre personnage s'il est l'un des deux protagonistes ;
+  // sinon (les 4 autres POV, qui observent la scène) il contrôle Sarah,
+  // dont le résultat de cette partie est le pivot causal du drame.
+  const playerChar = playerPov === yanis ? yanis : sarah
+  const aiChar = playerChar === sarah ? yanis : sarah
 
   const [board, setBoard] = useState<Board>(Array(9).fill(null))
   const [currentTurn, setCurrentTurn] = useState<CharacterId>(playerChar)
@@ -103,20 +111,19 @@ export function MorpionMinigame({ players, onComplete }: MorpionMinigameProps) {
   function handleConfirm() {
     if (resultSent) return
     setResultSent(true)
-    // Si Sarah (playerChar) perd → elle doit servir = serviceHelper: sarah (T0 canonique)
-    // Si Sarah gagne ou draw → yanis sert
-    const sarahLost = winner === aiChar || winner === 'draw'
-    const serviceHelper: CharacterId = sarahLost ? playerChar : aiChar
+    // Le perdant (ou en cas d'égalité, Sarah — canon T0) sert les assiettes.
+    const serviceHelper: CharacterId =
+      winner === 'draw' ? sarah : winner === sarah ? yanis : sarah
     onComplete({ winner: winner === 'draw' ? null : winner as CharacterId, serviceHelper })
   }
 
   const statusText = winner
     ? winner === 'draw'
-      ? 'Égalité — Sarah servira quand même.'
-      : winner === playerChar
-        ? `${playerChar.charAt(0).toUpperCase() + playerChar.slice(1)} gagne — Yanis servira.`
-        : `${aiChar.charAt(0).toUpperCase() + aiChar.slice(1)} gagne — Sarah servira.`
-    : `À ${currentTurn.charAt(0).toUpperCase() + currentTurn.slice(1)} de jouer`
+      ? `Égalité — ${label(sarah)} servira quand même.`
+      : winner === sarah
+        ? `${label(sarah)} gagne — ${label(yanis)} servira.`
+        : `${label(yanis)} gagne — ${label(sarah)} servira.`
+    : `À ${label(currentTurn)} de jouer`
 
   return (
     <div style={{
@@ -147,7 +154,7 @@ export function MorpionMinigame({ players, onComplete }: MorpionMinigameProps) {
         marginBottom: 'var(--space-6)',
         fontStyle: 'italic',
       }}>
-        Sarah (X) vs Yanis (O). Celui qui perd sert les assiettes.
+        {label(playerChar)} ({CHAR_MARK[playerChar]}) vs {label(aiChar)} ({CHAR_MARK[aiChar]}). Celui qui perd sert les assiettes.
       </p>
 
       {/* Grille */}

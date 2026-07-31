@@ -5,6 +5,14 @@ import scenesRaw from '@/data/scenes.json'
 import { resolveClues } from './clueResolver'
 import { resolveTransition } from './transitions'
 import { hasFlag } from './flags'
+import { BASE_SEATING, SWAP_B_SEATING } from '@/lib/types/house'
+import type { SeatingSnapshot } from '@/lib/types/house'
+import { resolveTargetActual } from './deviation'
+
+const SEATING_SNAPSHOTS: Record<string, SeatingSnapshot> = {
+  base: BASE_SEATING,
+  swapB: SWAP_B_SEATING,
+}
 
 const SCENES: SceneData[] = scenesRaw as unknown as SceneData[]
 
@@ -63,6 +71,24 @@ export function applyChoice(
   }
 
   const stateUpdates = applyEffects(choice.effects, state)
+
+  // Couche 4 du moteur de déviation (chapitre 12) : résolution de la cible
+  // réellement atteinte, au moment du service critique.
+  if (scene.id === 'scene_08_critical_service') {
+    const variable = stateUpdates.variable ?? state.variable
+    stateUpdates.variable = {
+      ...variable,
+      targetActual: resolveTargetActual({
+        seatingVariant: variable.seatingVariant,
+        serviceHelper: variable.serviceHelper,
+        maelysControle: state.variable.characterState.maelysControle,
+        maelysIntoxication: state.variable.characterState.maelysIntoxication,
+        targetPlanned: state.variable.targetPlanned,
+        seatingAtCritical: state.variable.seatingHistory.seating_at_critical,
+      }),
+    }
+  }
+
   const flagUpdates: Record<string, boolean | string | number> = {}
 
   // Extraire les flag_set/flag_clear des effets
@@ -122,9 +148,10 @@ function applyEffects(
 
     if (effect.type === 'seating_update' && effect.key && effect.value) {
       const seatingKey = effect.key as keyof RunState['variable']['seatingHistory']
+      const snapshot = SEATING_SNAPSHOTS[String(effect.value)] ?? BASE_SEATING
       variableUpdates.seatingHistory = {
-        ...state.variable.seatingHistory,
-        [seatingKey]: state.variable.seatingHistory[seatingKey],
+        ...(variableUpdates.seatingHistory ?? state.variable.seatingHistory),
+        [seatingKey]: snapshot,
       }
     }
 

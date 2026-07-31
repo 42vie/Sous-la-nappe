@@ -43,7 +43,7 @@ const IMPLEMENTED_MINIGAMES = ['tictactoe_hidden']
 
 export function SceneEngine({ runId, playerPov, initialSceneId, run }: SceneEngineProps) {
   const router = useRouter()
-  const { advance, loadCurrentScene, setFlag, run: storeRun } = useRunStore()
+  const { advance, loadCurrentScene, run: storeRun } = useRunStore()
 
   const [scene, setScene] = useState<SceneData | null>(null)
   const [choices, setChoices] = useState<ChoiceData[]>([])
@@ -125,7 +125,6 @@ export function SceneEngine({ runId, playerPov, initialSceneId, run }: SceneEngi
   }
 
   function handleMinigameComplete(result: { winner: CharacterId | null; serviceHelper: CharacterId }) {
-    setFlag('serviceHelper', result.serviceHelper)
     useRunStore.getState().updateRunLocal({
       variable: {
         ...((storeRun ?? run).variable),
@@ -134,6 +133,9 @@ export function SceneEngine({ runId, playerPov, initialSceneId, run }: SceneEngi
     })
     setActiveMinigame(null)
     setPhase('choices')
+    // Persister tout de suite : sinon le prochain advance() relit l'ancien
+    // serviceHelper depuis Firestore et perd le résultat du mini-jeu.
+    useRunStore.getState().syncToFirestore()
   }
 
   // --- Render states ---
@@ -247,9 +249,10 @@ export function SceneEngine({ runId, playerPov, initialSceneId, run }: SceneEngi
       )}
 
       {/* ── Mini-jeu morpion ── */}
-      {phase === 'minigame' && activeMinigame === 'morpion' && (
+      {phase === 'minigame' && activeMinigame === 'tictactoe_hidden' && (
         <MorpionMinigame
           players={['sarah', 'yanis']}
+          playerPov={playerPov}
           onComplete={handleMinigameComplete}
         />
       )}

@@ -1,5 +1,8 @@
 /**
- * Clues — 26 items from chapter 11 of the PDF.
+ * Clues — 25 items from chapter 11 of the PDF.
+ * Le chapitre 11 annonce "26 indices" dans son titre mais n'en détaille
+ * que 25 (C-01 à C-25, dont les 10 "indices secondaires" C-04/06/08/10/
+ * 12/13/16/17/21/24) — coquille du document source, aucun C-26 n'existe.
  * fiabilite: 'low' | 'medium' | 'high' | 'very_high'
  * The 'misleads' field is the most important column: what it makes you believe (often wrong).
  */
@@ -9,7 +12,7 @@ export type ClueId =
   | 'C-06' | 'C-07' | 'C-08' | 'C-09' | 'C-10'
   | 'C-11' | 'C-12' | 'C-13' | 'C-14' | 'C-15'
   | 'C-16' | 'C-17' | 'C-18' | 'C-19' | 'C-20'
-  | 'C-21' | 'C-22' | 'C-23' | 'C-24' | 'C-25' | 'C-26';
+  | 'C-21' | 'C-22' | 'C-23' | 'C-24' | 'C-25';
 
 export type ClueReliability = 'low' | 'medium' | 'high' | 'very_high';
 

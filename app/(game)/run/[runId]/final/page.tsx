@@ -45,6 +45,36 @@ interface FinalReport {
   narrated: Record<string, string>
 }
 
+interface FinalQuestionOption {
+  id: string
+  label: string
+}
+
+interface FinalQuestion {
+  id: string
+  index: number
+  label: string
+  weight: number
+  options: FinalQuestionOption[]
+}
+
+const COLUMN_LABELS: Record<string, string> = {
+  targetWho: 'Qui',
+  targetWhy: 'Pourquoi',
+  mechanism: 'Comment',
+  whoKnew: 'Qui savait',
+  whatsaid: 'Ce qui a été dit',
+}
+
+// Chapitre 14 de la bible : la dernière ligne, seule, sans commentaire.
+// Sarah n'est épargnée que dans la fin déviée D1 (« Vous avez pris l'assiette
+// de Sarah — la chaîne s'est interrompue »).
+function lastLine(endingId: string): string {
+  return endingId === 'D1'
+    ? "Elle n'a rien dit. On ne lui a rien demandé."
+    : 'Sarah Kessler avait raison sur tout, sauf sur l\'ordre.'
+}
+
 export default function FinalPage() {
   const params = useParams()
   const router = useRouter()
@@ -52,26 +82,71 @@ export default function FinalPage() {
   const { run } = useRunStore()
 
   const [report, setReport] = useState<FinalReport | null>(null)
+  const [questions, setQuestions] = useState<FinalQuestion[]>([])
+  const [answers, setAnswers] = useState<Record<string, string>>({})
+  const [endingId, setEndingId] = useState<string | null>(null)
+  const [clueCount, setClueCount] = useState<number>(0)
   const [loading, setLoading] = useState(true)
+  const [submitting, setSubmitting] = useState(false)
   const [score, setScore] = useState<number | null>(null)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     if (!runId) return
     fetch(`/api/run/${runId}/final`)
       .then(async (res) => {
-        if (!res.ok) return
+        if (!res.ok) {
+          const data = await res.json().catch(() => ({}))
+          throw new Error(data.error ?? 'Impossible de charger le rapport final')
+        }
         const data = await res.json()
         setReport(data.report ?? null)
-        setScore(data.score ?? null)
+        setQuestions(data.questions ?? [])
+        setEndingId(data.ending ?? run?.ending ?? 'F1')
+        setClueCount(data.discoveredCluesCount ?? run?.discoveredClues?.length ?? 0)
+        if (data.score !== null && data.score !== undefined) {
+          setScore(data.score)
+          setAnswers(data.answers ?? {})
+        }
       })
-      .catch(() => {})
+      .catch((err) => setError(err instanceof Error ? err.message : 'Erreur inconnue'))
       .finally(() => setLoading(false))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [runId])
 
-  const endingId = run?.ending ?? 'F1'
-  const ending = ENDING_LABELS[endingId] ?? ENDING_LABELS.F1
+  async function handleSubmitQuiz() {
+    if (submitting) return
+    setSubmitting(true)
+    setError(null)
+    try {
+      const res = await fetch(`/api/run/${runId}/final`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ answers }),
+      })
+      if (!res.ok) throw new Error('Erreur lors du calcul du score')
+      const data = await res.json()
+      setScore(data.score)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Erreur inconnue')
+    } finally {
+      setSubmitting(false)
+    }
+  }
 
-  const clueCount = run?.discoveredClues?.length ?? 0
+  const ending = ENDING_LABELS[endingId ?? 'F1'] ?? ENDING_LABELS.F1
+  const quizComplete = questions.length > 0 && questions.every((q) => answers[q.id])
+  const quizPending = score === null
+
+  if (loading) {
+    return (
+      <main style={{ minHeight: '100dvh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)', color: 'var(--color-text-faint)', fontStyle: 'italic' }}>
+          Chargement…
+        </p>
+      </main>
+    )
+  }
 
   return (
     <main style={{
@@ -83,6 +158,94 @@ export default function FinalPage() {
     }}>
       <div style={{ width: '100%', maxWidth: 'var(--content-narrow)' }}>
 
+        {error && (
+          <p style={{
+            fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', color: 'var(--color-error)',
+            padding: 'var(--space-3) var(--space-4)', background: 'var(--color-error-bg)',
+            border: '1px solid var(--color-error)', borderRadius: 'var(--radius-md)',
+            marginBottom: 'var(--space-8)',
+          }}>{error}</p>
+        )}
+
+        {/* ── Quiz de reconstruction (chapitre 14) ── */}
+        {quizPending && questions.length > 0 && (
+          <>
+            <p style={{
+              fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', color: 'var(--color-text-faint)',
+              textTransform: 'uppercase', letterSpacing: '0.12em', marginBottom: 'var(--space-4)',
+            }}>
+              Avant le rapport
+            </p>
+            <h1 style={{
+              fontFamily: 'var(--font-display)', fontSize: 'var(--text-2xl)', color: 'var(--color-text)',
+              fontWeight: 400, fontStyle: 'italic', marginBottom: 'var(--space-8)', lineHeight: 1.2,
+            }}>
+              Qu&apos;avez-vous vraiment compris de cette soirée ?
+            </h1>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-8)', marginBottom: 'var(--space-8)' }}>
+              {questions.map((q) => (
+                <div key={q.id}>
+                  <p style={{
+                    fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)', color: 'var(--color-text)',
+                    marginBottom: 'var(--space-3)',
+                  }}>
+                    {q.index}. {q.label}
+                  </p>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
+                    {q.options.map((opt) => (
+                      <label
+                        key={opt.id}
+                        style={{
+                          display: 'flex', alignItems: 'center', gap: 'var(--space-3)',
+                          padding: 'var(--space-3) var(--space-4)',
+                          background: answers[q.id] === opt.id ? 'var(--color-surface-offset)' : 'var(--color-surface)',
+                          border: `1px solid ${answers[q.id] === opt.id ? 'var(--color-primary)' : 'var(--color-border)'}`,
+                          borderRadius: 'var(--radius-md)', cursor: 'pointer',
+                        }}
+                      >
+                        <input
+                          type="radio"
+                          name={q.id}
+                          value={opt.id}
+                          checked={answers[q.id] === opt.id}
+                          onChange={() => setAnswers((prev) => ({ ...prev, [q.id]: opt.id }))}
+                        />
+                        <span style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)', color: 'var(--color-text-muted)' }}>
+                          {opt.label}
+                        </span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <button
+              onClick={handleSubmitQuiz}
+              disabled={!quizComplete || submitting}
+              style={{
+                padding: 'var(--space-3) var(--space-8)',
+                background: 'var(--color-primary)',
+                color: 'var(--color-text-inverse)',
+                border: 'none',
+                borderRadius: 'var(--radius-md)',
+                fontFamily: 'var(--font-body)',
+                fontSize: 'var(--text-sm)',
+                letterSpacing: '0.04em',
+                cursor: quizComplete && !submitting ? 'pointer' : 'not-allowed',
+                opacity: quizComplete && !submitting ? 1 : 0.5,
+                marginBottom: 'var(--space-12)',
+              }}
+            >
+              {submitting ? 'Calcul…' : 'Valider'}
+            </button>
+          </>
+        )}
+
+        {/* ── Résultat ── */}
+        {!quizPending && (
+        <>
         {/* Titre fin */}
         <p style={{
           fontFamily: 'var(--font-body)',
@@ -188,7 +351,7 @@ export default function FinalPage() {
                   {Object.entries(report[col]).map(([key, value]) => (
                     <div key={key} style={{ marginBottom: 'var(--space-2)' }}>
                       <p style={{ fontFamily: 'var(--font-body)', fontSize: '10px', color: 'var(--color-text-faint)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-                        {key}
+                        {COLUMN_LABELS[key] ?? key}
                       </p>
                       <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)', color: 'var(--color-text-muted)' }}>
                         {value}
@@ -202,9 +365,9 @@ export default function FinalPage() {
         )}
 
         {/* CTA rejouer */}
-        <div style={{ display: 'flex', gap: 'var(--space-4)', flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', gap: 'var(--space-4)', flexWrap: 'wrap', marginBottom: 'var(--space-12)' }}>
           <button
-            onClick={() => router.push('/')}
+            onClick={() => router.push('/dashboard')}
             style={{
               padding: 'var(--space-3) var(--space-8)',
               background: 'var(--color-primary)',
@@ -236,6 +399,21 @@ export default function FinalPage() {
             Accueil
           </button>
         </div>
+
+        {/* Dernière ligne — chapitre 14, seule, sans commentaire */}
+        <p style={{
+          fontFamily: 'var(--font-display)',
+          fontSize: 'var(--text-lg)',
+          fontStyle: 'italic',
+          color: 'var(--color-text-faint)',
+          textAlign: 'center',
+          paddingTop: 'var(--space-8)',
+          borderTop: '1px solid var(--color-divider)',
+        }}>
+          {lastLine(endingId ?? 'F1')}
+        </p>
+        </>
+        )}
 
       </div>
     </main>
