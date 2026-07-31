@@ -23,6 +23,9 @@ function friendlyError(code: string): string {
     case 'auth/weak-password':          return 'Mot de passe trop court (6 caractères minimum).'
     case 'auth/too-many-requests':      return 'Trop de tentatives. Réessayez dans quelques minutes.'
     case 'auth/network-request-failed': return 'Problème réseau. Vérifiez votre connexion.'
+    case 'auth/operation-not-allowed':  return 'La connexion par e-mail/mot de passe n\'est pas activée sur ce projet Firebase.'
+    case 'auth/configuration-not-found': return 'Configuration Firebase Authentication manquante sur ce projet.'
+    case 'session/failed':              return 'Connexion réussie mais la session n\'a pas pu être créée côté serveur. Réessayez, ou contactez l\'administrateur si ça persiste.'
     default: return 'Une erreur est survenue. Réessayez.'
   }
 }
@@ -32,11 +35,16 @@ async function createSession(): Promise<void> {
   const user = auth.currentUser
   if (!user) return
   const idToken = await getIdToken(user)
-  await fetch('/api/auth/session', {
+  const res = await fetch('/api/auth/session', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ idToken }),
   })
+  if (!res.ok) {
+    const data = await res.json().catch(() => ({}))
+    console.error('[createSession] échec de la création du cookie de session:', res.status, data)
+    throw { code: 'session/failed' }
+  }
 }
 
 export function AuthForm() {
