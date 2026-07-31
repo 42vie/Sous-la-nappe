@@ -6,6 +6,8 @@ import { useRunStore } from '@/store/runStore'
 import { CluePanel } from './CluePanel'
 import { SeatingPlan } from './SeatingPlan'
 import { MorpionMinigame } from './MorpionMinigame'
+import { VariableGauges } from './VariableGauges'
+import { getChapterNumberForScene } from '@/lib/engine/chapters'
 import type { CharacterId } from '@/lib/types/characters'
 import type { RunState } from '@/types'
 
@@ -55,6 +57,7 @@ export function SceneEngine({ runId, playerPov, initialSceneId, run }: SceneEngi
   const [error, setError] = useState<string | null>(null)
   const [showClues, setShowClues] = useState(false)
   const [showSeating, setShowSeating] = useState(false)
+  const [showGauges, setShowGauges] = useState(false)
 
   const discoveredClues = storeRun?.discoveredClues ?? run.discoveredClues ?? []
 
@@ -118,6 +121,17 @@ export function SceneEngine({ runId, playerPov, initialSceneId, run }: SceneEngi
       router.push(`/run/${runId}/final`)
       return
     }
+
+    // Frontière de chapitre : la scène qu'on s'apprête à charger appartient à
+    // un chapitre sans personnage assigné → passer par le choix de POV.
+    const current = storeRun ?? run
+    const povHistory = current.povHistory ?? [current.playerPov]
+    const nextChapter = getChapterNumberForScene(current.currentScene)
+    if (nextChapter !== null && nextChapter > povHistory.length) {
+      router.push(`/run/${runId}/chapter`)
+      return
+    }
+
     setChoiceMade(null)
     setCluesJustRevealed([])
     setNarrativeNotes([])
@@ -210,6 +224,20 @@ export function SceneEngine({ runId, playerPov, initialSceneId, run }: SceneEngi
           >
             {discoveredClues.length} indice{discoveredClues.length !== 1 ? 's' : ''}
           </button>
+          <button
+            onClick={() => setShowGauges((v) => !v)}
+            style={{
+              fontFamily: 'var(--font-body)',
+              fontSize: 'var(--text-xs)',
+              color: 'var(--color-text-faint)',
+              textDecoration: 'underline',
+              cursor: 'pointer',
+              background: 'none',
+              border: 'none',
+            }}
+          >
+            tensions
+          </button>
         </div>
       </div>
 
@@ -220,6 +248,32 @@ export function SceneEngine({ runId, playerPov, initialSceneId, run }: SceneEngi
             state={storeRun ?? run}
             showHistory
             highlightSeat={scene?.id === 'scene_08_critical_service' ? 2 : undefined}
+          />
+        </div>
+      )}
+
+      {/* ── Jauges des personnages toggle ── */}
+      {showGauges && (
+        <div style={{
+          marginBottom: 'var(--space-6)',
+          padding: 'var(--space-4)',
+          background: 'var(--color-surface-offset)',
+          borderRadius: 'var(--radius-lg)',
+          border: '1px solid var(--color-divider)',
+        }}>
+          <p style={{
+            fontFamily: 'var(--font-body)',
+            fontSize: 'var(--text-xs)',
+            color: 'var(--color-text-muted)',
+            textTransform: 'uppercase',
+            letterSpacing: '0.08em',
+            marginBottom: 'var(--space-4)',
+          }}>
+            Tensions du groupe — vos choix affectent aussi les autres
+          </p>
+          <VariableGauges
+            characterState={(storeRun ?? run).variable.characterState}
+            currentPov={playerPov}
           />
         </div>
       )}

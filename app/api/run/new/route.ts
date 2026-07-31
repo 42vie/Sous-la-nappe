@@ -46,6 +46,7 @@ export async function POST(req: NextRequest) {
       runId: runRef.id,
       createdAt: now,
       playerPov: character,
+      povHistory: [character],
       canon: {
         maelysOrganizedWithFalsePretext: true,
         intentExistedBeforeFirstGuest: true,

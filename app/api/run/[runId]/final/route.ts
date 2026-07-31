@@ -23,8 +23,14 @@ interface QuestionData {
 }
 
 const QUESTIONS = questionsRaw as unknown as QuestionData[]
+const SEATING_QUESTION_ID = 'q4_seating_at_service'
+const SEAT_IDS = [1, 2, 3, 4, 5, 6]
 
-type StoredRun = RunState & { finalScore?: number; finalAnswers?: Record<string, string> }
+type StoredRun = RunState & {
+  finalScore?: number
+  finalAnswers?: Record<string, string>
+  finalSeatingGuess?: Record<string, string>
+}
 
 /** GET — rapport final + questions (sans le barème, pour ne pas exposer les réponses) */
 export async function GET(
@@ -49,12 +55,16 @@ export async function GET(
       discoveredCluesCount: state.discoveredClues?.length ?? 0,
       score: state.finalScore ?? null,
       answers: state.finalAnswers ?? null,
+      seatingGuess: state.finalSeatingGuess ?? null,
+      // Question 4 ("où était chacun au moment du service ?") se joue comme
+      // un vrai plan de table à reconstituer (6 sièges à remplir), pas un
+      // QCM — pas d'options à envoyer, seatingGuess est traité à part.
       questions: QUESTIONS.map((q) => ({
         id: q.id,
         index: q.index,
         label: q.label,
         weight: q.weight,
-        options: q.options.map((o) => ({ id: o.id, label: o.label })),
+        options: q.id === SEATING_QUESTION_ID ? [] : q.options.map((o) => ({ id: o.id, label: o.label })),
       })),
     })
   } catch (err) {
@@ -73,14 +83,28 @@ export async function POST(
     if (!snap.exists) {
       return NextResponse.json({ error: 'Run introuvable' }, { status: 404 })
     }
+    const state = snap.data() as StoredRun
 
-    const { answers } = await req.json() as { answers: Record<string, string> }
+    const { answers, seatingGuess } = await req.json() as {
+      answers: Record<string, string>
+      seatingGuess?: Record<string, string>
+    }
     if (!answers || typeof answers !== 'object') {
       return NextResponse.json({ error: 'Réponses manquantes' }, { status: 400 })
     }
 
+    const trueSeating = state.variable?.seatingHistory?.seating_at_critical ?? {}
+
     let score = 0
     const breakdown = QUESTIONS.map((q) => {
+      if (q.id === SEATING_QUESTION_ID) {
+        const correctSeats = SEAT_IDS.filter(
+          (seat) => seatingGuess?.[String(seat)] && seatingGuess[String(seat)] === trueSeating[seat as unknown as keyof typeof trueSeating]
+        ).length
+        const scoreDelta = Math.round((correctSeats / SEAT_IDS.length) * q.weight)
+        score += scoreDelta
+        return { questionId: q.id, correct: correctSeats === SEAT_IDS.length, scoreDelta, correctSeats }
+      }
       const chosenId = answers[q.id]
       const option = q.options.find((o) => o.id === chosenId)
       const scoreDelta = option?.scoreDelta ?? 0
@@ -92,6 +116,7 @@ export async function POST(
     await adminDb.collection(COLLECTIONS.runs).doc(params.runId).update({
       finalScore: score,
       finalAnswers: answers,
+      finalSeatingGuess: seatingGuess ?? null,
     })
 
     return NextResponse.json({ score, breakdown })

@@ -3,6 +3,11 @@
 import { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { useRunStore } from '@/store/runStore'
+import { CHARACTERS } from '@/components/ui/CharacterCard'
+import type { CharacterId } from '@/lib/types/characters'
+
+const SEATING_QUESTION_ID = 'q4_seating_at_service'
+const SEAT_IDS = [1, 2, 3, 4, 5, 6]
 
 const ENDING_LABELS: Record<string, { title: string; description: string }> = {
   F1: {
@@ -84,6 +89,7 @@ export default function FinalPage() {
   const [report, setReport] = useState<FinalReport | null>(null)
   const [questions, setQuestions] = useState<FinalQuestion[]>([])
   const [answers, setAnswers] = useState<Record<string, string>>({})
+  const [seatingGuess, setSeatingGuess] = useState<Record<number, CharacterId>>({})
   const [endingId, setEndingId] = useState<string | null>(null)
   const [clueCount, setClueCount] = useState<number>(0)
   const [loading, setLoading] = useState(true)
@@ -107,6 +113,7 @@ export default function FinalPage() {
         if (data.score !== null && data.score !== undefined) {
           setScore(data.score)
           setAnswers(data.answers ?? {})
+          if (data.seatingGuess) setSeatingGuess(data.seatingGuess)
         }
       })
       .catch((err) => setError(err instanceof Error ? err.message : 'Erreur inconnue'))
@@ -122,7 +129,7 @@ export default function FinalPage() {
       const res = await fetch(`/api/run/${runId}/final`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ answers }),
+        body: JSON.stringify({ answers, seatingGuess }),
       })
       if (!res.ok) throw new Error('Erreur lors du calcul du score')
       const data = await res.json()
@@ -135,7 +142,10 @@ export default function FinalPage() {
   }
 
   const ending = ENDING_LABELS[endingId ?? 'F1'] ?? ENDING_LABELS.F1
-  const quizComplete = questions.length > 0 && questions.every((q) => answers[q.id])
+  const seatingComplete = SEAT_IDS.every((seat) => seatingGuess[seat])
+  const quizComplete = questions.length > 0 && questions.every((q) =>
+    q.id === SEATING_QUESTION_ID ? seatingComplete : answers[q.id]
+  )
   const quizPending = score === null
 
   if (loading) {
@@ -192,6 +202,36 @@ export default function FinalPage() {
                   }}>
                     {q.index}. {q.label}
                   </p>
+                  {q.id === SEATING_QUESTION_ID ? (
+                    <div style={{
+                      display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'var(--space-3)',
+                      maxWidth: 360,
+                    }}>
+                      {SEAT_IDS.map((seat) => (
+                        <div key={seat} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-1)' }}>
+                          <label style={{ fontFamily: 'var(--font-body)', fontSize: '10px', color: 'var(--color-text-faint)' }}>
+                            Siège {seat}
+                          </label>
+                          <select
+                            value={seatingGuess[seat] ?? ''}
+                            onChange={(e) => setSeatingGuess((prev) => ({ ...prev, [seat]: e.target.value as CharacterId }))}
+                            style={{
+                              padding: 'var(--space-2) var(--space-3)',
+                              background: 'var(--color-surface)',
+                              border: '1px solid var(--color-border)',
+                              borderRadius: 'var(--radius-md)',
+                              fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', color: 'var(--color-text)',
+                            }}
+                          >
+                            <option value="">—</option>
+                            {CHARACTERS.map((c) => (
+                              <option key={c.id} value={c.id}>{c.firstName}</option>
+                            ))}
+                          </select>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
                     {q.options.map((opt) => (
                       <label
@@ -217,6 +257,7 @@ export default function FinalPage() {
                       </label>
                     ))}
                   </div>
+                  )}
                 </div>
               ))}
             </div>

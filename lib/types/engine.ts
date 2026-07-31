@@ -14,6 +14,9 @@ export interface RunState {
   createdAt: number;  // timestamp
   playerPov: CharacterId;
 
+  /** Un personnage par chapitre joué jusqu'ici, dans l'ordre (chapitre N = povHistory[N-1]) */
+  povHistory: CharacterId[];
+
   // === CANONICAL LAYER (never changes) ===
   canon: CanonLayer;
 
