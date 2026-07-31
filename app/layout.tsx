@@ -8,6 +8,11 @@ export const metadata: Metadata = {
   description:
     'Jeu narratif d\'enquête psychologique à embranchements · 6 personnages jouables · 1 dîner',
   keywords: ['jeu narratif', 'enquête', 'interactif', 'fiction'],
+  openGraph: {
+    title: 'Sous la nappe',
+    description: 'Jeu narratif d\'enquête psychologique',
+    images: [{ url: '/logo.png', width: 800, height: 800 }],
+  },
 }
 
 export default function RootLayout({
@@ -16,7 +21,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="fr" suppressHydrationWarning>
+    <html lang="fr" data-theme="dark" suppressHydrationWarning>
       <body>
         <Providers>
           <AuthProvider>
