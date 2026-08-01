@@ -4,9 +4,9 @@ import { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { useRunStore } from '@/store/runStore'
 import { CHARACTERS } from '@/components/ui/CharacterCard'
-import { RelationshipBar } from '@/components/ui/RelationshipBar'
 import { EndingQuiz } from '@/components/ui/EndingQuiz'
 import { ENDING_SUMMARIES } from '@/lib/engine/endingSummaries'
+import { relationshipLabel } from '@/lib/engine/backstory'
 import type { CharacterId } from '@/lib/types/characters'
 
 interface ManuscriptEntryData {
@@ -162,6 +162,20 @@ export default function FinalPage() {
 
   const ending = ENDING_SUMMARIES[(endingId ?? 'F0') as keyof typeof ENDING_SUMMARIES] ?? ENDING_SUMMARIES.F0
   const seatingComplete = SEAT_IDS.every((seat) => seatingGuess[seat])
+
+  // Le dossier final se lit comme un document : un seul style de titre de
+  // section et de paragraphe, réutilisés partout, plutôt qu'une mise en
+  // forme différente par widget.
+  const sectionHeadingStyle: React.CSSProperties = {
+    fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', color: 'var(--color-text-muted)',
+    textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 'var(--space-4)', fontWeight: 500,
+  }
+  const paragraphStyle: React.CSSProperties = {
+    fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)', color: 'var(--color-text-muted)', lineHeight: 1.85,
+  }
+
+  const playerLastCharacter = povHistory.length > 0 ? CHARACTERS.find((c) => c.id === povHistory[povHistory.length - 1]) : null
+  const playerOwnRelations = playerLastCharacter ? relationshipMatrix[playerLastCharacter.id] : null
 
   if (loading) {
     return (
@@ -487,381 +501,209 @@ export default function FinalPage() {
 
         {quizDone && (
         <>
-        {/* Bilan de la soirée — épilogue selon la tension accumulée */}
-        {epilogue && (
-          <div style={{ marginBottom: 'var(--space-12)' }}>
-            <p style={{
-              fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', color: 'var(--color-text-muted)',
-              textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 'var(--space-4)',
-            }}>
-              Bilan de la soirée
-            </p>
-            <div style={{
-              padding: 'var(--space-5)',
-              background: 'var(--color-surface)',
-              border: '1px solid var(--color-border)',
-              borderRadius: 'var(--radius-lg)',
-              marginBottom: 'var(--space-4)',
-            }}>
-              <p style={{
-                fontFamily: 'var(--font-display)', fontStyle: 'italic', fontSize: 'var(--text-lg)',
-                color: 'var(--color-text)', marginBottom: 'var(--space-3)',
-              }}>
+        {/* Le dossier complet — un seul document qu'on lit du début à la
+            fin, plutôt qu'une série de cartes disjointes. Chaque section
+            garde son en-tête pour se repérer, mais le contenu reste du
+            texte suivi : c'est un rapport, pas un tableau de bord. */}
+        <div style={{ marginBottom: 'var(--space-16)' }}>
+
+          {/* Ce qui s'est passé — prévu / réel / dit, en paragraphes successifs plutôt qu'en 3 colonnes */}
+          {report && (
+            <section style={{ marginBottom: 'var(--space-10)' }}>
+              <h2 style={sectionHeadingStyle}>Ce qui s&apos;est passé</h2>
+              {(['planned', 'actual', 'narrated'] as const).map((col) => (
+                <p key={col} style={{ ...paragraphStyle, marginBottom: 'var(--space-4)' }}>
+                  <strong style={{ color: 'var(--color-primary)', fontStyle: 'normal' }}>
+                    {col === 'planned' ? 'Ce qui était prévu. ' : col === 'actual' ? 'Ce qui s’est réellement passé. ' : 'Ce qui a été raconté. '}
+                  </strong>
+                  {Object.entries(report[col]).map(([key, value], i, arr) => (
+                    <span key={key}>
+                      {COLUMN_LABELS[key] ?? key} — {value}{i < arr.length - 1 ? '. ' : '.'}
+                    </span>
+                  ))}
+                </p>
+              ))}
+            </section>
+          )}
+
+          {/* Bilan de la soirée */}
+          {epilogue && (
+            <section style={{ marginBottom: 'var(--space-10)' }}>
+              <h2 style={sectionHeadingStyle}>Bilan de la soirée</h2>
+              <p style={{ ...paragraphStyle, fontFamily: 'var(--font-display)', fontStyle: 'italic', fontSize: 'var(--text-lg)', color: 'var(--color-text)', marginBottom: 'var(--space-3)' }}>
                 {epilogue.headline}
               </p>
-              <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)', color: 'var(--color-text-muted)', lineHeight: 1.8 }}>
+              <p style={{ ...paragraphStyle, marginBottom: 'var(--space-4)' }}>
                 {epilogue.paragraph}
               </p>
-            </div>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--space-3)' }}>
-              {epilogue.statuses.map((s) => {
-                const character = CHARACTERS.find((c) => c.id === s.character)
-                const cond = CONDITION_LABELS[s.condition]
-                return (
-                  <div
-                    key={s.character}
-                    title={s.detail}
-                    style={{
-                      display: 'flex', alignItems: 'center', gap: 'var(--space-2)',
-                      padding: 'var(--space-2) var(--space-3)',
-                      borderRadius: 'var(--radius-md)',
-                      border: `1px solid ${character?.color ?? 'var(--color-border)'}30`,
-                      background: 'var(--color-surface-offset)',
-                    }}
-                  >
-                    <span style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', color: character?.color ?? 'var(--color-text)' }}>
-                      {character?.firstName ?? s.character}
+              <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', color: 'var(--color-text-faint)', lineHeight: 1.8 }}>
+                {epilogue.statuses.map((s, i, arr) => {
+                  const character = CHARACTERS.find((c) => c.id === s.character)
+                  const cond = CONDITION_LABELS[s.condition]
+                  return (
+                    <span key={s.character} title={s.detail}>
+                      <span style={{ color: character?.color ?? 'var(--color-text-faint)' }}>{character?.firstName ?? s.character}</span>
+                      {' '}<span style={{ color: cond.color }}>({cond.label.toLowerCase()})</span>
+                      {i < arr.length - 1 ? ' · ' : ''}
                     </span>
-                    <span style={{ fontFamily: 'var(--font-body)', fontSize: '10px', color: cond.color, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                      {cond.label}
-                    </span>
-                  </div>
-                )
-              })}
-            </div>
-          </div>
-        )}
+                  )
+                })}
+              </p>
+            </section>
+          )}
 
-        {/* Moments marquants — recap concret de ce qui s'est vraiment passé cette partie */}
-        {recap.length > 0 && (
-          <div style={{ marginBottom: 'var(--space-12)' }}>
-            <p style={{
-              fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', color: 'var(--color-text-muted)',
-              textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 'var(--space-4)',
-            }}>
-              Moments marquants
-            </p>
-            <ul style={{ margin: 0, paddingLeft: 'var(--space-5)', display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
-              {recap.map((line, i) => (
-                <li key={i} style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)', color: 'var(--color-text-muted)', lineHeight: 1.7 }}>
-                  {line}
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
+          {/* Moments marquants */}
+          {recap.length > 0 && (
+            <section style={{ marginBottom: 'var(--space-10)' }}>
+              <h2 style={sectionHeadingStyle}>Moments marquants</h2>
+              <p style={paragraphStyle}>
+                {recap.join(' ')}
+              </p>
+            </section>
+          )}
 
-        {/* Le contexte complet — sept ans, six fractures, la chronologie entière maintenant que la partie est finie */}
-        {chronology.length > 0 && (
-          <div style={{ marginBottom: 'var(--space-12)' }}>
-            <p style={{
-              fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', color: 'var(--color-text-muted)',
-              textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 'var(--space-4)',
-            }}>
-              Le contexte — sept ans, six fractures
-            </p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
+          {/* Le contexte */}
+          {chronology.length > 0 && (
+            <section style={{ marginBottom: 'var(--space-10)' }}>
+              <h2 style={sectionHeadingStyle}>Le contexte — sept ans, six fractures</h2>
               {chronology.map((phase) => (
-                <div key={phase.id}>
-                  <p style={{
-                    fontFamily: 'var(--font-display)', fontStyle: 'italic', fontSize: 'var(--text-sm)',
-                    color: 'var(--color-text)', marginBottom: 'var(--space-1)',
-                  }}>
-                    {phase.label} <span style={{ fontFamily: 'var(--font-body)', fontStyle: 'normal', fontSize: '10px', color: 'var(--color-text-faint)' }}>· {phase.period}</span>
-                  </p>
-                  <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)', color: 'var(--color-text-muted)', lineHeight: 1.7 }}>
-                    {phase.text}
-                  </p>
-                </div>
+                <p key={phase.id} style={{ ...paragraphStyle, marginBottom: 'var(--space-3)' }}>
+                  <strong style={{ color: 'var(--color-text)', fontStyle: 'italic', fontFamily: 'var(--font-display)' }}>
+                    {phase.label}
+                  </strong>
+                  <span style={{ fontSize: '10px', color: 'var(--color-text-faint)' }}> · {phase.period} — </span>
+                  {phase.text}
+                </p>
               ))}
-            </div>
-          </div>
-        )}
+            </section>
+          )}
 
-        {/* Matrice relationnelle — ce que chacun ressentait vraiment, avant que tout bascule */}
-        {Object.keys(relationshipMatrix).length > 0 && (
-          <div style={{ marginBottom: 'var(--space-12)' }}>
-            <p style={{
-              fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', color: 'var(--color-text-muted)',
-              textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 'var(--space-2)',
-            }}>
-              Ce que chacun ressentait vraiment
-            </p>
-            <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', color: 'var(--color-text-faint)', fontStyle: 'italic', marginBottom: 'var(--space-5)' }}>
-              L&apos;état des liens au sein du groupe, avant même que la soirée ne commence.
-            </p>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 'var(--space-4)' }}>
-              {CHARACTERS.map((from) => {
-                const relations = relationshipMatrix[from.id]
-                if (!relations) return null
-                return (
-                  <div
-                    key={from.id}
-                    style={{
-                      padding: 'var(--space-4)',
-                      borderRadius: 'var(--radius-md)',
-                      border: `1px solid ${from.color}30`,
-                      background: 'var(--color-surface)',
-                    }}
-                  >
-                    <p style={{
-                      fontFamily: 'var(--font-display)', fontStyle: 'italic', fontSize: 'var(--text-base)',
-                      color: from.color, marginBottom: 'var(--space-3)',
-                    }}>
-                      {from.firstName}
-                    </p>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
-                      {CHARACTERS.filter((to) => to.id !== from.id).map((to) => {
-                        const rel = relations[to.id]
-                        if (!rel) return null
-                        return <RelationshipBar key={to.id} firstName={to.firstName} value={rel.value} note={rel.note} />
-                      })}
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
-          </div>
-        )}
+          {/* Ce que votre personnage ressentait — juste le sien, pas la matrice complète (déjà vue en jeu, chapitre par chapitre) */}
+          {playerOwnRelations && (
+            <section style={{ marginBottom: 'var(--space-10)' }}>
+              <h2 style={sectionHeadingStyle}>Ce que {playerLastCharacter?.firstName} ressentait vraiment</h2>
+              <p style={paragraphStyle}>
+                {CHARACTERS.filter((to) => to.id !== playerLastCharacter?.id).map((to, i, arr) => {
+                  const rel = playerOwnRelations[to.id]
+                  if (!rel) return null
+                  return (
+                    <span key={to.id}>
+                      envers {to.firstName} — {relationshipLabel(rel.value)}{rel.note ? ` (${rel.note})` : ''}{i < arr.length - 1 ? ' ; ' : '.'}
+                    </span>
+                  )
+                })}
+              </p>
+            </section>
+          )}
 
-        {/* Rapport final 3 colonnes */}
-        {report && (
-          <>
-            <p style={{
-              fontFamily: 'var(--font-body)',
-              fontSize: 'var(--text-xs)',
-              color: 'var(--color-text-muted)',
-              textTransform: 'uppercase',
-              letterSpacing: '0.08em',
-              marginBottom: 'var(--space-4)',
-            }}>
-              Ce qui s&apos;est passé
-            </p>
-
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(3, 1fr)',
-              gap: 'var(--space-4)',
-              marginBottom: 'var(--space-12)',
-            }}>
-              {(['planned', 'actual', 'narrated'] as const).map((col) => (
-                <div
-                  key={col}
-                  style={{
-                    padding: 'var(--space-4)',
-                    background: 'var(--color-surface)',
-                    border: '1px solid var(--color-border)',
-                    borderRadius: 'var(--radius-md)',
-                  }}
-                >
-                  <p style={{
-                    fontFamily: 'var(--font-body)',
-                    fontSize: 'var(--text-xs)',
-                    color: 'var(--color-primary)',
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.08em',
-                    marginBottom: 'var(--space-3)',
-                  }}>
-                    {col === 'planned' ? 'Prévu' : col === 'actual' ? 'Réel' : 'Dit'}
-                  </p>
-                  {Object.entries(report[col]).map(([key, value]) => (
-                    <div key={key} style={{ marginBottom: 'var(--space-2)' }}>
-                      <p style={{ fontFamily: 'var(--font-body)', fontSize: '10px', color: 'var(--color-text-faint)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-                        {COLUMN_LABELS[key] ?? key}
-                      </p>
-                      <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)', color: 'var(--color-text-muted)' }}>
-                        {value}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              ))}
-            </div>
-          </>
-        )}
-
-        {/* Bonus optionnel — reconstituer le plan de table du moment critique */}
-        {seatingBonusAvailable && (
-          <div style={{ marginBottom: 'var(--space-12)' }}>
-            <p style={{
-              fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', color: 'var(--color-text-muted)',
-              textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 'var(--space-2)',
-            }}>
-              Bonus — +15 points possibles
-            </p>
-            <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)', color: 'var(--color-text-faint)', fontStyle: 'italic', marginBottom: 'var(--space-4)' }}>
-              Qui était où, au moment critique du service ? Placez les six convives, si vous vous en souvenez.
-            </p>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'var(--space-3)', maxWidth: 360, marginBottom: 'var(--space-4)' }}>
-              {SEAT_IDS.map((seat) => (
-                <div key={seat} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-1)' }}>
-                  <label style={{ fontFamily: 'var(--font-body)', fontSize: '10px', color: 'var(--color-text-faint)' }}>
-                    Siège {seat}
-                  </label>
-                  <select
-                    value={seatingGuess[seat] ?? ''}
-                    onChange={(e) => setSeatingGuess((prev) => ({ ...prev, [seat]: e.target.value as CharacterId }))}
-                    style={{
-                      padding: 'var(--space-2) var(--space-3)',
-                      background: 'var(--color-surface)',
-                      border: '1px solid var(--color-border)',
-                      borderRadius: 'var(--radius-md)',
-                      fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', color: 'var(--color-text)',
-                    }}
-                  >
-                    <option value="">—</option>
-                    {CHARACTERS.map((c) => (
-                      <option key={c.id} value={c.id}>{c.firstName}</option>
-                    ))}
-                  </select>
-                </div>
-              ))}
-            </div>
-            <button
-              onClick={handleSubmitSeating}
-              disabled={!seatingComplete || submittingSeating}
-              style={{
-                padding: 'var(--space-3) var(--space-8)',
-                background: 'var(--color-primary)',
-                color: 'var(--color-text-inverse)',
-                border: 'none',
-                borderRadius: 'var(--radius-md)',
-                fontFamily: 'var(--font-body)',
-                fontSize: 'var(--text-sm)',
-                letterSpacing: '0.04em',
-                cursor: seatingComplete && !submittingSeating ? 'pointer' : 'not-allowed',
-                opacity: seatingComplete && !submittingSeating ? 1 : 0.5,
-              }}
-            >
-              {submittingSeating ? 'Calcul…' : 'Valider le plan de table'}
-            </button>
-          </div>
-        )}
-
-        {/* Ma vérité — un résumé par personnage joué, sur ce qu'il a choisi */}
-        {povSummaries.length > 0 && (
-          <div style={{ marginBottom: 'var(--space-12)' }}>
-            <p style={{
-              fontFamily: 'var(--font-body)',
-              fontSize: 'var(--text-xs)',
-              color: 'var(--color-text-muted)',
-              textTransform: 'uppercase',
-              letterSpacing: '0.08em',
-              marginBottom: 'var(--space-4)',
-            }}>
-              Ma vérité
-            </p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
-              {povSummaries.map((s) => {
-                const character = CHARACTERS.find((c) => c.id === s.character)
-                return (
-                  <div
-                    key={s.chapterNumber}
-                    style={{
-                      padding: 'var(--space-4)',
-                      borderRadius: 'var(--radius-md)',
-                      border: `1px solid ${character?.color ?? 'var(--color-border)'}30`,
-                      background: 'var(--color-surface)',
-                    }}
-                  >
-                    <p style={{
-                      fontFamily: 'var(--font-display)', fontStyle: 'italic', fontSize: 'var(--text-base)',
-                      color: character?.color ?? 'var(--color-text)', marginBottom: 'var(--space-2)',
-                    }}>
-                      {character?.firstName ?? s.character} — chapitre {s.chapterNumber} · {s.chapterTitle}
-                    </p>
-                    {s.choiceLabels.length > 0 ? (
-                      <ul style={{ margin: 0, paddingLeft: 'var(--space-5)' }}>
-                        {s.choiceLabels.map((label, i) => (
-                          <li key={i} style={{
-                            fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)', color: 'var(--color-text-muted)',
-                            marginBottom: 'var(--space-1)',
-                          }}>
-                            {label}
-                          </li>
-                        ))}
-                      </ul>
-                    ) : (
-                      <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', color: 'var(--color-text-faint)', fontStyle: 'italic' }}>
-                        Aucun choix enregistré.
-                      </p>
-                    )}
-                  </div>
-                )
-              })}
-            </div>
-          </div>
-        )}
-
-        {/* Le manuscrit — uniquement ce qui a été réellement établi. Ce qui
-            n'a pas été débloqué ne s'affiche pas ici, même en teaser flouté :
-            à ce stade (fin de partie), le montrer spoilerait la prochaine
-            partie avec un autre point de vue plutôt que de donner envie d'y
-            revenir. */}
-        {manuscript.length > 0 && (
-          <div style={{ marginBottom: 'var(--space-12)' }}>
-            <p style={{
-              fontFamily: 'var(--font-body)',
-              fontSize: 'var(--text-xs)',
-              color: 'var(--color-text-muted)',
-              textTransform: 'uppercase',
-              letterSpacing: '0.08em',
-              marginBottom: 'var(--space-4)',
-            }}>
-              Le manuscrit — {manuscript.filter((e) => e.status === 'complete').length} / {manuscript.length} vérités établies
-            </p>
-            {manuscript.some((e) => e.status === 'complete') ? (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
-                {manuscript.filter((e) => e.status === 'complete').map((entry) => (
-                  <div
-                    key={entry.id}
-                    style={{
-                      padding: 'var(--space-3) var(--space-4)',
-                      borderRadius: 'var(--radius-md)',
-                      border: '1px solid var(--color-border)',
-                      background: 'var(--color-primary-highlight)',
-                    }}
-                  >
-                    <p style={{
-                      fontFamily: 'var(--font-display)', fontStyle: 'italic', fontSize: 'var(--text-sm)',
-                      color: 'var(--color-text-muted)', lineHeight: 1.6,
-                    }}>
-                      {entry.text}
-                    </p>
+          {/* Bonus optionnel — reconstituer le plan de table du moment critique */}
+          {seatingBonusAvailable && (
+            <section style={{ marginBottom: 'var(--space-10)' }}>
+              <h2 style={sectionHeadingStyle}>Bonus — +15 points possibles</h2>
+              <p style={{ ...paragraphStyle, fontStyle: 'italic', marginBottom: 'var(--space-4)' }}>
+                Qui était où, au moment critique du service ? Placez les six convives, si vous vous en souvenez.
+              </p>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'var(--space-3)', maxWidth: 360, marginBottom: 'var(--space-4)' }}>
+                {SEAT_IDS.map((seat) => (
+                  <div key={seat} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-1)' }}>
+                    <label style={{ fontFamily: 'var(--font-body)', fontSize: '10px', color: 'var(--color-text-faint)' }}>
+                      Siège {seat}
+                    </label>
+                    <select
+                      value={seatingGuess[seat] ?? ''}
+                      onChange={(e) => setSeatingGuess((prev) => ({ ...prev, [seat]: e.target.value as CharacterId }))}
+                      style={{
+                        padding: 'var(--space-2) var(--space-3)',
+                        background: 'var(--color-surface)',
+                        border: '1px solid var(--color-border)',
+                        borderRadius: 'var(--radius-md)',
+                        fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', color: 'var(--color-text)',
+                      }}
+                    >
+                      <option value="">—</option>
+                      {CHARACTERS.map((c) => (
+                        <option key={c.id} value={c.id}>{c.firstName}</option>
+                      ))}
+                    </select>
                   </div>
                 ))}
               </div>
-            ) : (
-              <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', color: 'var(--color-text-faint)', fontStyle: 'italic' }}>
-                Aucune vérité établie cette fois-ci — rien à montrer que vous n&apos;ayez pas vous-même découvert.
-              </p>
-            )}
-          </div>
-        )}
+              <button
+                onClick={handleSubmitSeating}
+                disabled={!seatingComplete || submittingSeating}
+                style={{
+                  padding: 'var(--space-3) var(--space-8)',
+                  background: 'var(--color-primary)',
+                  color: 'var(--color-text-inverse)',
+                  border: 'none',
+                  borderRadius: 'var(--radius-md)',
+                  fontFamily: 'var(--font-body)',
+                  fontSize: 'var(--text-sm)',
+                  letterSpacing: '0.04em',
+                  cursor: seatingComplete && !submittingSeating ? 'pointer' : 'not-allowed',
+                  opacity: seatingComplete && !submittingSeating ? 1 : 0.5,
+                }}
+              >
+                {submittingSeating ? 'Calcul…' : 'Valider le plan de table'}
+              </button>
+            </section>
+          )}
 
-        {/* Teaser de rejouabilité — sans spoiler, juste avant le bouton */}
-        {povHistory.length > 0 && (() => {
-          const unplayed = CHARACTERS.filter((c) => !povHistory.includes(c.id))
-          if (unplayed.length === 0) return null
-          return (
-            <p style={{
-              fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)', fontStyle: 'italic',
-              color: 'var(--color-text-faint)', marginBottom: 'var(--space-4)',
-            }}>
-              {unplayed.map((c) => c.firstName).join(' et ')} n&apos;{unplayed.length > 1 ? 'ont' : 'a'} pas pris la parole cette fois-ci. Ce qu&apos;{unplayed.length > 1 ? 'ils ont' : 'elle a'} vu reste à découvrir.
-            </p>
-          )
-        })()}
+          {/* Ma vérité — un paragraphe par personnage joué, dans l'ordre des chapitres */}
+          {povSummaries.length > 0 && (
+            <section style={{ marginBottom: 'var(--space-10)' }}>
+              <h2 style={sectionHeadingStyle}>Ma vérité</h2>
+              {povSummaries.map((s) => {
+                const character = CHARACTERS.find((c) => c.id === s.character)
+                return (
+                  <p key={s.chapterNumber} style={{ ...paragraphStyle, marginBottom: 'var(--space-4)' }}>
+                    <strong style={{ color: character?.color ?? 'var(--color-text)', fontStyle: 'italic', fontFamily: 'var(--font-display)' }}>
+                      {character?.firstName ?? s.character}
+                    </strong>
+                    <span style={{ fontSize: '10px', color: 'var(--color-text-faint)' }}> · chapitre {s.chapterNumber}, {s.chapterTitle} — </span>
+                    {s.choiceLabels.length > 0 ? s.choiceLabels.join(' ; ') + '.' : 'Aucun choix enregistré.'}
+                  </p>
+                )
+              })}
+            </section>
+          )}
+
+          {/* Le manuscrit — uniquement ce qui a été réellement établi. Ce qui
+              n'a pas été débloqué ne s'affiche pas ici, même en teaser flouté :
+              à ce stade (fin de partie), le montrer spoilerait la prochaine
+              partie avec un autre point de vue plutôt que de donner envie d'y
+              revenir. */}
+          {manuscript.length > 0 && (
+            <section style={{ marginBottom: 'var(--space-10)' }}>
+              <h2 style={sectionHeadingStyle}>
+                Le manuscrit — {manuscript.filter((e) => e.status === 'complete').length} / {manuscript.length} vérités établies
+              </h2>
+              {manuscript.some((e) => e.status === 'complete') ? (
+                <p style={{ ...paragraphStyle, fontFamily: 'var(--font-display)', fontStyle: 'italic' }}>
+                  {manuscript.filter((e) => e.status === 'complete').map((e) => e.text).join(' ')}
+                </p>
+              ) : (
+                <p style={{ ...paragraphStyle, fontStyle: 'italic', color: 'var(--color-text-faint)' }}>
+                  Aucune vérité établie cette fois-ci — rien à montrer que vous n&apos;ayez pas vous-même découvert.
+                </p>
+              )}
+            </section>
+          )}
+
+          {/* Teaser de rejouabilité — sans spoiler, juste avant le bouton */}
+          {povHistory.length > 0 && (() => {
+            const unplayed = CHARACTERS.filter((c) => !povHistory.includes(c.id))
+            if (unplayed.length === 0) return null
+            return (
+              <p style={{
+                fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)', fontStyle: 'italic',
+                color: 'var(--color-text-faint)',
+              }}>
+                {unplayed.map((c) => c.firstName).join(' et ')} n&apos;{unplayed.length > 1 ? 'ont' : 'a'} pas pris la parole cette fois-ci. Ce qu&apos;{unplayed.length > 1 ? 'ils ont' : 'elle a'} vu reste à découvrir.
+              </p>
+            )
+          })()}
+        </div>
         </>
         )}
 
