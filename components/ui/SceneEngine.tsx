@@ -364,7 +364,11 @@ export function SceneEngine({ runId, playerPov, initialSceneId, run }: SceneEngi
           textTransform: 'uppercase',
           letterSpacing: '0.08em',
         }}>
-          {scene ? `Scène ${scene.index} / 19${scene.time ? ` — ${scene.time}` : ''}` : '…'}
+          {/* Pas de total affiché : depuis l'Acte 3 (conditionnel selon la
+              fin), le nombre de scènes n'est plus le même pour tout le
+              monde — et docs/ux-ergonomie-chapitres-v1.md déconseillait de
+              toute façon d'afficher la durée totale (spoiler de rythme). */}
+          {scene ? `Scène ${scene.index}${scene.time ? ` — ${scene.time}` : ''}` : '…'}
         </p>
         <div style={{ display: 'flex', gap: 'var(--space-4)' }}>
           <button

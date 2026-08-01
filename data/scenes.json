@@ -1,7 +1,483 @@
 [
   {
-    "id": "scene_01_opening_memory",
+    "id": "scene_00a_preparation_cuisine",
     "index": 1,
+    "title": "Avant que personne n'arrive",
+    "durationMin": 2,
+    "availablePovs": "all",
+    "narrativeBlocks": {
+      "default": "17h30. Personne n'est encore arrivé. Quelque part dans la maison, Maëlys est seule avec ce qu'elle a préparé. Toi, tu n'es pas encore là — mais tu te souviens de ces dernières minutes avant de partir.",
+      "maelys": "17h30. La maison est encore silencieuse. Tu es seule dans la cuisine, avec le récipient en grès et la sauce déjà préparée. Tu as le temps de changer d'avis. Tu ne le prends pas.",
+      "lucas": "17h30, chez toi. Tu enfiles ta veste, tu relis une dernière fois le message d'invitation de Maëlys. Quelque chose sonne légèrement faux dedans, mais tu ne saurais pas dire quoi.",
+      "noe": "17h30. Tu es encore en réunion, en retard comme toujours pour ce genre de soirée. Tu envoies un message à Maëlys pour prévenir — machinalement, sans vraiment y penser.",
+      "ines": "17h30. Tu es prête bien avant l'heure, comme toujours. Tu te demandes si tu ne devrais pas partir plus tôt — Maëlys a toujours besoin d'aide à la dernière minute.",
+      "sarah": "17h30. Tu cherches ton pilulier dans ton sac, sans le trouver. Tu te dis que tu as le temps, que tu le prendras avant de partir. Tu ne le fais pas.",
+      "yanis": "17h30. Tu relis le message qui t'invite à cette soirée, à la place de quelqu'un d'autre. Tu hausses les épaules et tu attrapes une bouteille à apporter."
+    },
+    "choices": [
+      {
+        "id": "s00a_c_maelys_a",
+        "verb": "examine_object",
+        "label": "Doser, avec un soin presque clinique",
+        "availableFor": [
+          "maelys"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "maelysControle",
+            "delta": 8
+          },
+          {
+            "type": "state_delta",
+            "key": "maelysPanic",
+            "delta": 2
+          }
+        ],
+        "revealsClue": "C-44"
+      },
+      {
+        "id": "s00a_c_maelys_b",
+        "verb": "observe",
+        "label": "Hésiter, la main au-dessus du récipient",
+        "availableFor": [
+          "maelys"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "maelysAmbivalence",
+            "delta": 10
+          },
+          {
+            "type": "state_delta",
+            "key": "maelysPanic",
+            "delta": 5
+          }
+        ]
+      },
+      {
+        "id": "s00a_c_maelys_c",
+        "verb": "leave_room",
+        "label": "Tout ranger et partir se préparer",
+        "availableFor": [
+          "maelys"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "maelysControle",
+            "delta": 5
+          }
+        ]
+      },
+      {
+        "id": "s00a_c_maelys_d",
+        "verb": "examine_object",
+        "label": "Recommencer le dosage depuis le début",
+        "availableFor": [
+          "maelys"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "maelysControle",
+            "delta": 3
+          },
+          {
+            "type": "state_delta",
+            "key": "maelysPanic",
+            "delta": 6
+          }
+        ]
+      },
+      {
+        "id": "s00a_c_lucas",
+        "verb": "observe",
+        "label": "Relire le message d'invitation une dernière fois",
+        "availableFor": [
+          "lucas"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "lucasLucidite",
+            "delta": 3
+          }
+        ]
+      },
+      {
+        "id": "s00a_c_noe",
+        "verb": "speak",
+        "label": "Envoyer un message à Maëlys pour prévenir de son retard",
+        "availableFor": [
+          "noe"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "noeLachete",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "id": "s00a_c_ines",
+        "verb": "observe",
+        "label": "Se demander si elle ne devrait pas partir plus tôt",
+        "availableFor": [
+          "ines"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "inesAttachementNoe",
+            "delta": 2
+          }
+        ]
+      },
+      {
+        "id": "s00a_c_sarah",
+        "verb": "examine_object",
+        "label": "Chercher son pilulier sans le trouver",
+        "availableFor": [
+          "sarah"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "sarahMemoire",
+            "delta": -2
+          }
+        ]
+      },
+      {
+        "id": "s00a_c_yanis",
+        "verb": "observe",
+        "label": "Hausser les épaules et attraper une bouteille",
+        "availableFor": [
+          "yanis"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "yanisInsouciance",
+            "delta": 2
+          }
+        ]
+      }
+    ],
+    "canonicalFacts": [
+      "Maëlys prépare le dispositif seule, avant l'arrivée du premier invité",
+      "L'intention existait avant que quiconque ne franchisse la porte"
+    ]
+  },
+  {
+    "id": "scene_00b_appel_de_noe",
+    "index": 2,
+    "title": "L'appel de Noé",
+    "durationMin": 2,
+    "availablePovs": "all",
+    "narrativeBlocks": {
+      "default": "18h05. Le téléphone de Maëlys sonne. Noé, en retard, comme souvent. Elle raccroche, un silence, puis reprend le plan de table — quelque chose vient de changer.",
+      "maelys": "18h05. Noé appelle : il sera en retard, comme souvent. Tu raccroches, tu restes un instant immobile, puis tu reprends le plan de table posé sur le comptoir. Quelque chose se réorganise dans ta tête.",
+      "lucas": "Dans la voiture, en route, tu reçois un message de Maëlys : Noé sera en retard. Tu ne sais pas encore que ce simple retard va changer la position de tout le monde à table.",
+      "noe": "18h05. Tu appelles Maëlys depuis ta voiture pour prévenir de ton retard. Sa voix, au téléphone, sonne étrangement calme — plus calme que d'habitude, en fait.",
+      "ines": "Tu es en route. Ton téléphone affiche un message de Maëlys : Noé sera en retard. Tu ne t'en formalises pas, ce n'est pas la première fois.",
+      "sarah": "En chemin, tu reçois le même message que tout le monde : Noé en retard. Tu ne relèves pas — tu as déjà bien assez à gérer avec toi-même ce soir.",
+      "yanis": "Tu es presque arrivé quand le message de Maëlys tombe : Noé en retard. Tu ne t'en soucies pas, ça ne change rien pour toi."
+    },
+    "choices": [
+      {
+        "id": "s00b_c_maelys_a",
+        "verb": "speak",
+        "label": "Sourire au téléphone, garder un ton léger",
+        "availableFor": [
+          "maelys"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "maelysControle",
+            "delta": 3
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "id": "s00b_c_maelys_b",
+        "verb": "examine_object",
+        "label": "Noter le changement sur le plan de table",
+        "availableFor": [
+          "maelys"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "maelysControle",
+            "delta": 4
+          }
+        ],
+        "revealsClue": "C-45"
+      },
+      {
+        "id": "s00b_c_maelys_c",
+        "verb": "stay_silent",
+        "label": "Raccrocher sèchement, sans rien dire de plus",
+        "availableFor": [
+          "maelys"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "maelysColere",
+            "delta": 4
+          },
+          {
+            "type": "state_delta",
+            "key": "noeInfluenceMaelys",
+            "delta": -3
+          }
+        ]
+      },
+      {
+        "id": "s00b_c_maelys_d",
+        "verb": "speak",
+        "label": "Appeler Inès juste après, pour s'organiser",
+        "availableFor": [
+          "maelys"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "maelysControle",
+            "delta": 2
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "id": "s00b_c_lucas",
+        "verb": "observe",
+        "label": "Se demander pourquoi ce message le concerne autant",
+        "availableFor": [
+          "lucas"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "lucasLucidite",
+            "delta": 2
+          }
+        ]
+      },
+      {
+        "id": "s00b_c_noe",
+        "verb": "speak",
+        "label": "S'excuser platement, sans trop insister",
+        "availableFor": [
+          "noe"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "noeLachete",
+            "delta": 2
+          }
+        ]
+      },
+      {
+        "id": "s00b_c_ines",
+        "verb": "let_pass",
+        "label": "Ne pas s'en formaliser",
+        "availableFor": [
+          "ines"
+        ],
+        "effects": []
+      },
+      {
+        "id": "s00b_c_sarah",
+        "verb": "let_pass",
+        "label": "Ne pas relever",
+        "availableFor": [
+          "sarah"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "sarahStabilite",
+            "delta": -1
+          }
+        ]
+      },
+      {
+        "id": "s00b_c_yanis",
+        "verb": "let_pass",
+        "label": "Ne pas s'en soucier",
+        "availableFor": [
+          "yanis"
+        ],
+        "effects": []
+      }
+    ],
+    "canonicalFacts": [
+      "Le retard de Noé, annoncé avant même le début de la soirée, force un premier ajustement du plan de table"
+    ]
+  },
+  {
+    "id": "scene_00c_arrivee_ines_en_avance",
+    "index": 3,
+    "title": "Inès arrive en avance",
+    "durationMin": 2,
+    "availablePovs": "all",
+    "narrativeBlocks": {
+      "default": "18h40. Inès arrive vingt minutes trop tôt, se retrouve seule avec Maëlys avant tout le monde. Un moment que personne d'autre ne verra jamais.",
+      "ines": "Tu arrives vingt minutes trop tôt — une habitude, une façon d'être utile. Tu te retrouves seule avec Maëlys, dans une maison encore silencieuse, avant que tout le monde n'arrive.",
+      "maelys": "Inès arrive en avance, comme toujours. Tu dois l'accueillir seule, sans avoir eu le temps de finir de te préparer toi-même — ni mentalement, ni autrement.",
+      "lucas": "Tu ne sais pas encore qu'Inès est arrivée vingt minutes avant tout le monde. Ce moment-là, personne d'autre que Maëlys ne le racontera jamais.",
+      "noe": "Tu es encore en chemin quand ta sœur arrive chez Maëlys, seule, en avance. Tu ne sauras jamais ce qui s'est dit entre elles pendant ce quart d'heure.",
+      "sarah": "Tu arrives à l'heure, plus tard, sans savoir qu'Inès et Maëlys ont déjà eu un moment rien qu'à elles avant que la porte ne s'ouvre pour de bon.",
+      "yanis": "Tu arrives avec les autres, sans savoir qu'Inès a passé vingt minutes seule avec Maëlys avant que la soirée ne commence vraiment."
+    },
+    "choices": [
+      {
+        "id": "s00c_c_ines_a",
+        "verb": "examine_object",
+        "label": "Explorer la cuisine sous prétexte d'aider",
+        "availableFor": [
+          "ines"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "inesTensionSociale",
+            "delta": 3
+          }
+        ],
+        "revealsClue": "C-46"
+      },
+      {
+        "id": "s00c_c_ines_b",
+        "verb": "let_pass",
+        "label": "Rester au salon, ne rien chercher",
+        "availableFor": [
+          "ines"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "inesTensionSociale",
+            "delta": -2
+          }
+        ]
+      },
+      {
+        "id": "s00c_c_ines_c",
+        "verb": "speak",
+        "label": "Poser une question directe sur son état",
+        "availableFor": [
+          "ines"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "maelysPanic",
+            "delta": 4
+          },
+          {
+            "type": "state_delta",
+            "key": "inesAttachementNoe",
+            "delta": 3
+          }
+        ]
+      },
+      {
+        "id": "s00c_c_ines_d",
+        "verb": "let_pass",
+        "label": "Ignorer, faire la conversation légère",
+        "availableFor": [
+          "ines"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": -1
+          }
+        ]
+      },
+      {
+        "id": "s00c_c_maelys",
+        "verb": "observe",
+        "label": "La surveiller discrètement pendant qu'elle s'installe",
+        "availableFor": [
+          "maelys"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "maelysControle",
+            "delta": 2
+          },
+          {
+            "type": "state_delta",
+            "key": "maelysPanic",
+            "delta": 2
+          }
+        ]
+      },
+      {
+        "id": "s00c_c_lucas",
+        "verb": "let_pass",
+        "label": "Ne rien en savoir, arriver plus tard",
+        "availableFor": [
+          "lucas"
+        ],
+        "effects": []
+      },
+      {
+        "id": "s00c_c_noe",
+        "verb": "let_pass",
+        "label": "Ne rien en savoir, encore en route",
+        "availableFor": [
+          "noe"
+        ],
+        "effects": []
+      },
+      {
+        "id": "s00c_c_sarah",
+        "verb": "let_pass",
+        "label": "Arriver après, sans le savoir",
+        "availableFor": [
+          "sarah"
+        ],
+        "effects": []
+      },
+      {
+        "id": "s00c_c_yanis",
+        "verb": "let_pass",
+        "label": "Arriver après, sans le savoir",
+        "availableFor": [
+          "yanis"
+        ],
+        "effects": []
+      }
+    ],
+    "canonicalFacts": [
+      "Inès a vingt minutes seule avec Maëlys avant l'arrivée des autres — un moment que le reste du groupe ignore"
+    ]
+  },
+  {
+    "id": "scene_01_opening_memory",
+    "index": 4,
     "title": "Souvenir d'ouverture",
     "durationMin": 3,
     "availablePovs": "all",
@@ -414,7 +890,7 @@
   },
   {
     "id": "scene_01b_conversation_palier",
-    "index": 2,
+    "index": 5,
     "title": "La conversation de palier",
     "durationMin": 2,
     "availablePovs": "all",
@@ -581,7 +1057,7 @@
   },
   {
     "id": "scene_02_arrival",
-    "index": 3,
+    "index": 6,
     "title": "Arrivée",
     "durationMin": 5,
     "availablePovs": "all",
@@ -998,7 +1474,7 @@
   },
   {
     "id": "scene_02b_telephone_yanis",
-    "index": 4,
+    "index": 7,
     "title": "Le téléphone de Yanis",
     "durationMin": 2,
     "availablePovs": "all",
@@ -1165,7 +1641,7 @@
   },
   {
     "id": "scene_03_first_exchanges",
-    "index": 5,
+    "index": 8,
     "title": "Premiers échanges",
     "durationMin": 8,
     "availablePovs": "all",
@@ -1577,7 +2053,7 @@
   },
   {
     "id": "scene_03b_confidence_sarah",
-    "index": 6,
+    "index": 9,
     "title": "La confidence de Sarah",
     "durationMin": 2,
     "availablePovs": "all",
@@ -1738,7 +2214,7 @@
   },
   {
     "id": "scene_04_seating",
-    "index": 7,
+    "index": 10,
     "title": "Mise à table",
     "durationMin": 5,
     "availablePovs": "all",
@@ -2147,7 +2623,7 @@
   },
   {
     "id": "scene_04b_echange_regards",
-    "index": 8,
+    "index": 11,
     "title": "L'échange de regards",
     "durationMin": 1,
     "availablePovs": "all",
@@ -2289,7 +2765,7 @@
   },
   {
     "id": "scene_05_social_game_1",
-    "index": 9,
+    "index": 12,
     "title": "Mini-jeu social",
     "durationMin": 6,
     "availablePovs": "all",
@@ -2783,7 +3259,7 @@
   },
   {
     "id": "scene_05b_remarque_ines",
-    "index": 10,
+    "index": 13,
     "title": "La remarque d'Inès",
     "durationMin": 2,
     "availablePovs": "all",
@@ -2984,7 +3460,7 @@
   },
   {
     "id": "scene_06_kitchen_aside",
-    "index": 11,
+    "index": 14,
     "title": "Cuisine — le reflet",
     "durationMin": 4,
     "availablePovs": "all",
@@ -3432,7 +3908,7 @@
   },
   {
     "id": "scene_06b_lucas_yanis_dehors",
-    "index": 12,
+    "index": 15,
     "title": "Lucas et Yanis dehors",
     "durationMin": 2,
     "availablePovs": "all",
@@ -3584,7 +4060,7 @@
   },
   {
     "id": "scene_07_social_game_2",
-    "index": 13,
+    "index": 16,
     "title": "Humiliation de Sarah",
     "durationMin": 7,
     "availablePovs": "all",
@@ -4116,7 +4592,7 @@
   },
   {
     "id": "scene_07b_demande_noe_lucas",
-    "index": 14,
+    "index": 17,
     "title": "La demande de Noé à Lucas",
     "durationMin": 1,
     "availablePovs": "all",
@@ -4300,7 +4776,7 @@
   },
   {
     "id": "scene_08_critical_service",
-    "index": 15,
+    "index": 18,
     "title": "Le service critique",
     "durationMin": 8,
     "availablePovs": "all",
@@ -4795,7 +5271,7 @@
   },
   {
     "id": "scene_09_incident",
-    "index": 16,
+    "index": 19,
     "title": "L'incident",
     "durationMin": 5,
     "availablePovs": "all",
@@ -5261,7 +5737,7 @@
   },
   {
     "id": "scene_09b_couloir_incident",
-    "index": 17,
+    "index": 20,
     "title": "Le couloir après l'incident",
     "durationMin": 2,
     "availablePovs": "all",
@@ -5494,7 +5970,7 @@
   },
   {
     "id": "scene_10_aftermath",
-    "index": 18,
+    "index": 21,
     "title": "Après-coup",
     "durationMin": 10,
     "availablePovs": "all",
@@ -6054,7 +6530,7 @@
   },
   {
     "id": "scene_11_reconstruction",
-    "index": 19,
+    "index": 22,
     "title": "Reconstruction",
     "durationMin": 6,
     "availablePovs": "all",
@@ -6080,11 +6556,6 @@
             "type": "state_delta",
             "key": "socialTension",
             "delta": -5
-          },
-          {
-            "type": "flag_set",
-            "key": "run_complete",
-            "value": true
           },
           {
             "type": "flag_set",
@@ -6115,11 +6586,6 @@
             "type": "flag_set",
             "key": "lucas_confrontation_finale",
             "value": true
-          },
-          {
-            "type": "flag_set",
-            "key": "run_complete",
-            "value": true
           }
         ],
         "revealsClue": "C-22"
@@ -6136,11 +6602,6 @@
             "type": "state_delta",
             "key": "socialTension",
             "delta": -5
-          },
-          {
-            "type": "flag_set",
-            "key": "run_complete",
-            "value": true
           },
           {
             "type": "flag_set",
@@ -6171,11 +6632,6 @@
             "type": "flag_set",
             "key": "lucas_confrontation_finale",
             "value": true
-          },
-          {
-            "type": "flag_set",
-            "key": "run_complete",
-            "value": true
           }
         ]
       },
@@ -6191,11 +6647,6 @@
             "type": "state_delta",
             "key": "socialTension",
             "delta": -5
-          },
-          {
-            "type": "flag_set",
-            "key": "run_complete",
-            "value": true
           },
           {
             "type": "flag_set",
@@ -6226,11 +6677,6 @@
             "type": "flag_set",
             "key": "lucas_confrontation_finale",
             "value": true
-          },
-          {
-            "type": "flag_set",
-            "key": "run_complete",
-            "value": true
           }
         ]
       },
@@ -6246,11 +6692,6 @@
             "type": "state_delta",
             "key": "socialTension",
             "delta": -5
-          },
-          {
-            "type": "flag_set",
-            "key": "run_complete",
-            "value": true
           },
           {
             "type": "flag_set",
@@ -6286,11 +6727,6 @@
             "type": "flag_set",
             "key": "lucas_confrontation_finale",
             "value": true
-          },
-          {
-            "type": "flag_set",
-            "key": "run_complete",
-            "value": true
           }
         ],
         "revealsClue": "C-22"
@@ -6307,11 +6743,6 @@
             "type": "state_delta",
             "key": "socialTension",
             "delta": -5
-          },
-          {
-            "type": "flag_set",
-            "key": "run_complete",
-            "value": true
           },
           {
             "type": "flag_set",
@@ -6347,11 +6778,6 @@
             "type": "flag_set",
             "key": "lucas_confrontation_finale",
             "value": true
-          },
-          {
-            "type": "flag_set",
-            "key": "run_complete",
-            "value": true
           }
         ]
       },
@@ -6367,11 +6793,6 @@
             "type": "state_delta",
             "key": "socialTension",
             "delta": -5
-          },
-          {
-            "type": "flag_set",
-            "key": "run_complete",
-            "value": true
           },
           {
             "type": "flag_set",
@@ -6402,11 +6823,6 @@
             "type": "flag_set",
             "key": "lucas_confrontation_finale",
             "value": true
-          },
-          {
-            "type": "flag_set",
-            "key": "run_complete",
-            "value": true
           }
         ]
       },
@@ -6427,11 +6843,6 @@
             "type": "state_delta",
             "key": "socialTension",
             "delta": 1
-          },
-          {
-            "type": "flag_set",
-            "key": "run_complete",
-            "value": true
           }
         ]
       },
@@ -6452,11 +6863,6 @@
             "type": "state_delta",
             "key": "socialTension",
             "delta": 1
-          },
-          {
-            "type": "flag_set",
-            "key": "run_complete",
-            "value": true
           }
         ]
       },
@@ -6477,11 +6883,6 @@
             "type": "state_delta",
             "key": "socialTension",
             "delta": 1
-          },
-          {
-            "type": "flag_set",
-            "key": "run_complete",
-            "value": true
           }
         ]
       },
@@ -6502,11 +6903,6 @@
             "type": "state_delta",
             "key": "socialTension",
             "delta": 1
-          },
-          {
-            "type": "flag_set",
-            "key": "run_complete",
-            "value": true
           }
         ]
       },
@@ -6527,11 +6923,6 @@
             "type": "state_delta",
             "key": "socialTension",
             "delta": 0
-          },
-          {
-            "type": "flag_set",
-            "key": "run_complete",
-            "value": true
           }
         ]
       },
@@ -6552,11 +6943,6 @@
             "type": "state_delta",
             "key": "socialTension",
             "delta": 1
-          },
-          {
-            "type": "flag_set",
-            "key": "run_complete",
-            "value": true
           }
         ]
       }
@@ -6566,6 +6952,596 @@
       "La version qui quitte la maison est celle que le groupe a laissé construire",
       "Lucas part avec tout ce qu'il faut pour comprendre — et ne l'a pas dit",
       "Scène terminale : déclenche l'écran final"
+    ]
+  },
+  {
+    "id": "scene_12_couloir_hopital",
+    "index": 23,
+    "title": "Couloir d'hôpital",
+    "durationMin": 3,
+    "availablePovs": "all",
+    "narrativeBlocks": {
+      "default": "2h du matin. Couloir d'hôpital, néons trop blancs. On attend des nouvelles de Noé. Personne ne parle beaucoup. Chacun repasse la soirée dans un ordre différent.",
+      "lucas": "2h du matin, couloir d'hôpital. Tu attends, avec les autres, des nouvelles de Noé. Tu repasses la soirée dans ta tête, encore et encore — le reflet, le service, le silence que tu as gardé.",
+      "sarah": "2h du matin. Tu es assise dans ce couloir trop blanc, épuisée d'une façon qui n'a rien à voir avec l'heure. Tu penses à Noé, à ce qu'il savait peut-être, à ce que personne n'a dit.",
+      "maelys": "2h du matin. Tu es dans ce couloir avec les autres, à jouer un rôle que tu ne sais plus très bien distinguer de ce que tu ressens vraiment.",
+      "ines": "2h du matin. Tu attends des nouvelles de ton frère, au téléphone avec personne, juste pour avoir quelque chose à faire de tes mains.",
+      "yanis": "2h du matin. Tu es dans ce couloir, ton téléphone dans la poche — la photo qu'il contient pèse plus lourd que tu ne saurais le dire.",
+      "noe": "2h du matin. Tu es celui pour qui tout le monde attend. Tu ne sais pas encore ce que les autres, dans ce couloir, se disent entre eux."
+    },
+    "choices": [
+      {
+        "id": "s12_c_lucas_a",
+        "verb": "speak",
+        "label": "Appeler Maëlys pour lui parler seule à seul",
+        "availableFor": [
+          "lucas"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "lucasCourage",
+            "delta": 8
+          },
+          {
+            "type": "state_delta",
+            "key": "maelysPanic",
+            "delta": 6
+          }
+        ]
+      },
+      {
+        "id": "s12_c_lucas_b",
+        "verb": "confront",
+        "label": "Appeler la police, maintenant",
+        "availableFor": [
+          "lucas"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "lucasCourage",
+            "delta": 15
+          },
+          {
+            "type": "flag_set",
+            "key": "lucas_appelle_police",
+            "value": true
+          }
+        ]
+      },
+      {
+        "id": "s12_c_lucas_c",
+        "verb": "stay_silent",
+        "label": "Rester silencieux, attendre avec les autres",
+        "availableFor": [
+          "lucas"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "lucasNeutralite",
+            "delta": 5
+          }
+        ]
+      },
+      {
+        "id": "s12_c_lucas_d",
+        "verb": "examine_object",
+        "label": "Montrer la photo de Yanis à qui veut la voir",
+        "availableFor": [
+          "lucas"
+        ],
+        "effects": [
+          {
+            "type": "flag_set",
+            "key": "yanis_photo_vue",
+            "value": true
+          }
+        ],
+        "revealsClue": "C-19"
+      },
+      {
+        "id": "s12_c_sarah_a",
+        "verb": "speak",
+        "label": "Dire à voix haute qu'elle a peur",
+        "availableFor": [
+          "sarah"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "sarahStabilite",
+            "delta": 4
+          }
+        ]
+      },
+      {
+        "id": "s12_c_sarah_b",
+        "verb": "stay_silent",
+        "label": "Se taire, fixer le mur",
+        "availableFor": [
+          "sarah"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "sarahStabilite",
+            "delta": -3
+          }
+        ]
+      },
+      {
+        "id": "s12_c_maelys_a",
+        "verb": "stay_silent",
+        "label": "Garder le silence, le visage fermé",
+        "availableFor": [
+          "maelys"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "maelysControle",
+            "delta": 4
+          }
+        ]
+      },
+      {
+        "id": "s12_c_maelys_b",
+        "verb": "speak",
+        "label": "Répéter, à voix basse, que tout va bien se passer",
+        "availableFor": [
+          "maelys"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "maelysControle",
+            "delta": 2
+          },
+          {
+            "type": "state_delta",
+            "key": "maelysPanic",
+            "delta": 3
+          }
+        ]
+      },
+      {
+        "id": "s12_c_ines",
+        "verb": "speak",
+        "label": "Appeler quelqu'un, pour s'occuper les mains",
+        "availableFor": [
+          "ines"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "inesAttachementNoe",
+            "delta": 5
+          }
+        ]
+      },
+      {
+        "id": "s12_c_yanis",
+        "verb": "examine_object",
+        "label": "Sortir son téléphone, regarder la photo sans savoir quoi en faire",
+        "availableFor": [
+          "yanis"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "yanisDoute",
+            "delta": 8
+          }
+        ]
+      },
+      {
+        "id": "s12_c_noe",
+        "verb": "listen",
+        "label": "Entendre des voix dans le couloir, sans réussir à comprendre",
+        "availableFor": [
+          "noe"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "noeLachete",
+            "delta": -2
+          }
+        ]
+      }
+    ],
+    "canonicalFacts": [
+      "L'attente à l'hôpital est le dernier moment avant que la version officielle ne se fige complètement"
+    ]
+  },
+  {
+    "id": "scene_13_retour_de_maelys",
+    "index": 24,
+    "title": "Le retour de Maëlys",
+    "durationMin": 3,
+    "availablePovs": "all",
+    "narrativeBlocks": {
+      "default": "Maëlys est rentrée après le départ du SAMU. Elle nettoie, range, organise déjà ce qu'elle va dire. Ceux qui sont là avec elle la regardent faire.",
+      "maelys": "Tu es rentrée après le départ du SAMU. La maison est vide, silencieuse. Tu ranges, tu nettoies, tu organises déjà dans ta tête ce que tu vas dire demain. Tes mains ne tremblent presque plus.",
+      "lucas": "Tu es rentré avec Maëlys, ou tu l'as suivie plus tard. Tu la regardes ranger la maison comme si de rien n'était, et tu ne sais plus si c'est du sang-froid ou autre chose.",
+      "ines": "Tu passes chez Maëlys après l'hôpital, pour ne pas la laisser seule. Tu la regardes nettoyer une cuisine déjà propre.",
+      "sarah": "Tu n'es pas rentrée chez Maëlys — tu n'en as pas la force. Tu imagines la maison, vide, en train d'être remise en ordre sans toi.",
+      "noe": "Tu es encore à l'hôpital. Tu ne sauras que plus tard ce que Maëlys a fait de son côté, cette nuit-là, dans la maison vide.",
+      "yanis": "Tu n'es pas retourné chez Maëlys. Tu penses à la photo sur ton téléphone, et tu ne sais toujours pas quoi en faire."
+    },
+    "choices": [
+      {
+        "id": "s13_c_maelys_a",
+        "verb": "examine_object",
+        "label": "Effacer toute trace de la soirée",
+        "availableFor": [
+          "maelys"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "maelysControle",
+            "delta": 6
+          },
+          {
+            "type": "flag_set",
+            "key": "yanis_photo_detruite_tentative",
+            "value": true
+          }
+        ]
+      },
+      {
+        "id": "s13_c_maelys_b",
+        "verb": "stay_silent",
+        "label": "S'effondrer en silence, enfin seule",
+        "availableFor": [
+          "maelys"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "maelysPanic",
+            "delta": 10
+          },
+          {
+            "type": "state_delta",
+            "key": "maelysControle",
+            "delta": -6
+          }
+        ]
+      },
+      {
+        "id": "s13_c_maelys_c",
+        "verb": "speak",
+        "label": "Appeler Noé à l'hôpital pour prendre des nouvelles",
+        "availableFor": [
+          "maelys"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "maelysAmbivalence",
+            "delta": 8
+          }
+        ]
+      },
+      {
+        "id": "s13_c_maelys_d",
+        "verb": "examine_object",
+        "label": "Écrire dans son carnet, une dernière fois",
+        "availableFor": [
+          "maelys"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "maelysControle",
+            "delta": 3
+          }
+        ],
+        "revealsClue": "C-22"
+      },
+      {
+        "id": "s13_c_lucas",
+        "verb": "observe",
+        "label": "L'observer ranger, sans rien dire",
+        "availableFor": [
+          "lucas"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "lucasLucidite",
+            "delta": 6
+          }
+        ]
+      },
+      {
+        "id": "s13_c_ines",
+        "verb": "speak",
+        "label": "Lui demander si elle va bien, sincèrement",
+        "availableFor": [
+          "ines"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "inesAttachementNoe",
+            "delta": 3
+          },
+          {
+            "type": "state_delta",
+            "key": "maelysPanic",
+            "delta": 4
+          }
+        ]
+      },
+      {
+        "id": "s13_c_sarah",
+        "verb": "stay_silent",
+        "label": "Rester loin, incapable d'y retourner",
+        "availableFor": [
+          "sarah"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "sarahStabilite",
+            "delta": 2
+          }
+        ]
+      },
+      {
+        "id": "s13_c_noe",
+        "verb": "let_pass",
+        "label": "Rester à l'hôpital, ne rien en savoir",
+        "availableFor": [
+          "noe"
+        ],
+        "effects": []
+      },
+      {
+        "id": "s13_c_yanis",
+        "verb": "examine_object",
+        "label": "Regarder encore la photo, sans se décider",
+        "availableFor": [
+          "yanis"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "yanisDoute",
+            "delta": 5
+          }
+        ]
+      }
+    ],
+    "canonicalFacts": [
+      "Maëlys reprend le contrôle de la maison avant que quiconque d'autre n'ait le temps de la voir autrement"
+    ]
+  },
+  {
+    "id": "scene_14_lendemain_matin",
+    "index": 25,
+    "title": "Le lendemain matin",
+    "durationMin": 3,
+    "availablePovs": "all",
+    "narrativeBlocks": {
+      "default": "Le lendemain. La version officielle commence déjà à circuler. Quelqu'un va-t-il parler ? Chacun, de son côté, décide quoi faire de ce qu'il sait.",
+      "lucas": "Le lendemain matin. La version officielle circule déjà — un malaise, la fragilité de Noé, rien de plus. Tu tiens toujours ce que tu sais. La question, maintenant, c'est ce que tu en fais.",
+      "sarah": "Le lendemain. Tu apprends la version qui circule. Ce n'est pas la tienne. Tu te demandes si ça vaut la peine de la corriger.",
+      "ines": "Le lendemain. Tu appelles Noé, tu appelles Maëlys. Tu essaies de comprendre ce qui va rester de cette nuit, et ce qui va être enterré.",
+      "maelys": "Le lendemain. Tu tiens la version que tu as construite. Elle tient, pour l'instant. Tu sais que ça ne durera peut-être pas.",
+      "noe": "Le lendemain, sorti de l'hôpital. Tu entends la version qui circule sur toi. Tu ne la corriges pas.",
+      "yanis": "Le lendemain. Tu regardes encore une fois la photo sur ton téléphone. Tu ne sais toujours pas si tu dois la montrer à quelqu'un."
+    },
+    "choices": [
+      {
+        "id": "s14_c_lucas_a",
+        "verb": "stay_silent",
+        "label": "Se taire, laisser la version officielle tenir",
+        "availableFor": [
+          "lucas"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "lucasNeutralite",
+            "delta": 6
+          }
+        ]
+      },
+      {
+        "id": "s14_c_lucas_b",
+        "verb": "speak",
+        "label": "Envoyer un message à quelqu'un — juste une phrase",
+        "availableFor": [
+          "lucas"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "lucasCourage",
+            "delta": 6
+          },
+          {
+            "type": "flag_set",
+            "key": "lucas_a_parle",
+            "value": true
+          }
+        ]
+      },
+      {
+        "id": "s14_c_lucas_c",
+        "verb": "follow",
+        "label": "Aller voir Sarah en personne",
+        "availableFor": [
+          "lucas"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "sarahStabilite",
+            "delta": 8
+          },
+          {
+            "type": "state_delta",
+            "key": "lucasCourage",
+            "delta": 8
+          }
+        ]
+      },
+      {
+        "id": "s14_c_lucas_d",
+        "verb": "confront",
+        "label": "Appeler la police, maintenant que tout est calme",
+        "availableFor": [
+          "lucas"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "lucasCourage",
+            "delta": 15
+          },
+          {
+            "type": "flag_set",
+            "key": "lucas_appelle_police",
+            "value": true
+          }
+        ]
+      },
+      {
+        "id": "s14_c_sarah_a",
+        "verb": "stay_silent",
+        "label": "Se taire, laisser dire",
+        "availableFor": [
+          "sarah"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "sarahDependanceMaelys",
+            "delta": 5
+          }
+        ]
+      },
+      {
+        "id": "s14_c_sarah_b",
+        "verb": "confront",
+        "label": "Appeler Lucas pour lui dire ce qu'elle pense vraiment",
+        "availableFor": [
+          "sarah"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "sarahStabilite",
+            "delta": 6
+          },
+          {
+            "type": "flag_set",
+            "key": "sarah_appelle_lucas",
+            "value": true
+          }
+        ]
+      },
+      {
+        "id": "s14_c_ines_a",
+        "verb": "speak",
+        "label": "Poser à Noé la question qui dérange",
+        "availableFor": [
+          "ines"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "inesCompliciteMorale",
+            "delta": 10
+          }
+        ]
+      },
+      {
+        "id": "s14_c_ines_b",
+        "verb": "stay_silent",
+        "label": "Laisser faire, ne rien demander",
+        "availableFor": [
+          "ines"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "inesCompliciteMorale",
+            "delta": 15
+          }
+        ]
+      },
+      {
+        "id": "s14_c_maelys",
+        "verb": "stay_silent",
+        "label": "Tenir la version, sans faiblir",
+        "availableFor": [
+          "maelys"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "maelysControle",
+            "delta": 5
+          }
+        ]
+      },
+      {
+        "id": "s14_c_noe",
+        "verb": "stay_silent",
+        "label": "Laisser la version tenir, sans la corriger",
+        "availableFor": [
+          "noe"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "noeMensonge",
+            "delta": 5
+          }
+        ]
+      },
+      {
+        "id": "s14_c_yanis_a",
+        "verb": "examine_object",
+        "label": "Montrer enfin la photo à Lucas",
+        "availableFor": [
+          "yanis"
+        ],
+        "effects": [
+          {
+            "type": "flag_set",
+            "key": "yanis_photo_vue",
+            "value": true
+          }
+        ],
+        "revealsClue": "C-19"
+      },
+      {
+        "id": "s14_c_yanis_b",
+        "verb": "stay_silent",
+        "label": "Ne rien montrer, garder la photo pour lui",
+        "availableFor": [
+          "yanis"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "yanisDoute",
+            "delta": -3
+          }
+        ]
+      }
+    ],
+    "canonicalFacts": [
+      "Le lendemain matin décide, pour de bon, si la vérité sort de la maison ou si elle y reste enterrée"
     ]
   }
 ]

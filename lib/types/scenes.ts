@@ -8,6 +8,9 @@ import type { ClueId } from './clues';
 import type { SeatingStateKey } from './house';
 
 export type SceneId =
+  | 'scene_00a_preparation_cuisine'
+  | 'scene_00b_appel_de_noe'
+  | 'scene_00c_arrivee_ines_en_avance'
   | 'scene_01_opening_memory'
   | 'scene_01b_conversation_palier'
   | 'scene_02_arrival'
@@ -26,7 +29,10 @@ export type SceneId =
   | 'scene_09_incident'
   | 'scene_09b_couloir_incident'
   | 'scene_10_aftermath'
-  | 'scene_11_reconstruction';
+  | 'scene_11_reconstruction'
+  | 'scene_12_couloir_hopital'
+  | 'scene_13_retour_de_maelys'
+  | 'scene_14_lendemain_matin';
 
 export type ActionVerb =
   | 'observe'

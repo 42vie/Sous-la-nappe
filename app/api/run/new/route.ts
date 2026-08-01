@@ -87,7 +87,7 @@ export async function POST(req: NextRequest) {
         ownRoleBelieved: '',
         openingMemoryError: '',
       },
-      currentScene: 'scene_01_opening_memory',
+      currentScene: 'scene_00a_preparation_cuisine',
       visitedScenes: [],
       completedScenes: [],
       sceneHistory: [],

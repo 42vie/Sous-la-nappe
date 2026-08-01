@@ -58,6 +58,11 @@ export const CLUE_POINTS: Record<ClueId, number> = {
   'C-41': 4,
   'C-42': 5,
   'C-43': 6,
+
+  // Acte 0 (avant le dîner, docs/roadmap-v2-expansion.md §3)
+  'C-44': 8,
+  'C-45': 3,
+  'C-46': 2,
 }
 
 /** Somme totale du barème — calculée, pas recopiée, pour ne jamais désynchroniser du tableau ci-dessus. */

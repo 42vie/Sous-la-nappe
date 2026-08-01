@@ -7,6 +7,8 @@
  * — hors PDF d'origine, branchés sur des choix existants des scènes S01-S11.
  * C-38 à C-43 : ajoutés par les scènes inter-chapitres de l'expansion v3
  * (S01b à S09b, docs/expansion-v3-histoires-interactions.md).
+ * C-44 à C-46 : ajoutés par l'Acte 0 (scènes 00a-00c, avant le dîner,
+ * docs/roadmap-v2-expansion.md §3).
  * fiabilite: 'low' | 'medium' | 'high' | 'very_high'
  * The 'misleads' field is the most important column: what it makes you believe (often wrong).
  */
@@ -20,7 +22,8 @@ export type ClueId =
   | 'C-26' | 'C-27' | 'C-28' | 'C-29' | 'C-30'
   | 'C-31' | 'C-32' | 'C-33' | 'C-34' | 'C-35'
   | 'C-36' | 'C-37' | 'C-38' | 'C-39' | 'C-40'
-  | 'C-41' | 'C-42' | 'C-43';
+  | 'C-41' | 'C-42' | 'C-43' | 'C-44' | 'C-45'
+  | 'C-46';
 
 export type ClueReliability = 'low' | 'medium' | 'high' | 'very_high';
 

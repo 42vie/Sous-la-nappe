@@ -1,14 +1,18 @@
-// Découpage en 4 chapitres — un personnage différent par chapitre.
-// Les 11 scènes existantes ne changent pas ; seul le regroupement et le
-// choix du POV à chaque frontière de chapitre sont nouveaux.
+// Découpage en 5 chapitres — un personnage différent par chapitre.
 //
 // Titres : repères pour se situer dans la soirée, sans rien spoiler de ce
-// qui va s'y passer (pas de "Le drame", pas de "La révélation") — le 4e
-// reprend le titre du jeu lui-même, en écho, pour le dernier chapitre.
+// qui va s'y passer (pas de "Le drame", pas de "La révélation") — le
+// dernier reprend le titre du jeu lui-même, en écho.
+//
+// Chapitre 5 contient les scènes 10-11 (toujours jouées) PLUS l'Acte 3
+// (scènes 12-14, docs/roadmap-v2-expansion.md §3) — atteintes seulement si
+// Noé est la cible réellement touchée (transitions.ts en décide), jouées
+// par le même personnage que 10-11, sans nouveau choix de POV : pas besoin
+// de gérer un nombre de chapitres variable selon la fin.
 import type { SceneId } from '@/lib/types/scenes'
 
 export interface ChapterDef {
-  id: number // 1 à 4
+  id: number // 1 à 5
   title: string
   sceneIds: SceneId[]
 }
@@ -16,6 +20,13 @@ export interface ChapterDef {
 export const CHAPTERS: ChapterDef[] = [
   {
     id: 1,
+    title: 'Avant que la porte ne s\'ouvre',
+    sceneIds: [
+      'scene_00a_preparation_cuisine', 'scene_00b_appel_de_noe', 'scene_00c_arrivee_ines_en_avance',
+    ],
+  },
+  {
+    id: 2,
     title: 'Sous les sourires',
     sceneIds: [
       'scene_01_opening_memory', 'scene_01b_conversation_palier',
@@ -24,7 +35,7 @@ export const CHAPTERS: ChapterDef[] = [
     ],
   },
   {
-    id: 2,
+    id: 3,
     title: 'La mise en place',
     sceneIds: [
       'scene_04_seating', 'scene_04b_echange_regards',
@@ -33,7 +44,7 @@ export const CHAPTERS: ChapterDef[] = [
     ],
   },
   {
-    id: 3,
+    id: 4,
     title: 'Le service',
     sceneIds: [
       'scene_07_social_game_2', 'scene_07b_demande_noe_lucas',
@@ -42,15 +53,18 @@ export const CHAPTERS: ChapterDef[] = [
     ],
   },
   {
-    id: 4,
+    id: 5,
     title: 'Sous la nappe',
-    sceneIds: ['scene_10_aftermath', 'scene_11_reconstruction'],
+    sceneIds: [
+      'scene_10_aftermath', 'scene_11_reconstruction',
+      'scene_12_couloir_hopital', 'scene_13_retour_de_maelys', 'scene_14_lendemain_matin',
+    ],
   },
 ]
 
 export const TOTAL_CHAPTERS = CHAPTERS.length
 
-/** Numéro de chapitre (1 à 4) auquel appartient une scène, ou null si inconnue */
+/** Numéro de chapitre (1 à 5) auquel appartient une scène, ou null si inconnue */
 export function getChapterForScene(sceneId: string): ChapterDef | null {
   return CHAPTERS.find((c) => c.sceneIds.includes(sceneId as SceneId)) ?? null
 }
