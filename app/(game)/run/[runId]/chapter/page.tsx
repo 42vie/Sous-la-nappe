@@ -6,6 +6,7 @@ import { CharacterCard, CHARACTERS } from '@/components/ui/CharacterCard'
 import { useRunStore } from '@/store/runStore'
 import { CHAPTERS, TOTAL_CHAPTERS } from '@/lib/engine/chapters'
 import { BLIND_SPOTS } from '@/lib/engine/blindSpots'
+import { CHARACTER_BIOS, CHRONOLOGY } from '@/lib/engine/backstory'
 import { getCharacterAction, formatCharacterAction } from '@/lib/engine/characterActions'
 import { getManuscriptStatus } from '@/lib/engine/manuscript'
 import type { CharacterId } from '@/lib/types/characters'
@@ -51,7 +52,13 @@ export default function ChapterSelectPage() {
   const justPlayed = povHistory[povHistory.length - 1]
   const justPlayedName = justPlayed ? CHARACTER_NAMES[justPlayed].split(' ')[0] : null
   const blindSpots = justPlayed ? BLIND_SPOTS[justPlayed] : []
+  const justPlayedBio = justPlayed ? CHARACTER_BIOS[justPlayed] : null
   const tension = run?.variable?.socialTension ?? 0
+  // La chronologie (7 ans, 6 fractures) se débloque progressivement, jamais
+  // d'un coup — la phase 4 (l'invalidation, le vrai mobile) n'arrive qu'une
+  // fois qu'on a déjà vu une bonne partie de la soirée.
+  const unlockedPhases = povHistory.length <= 1 ? 2 : povHistory.length === 2 ? 3 : 5
+  const chronology = CHRONOLOGY.slice(0, unlockedPhases)
   const manuscript = run ? getManuscriptStatus(run) : []
   const truthsEstablished = manuscript.filter((e) => e.status === 'complete').length
   const cluesFound = run?.discoveredClues?.length ?? 0
@@ -196,11 +203,40 @@ export default function ChapterSelectPage() {
         </div>
       )}
 
+      {justPlayedName && justPlayedBio && (
+        <div style={{
+          width: '100%', maxWidth: 'var(--content-narrow)',
+          padding: 'var(--space-5) var(--space-6)',
+          marginBottom: 'var(--space-6)',
+          background: 'var(--color-surface)',
+          border: '1px solid var(--color-divider)',
+          borderRadius: 'var(--radius-lg)',
+        }}>
+          <p style={{
+            fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', color: 'var(--color-text-faint)',
+            textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 'var(--space-3)',
+          }}>
+            Qui est {justPlayedName} — {justPlayedBio.role}, {justPlayedBio.age} ans
+          </p>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
+            <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)', color: 'var(--color-text-muted)', lineHeight: 1.7 }}>
+              {justPlayedBio.identity}
+            </p>
+            <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)', color: 'var(--color-text-muted)', lineHeight: 1.7 }}>
+              <strong style={{ color: 'var(--color-text)' }}>La blessure. </strong>{justPlayedBio.wound}
+            </p>
+            <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)', color: 'var(--color-text-muted)', lineHeight: 1.7 }}>
+              <strong style={{ color: 'var(--color-text)' }}>Ce que {justPlayedName === 'Sarah' || justPlayedName === 'Maëlys' || justPlayedName === 'Inès' ? 'elle' : 'il'} veut, ce soir. </strong>{justPlayedBio.wants}
+            </p>
+          </div>
+        </div>
+      )}
+
       {justPlayedName && blindSpots.length > 0 && (
         <div style={{
           width: '100%', maxWidth: 'var(--content-narrow)',
           padding: 'var(--space-5) var(--space-6)',
-          marginBottom: 'var(--space-10)',
+          marginBottom: 'var(--space-6)',
           background: 'var(--color-surface)',
           border: '1px solid var(--color-divider)',
           borderRadius: 'var(--radius-lg)',
@@ -219,6 +255,39 @@ export default function ChapterSelectPage() {
               }}>
                 — {spot}
               </p>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {chronology.length > 0 && (
+        <div style={{
+          width: '100%', maxWidth: 'var(--content-narrow)',
+          padding: 'var(--space-5) var(--space-6)',
+          marginBottom: 'var(--space-10)',
+          background: 'var(--color-surface)',
+          border: '1px solid var(--color-divider)',
+          borderRadius: 'var(--radius-lg)',
+        }}>
+          <p style={{
+            fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', color: 'var(--color-text-faint)',
+            textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 'var(--space-4)',
+          }}>
+            Le contexte — {chronology.length} / {CHRONOLOGY.length} fractures connues
+          </p>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
+            {chronology.map((phase) => (
+              <div key={phase.id}>
+                <p style={{
+                  fontFamily: 'var(--font-display)', fontStyle: 'italic', fontSize: 'var(--text-sm)',
+                  color: 'var(--color-text)', marginBottom: 'var(--space-1)',
+                }}>
+                  {phase.label} <span style={{ fontFamily: 'var(--font-body)', fontStyle: 'normal', fontSize: '10px', color: 'var(--color-text-faint)' }}>· {phase.period}</span>
+                </p>
+                <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)', color: 'var(--color-text-muted)', lineHeight: 1.7 }}>
+                  {phase.text}
+                </p>
+              </div>
             ))}
           </div>
         </div>

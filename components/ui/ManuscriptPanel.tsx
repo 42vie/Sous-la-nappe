@@ -59,6 +59,11 @@ export function ManuscriptPanel({ state }: ManuscriptPanelProps) {
               fontSize: entry.status === 'complete' ? 'var(--text-sm)' : 'var(--text-xs)',
               color: entry.status === 'locked' ? 'var(--color-text-faint)' : 'var(--color-text-muted)',
               lineHeight: 1.6,
+              // Masqué au moment T, pas juste grisé : une vérité non établie
+              // ne doit pas pouvoir se lire, même en filigrane, pendant la
+              // partie — ça influencerait les choix à venir.
+              filter: entry.status === 'locked' ? 'blur(3px)' : 'none',
+              userSelect: entry.status === 'locked' ? 'none' : 'auto',
             }}>
               {entry.text}
             </p>

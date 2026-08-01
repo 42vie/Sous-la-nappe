@@ -13,6 +13,7 @@ import { getManuscriptStatus } from '@/lib/engine/manuscript'
 import { getPovSummaries } from '@/lib/engine/povSummary'
 import { buildEpilogue } from '@/lib/engine/epilogue'
 import { buildRecap } from '@/lib/engine/recap'
+import { CHRONOLOGY } from '@/lib/engine/backstory'
 import type { RunState } from '@/types'
 
 const SEAT_IDS = [1, 2, 3, 4, 5, 6]
@@ -64,6 +65,10 @@ export async function GET(
       manuscript: getManuscriptStatus(state),
       epilogue,
       recap: buildRecap(state),
+      // La partie est finie : la chronologie complète (les 6 fractures) est
+      // révélée, y compris la phase 6 jamais montrée en jeu (la mise en
+      // scène du dîner elle-même).
+      chronology: CHRONOLOGY,
       povHistory: state.povHistory ?? [state.playerPov],
       povSummaries: getPovSummaries(state),
       // Vérité canonique (chapitre 2 de la bible) : Maëlys a organisé la

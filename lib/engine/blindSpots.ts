@@ -25,6 +25,7 @@ export const BLIND_SPOTS: Record<CharacterId, string[]> = {
     'Ce qui se passe hors de son champ — il compense par la déduction, et il déduit parfois faux avec une grande confiance.',
   ],
   sarah: [
+    "L'ordre exact des choses — elle a tout, sauf la séquence.",
     'La solidité de sa propre reconstruction — elle doute d\'elle en permanence, ce qui la rend inaudible au moment où elle a raison.',
     "Qu'elle est en danger. À aucun moment.",
   ],

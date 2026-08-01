@@ -35,6 +35,13 @@ interface EpilogueData {
   statuses: EpilogueStatusData[]
 }
 
+interface ChronologyPhaseData {
+  id: string
+  period: string
+  label: string
+  text: string
+}
+
 const SEAT_IDS = [1, 2, 3, 4, 5, 6]
 
 const CONDITION_LABELS: Record<CharacterCondition, { label: string; color: string }> = {
@@ -113,6 +120,7 @@ export default function FinalPage() {
   const [manuscript, setManuscript] = useState<ManuscriptEntryData[]>([])
   const [epilogue, setEpilogue] = useState<EpilogueData | null>(null)
   const [recap, setRecap] = useState<string[]>([])
+  const [chronology, setChronology] = useState<ChronologyPhaseData[]>([])
   const [povHistory, setPovHistory] = useState<CharacterId[]>([])
   const [povSummaries, setPovSummaries] = useState<PovSummaryData[]>([])
   const [endingId, setEndingId] = useState<string | null>(null)
@@ -149,6 +157,7 @@ export default function FinalPage() {
         setScore(data.score ?? null)
         setSeatingBonusAvailable(Boolean(data.seatingBonusAvailable))
         setRecap(data.recap ?? [])
+        setChronology(data.chronology ?? [])
         setCulprit(data.culprit ?? null)
         setDeceasedCharacter(data.deceasedCharacter ?? null)
       })
@@ -474,6 +483,33 @@ export default function FinalPage() {
                 </li>
               ))}
             </ul>
+          </div>
+        )}
+
+        {/* Le contexte complet — sept ans, six fractures, la chronologie entière maintenant que la partie est finie */}
+        {chronology.length > 0 && (
+          <div style={{ marginBottom: 'var(--space-12)' }}>
+            <p style={{
+              fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', color: 'var(--color-text-muted)',
+              textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 'var(--space-4)',
+            }}>
+              Le contexte — sept ans, six fractures
+            </p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
+              {chronology.map((phase) => (
+                <div key={phase.id}>
+                  <p style={{
+                    fontFamily: 'var(--font-display)', fontStyle: 'italic', fontSize: 'var(--text-sm)',
+                    color: 'var(--color-text)', marginBottom: 'var(--space-1)',
+                  }}>
+                    {phase.label} <span style={{ fontFamily: 'var(--font-body)', fontStyle: 'normal', fontSize: '10px', color: 'var(--color-text-faint)' }}>· {phase.period}</span>
+                  </p>
+                  <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)', color: 'var(--color-text-muted)', lineHeight: 1.7 }}>
+                    {phase.text}
+                  </p>
+                </div>
+              ))}
+            </div>
           </div>
         )}
 
