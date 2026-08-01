@@ -235,17 +235,17 @@ export default function CarnetPage() {
                     {run.discoveredClues.map((dc: any) => {
                       const meta = cluesMeta[dc.clueId]
                       return (
-                        <span key={dc.clueId} title={meta?.label ?? dc.clueId} style={{
+                        <span key={dc.clueId} style={{
                           background: 'rgba(255,255,255,0.04)',
                           border: '1px solid rgba(255,255,255,0.1)',
-                          color: 'rgba(212,207,200,0.6)',
-                          padding: '2px 8px',
+                          color: 'rgba(212,207,200,0.7)',
+                          padding: '3px 10px',
                           borderRadius: '4px',
-                          fontSize: '10px',
+                          fontSize: '11px',
                           fontFamily: 'var(--font-body)',
-                          letterSpacing: '0.06em',
                         }}>
-                          {dc.clueId}
+                          <span style={{ color: 'rgba(212,207,200,0.4)', letterSpacing: '0.06em' }}>{dc.clueId}</span>
+                          {meta?.label ? ` — ${meta.label}` : ''}
                         </span>
                       )
                     })}

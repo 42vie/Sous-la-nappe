@@ -11,8 +11,11 @@
  * de la scène décrit déjà.
  */
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import type { CharacterId } from '@/lib/types/characters'
+
+/** Durée pendant laquelle les numéros d'assiette restent visibles avant de disparaître. */
+const REVEAL_MS = 2500
 
 const LABELS: Record<CharacterId, string> = {
   maelys: 'Maëlys', noe: 'Noé', ines: 'Inès', lucas: 'Lucas', sarah: 'Sarah', yanis: 'Yanis',
@@ -44,6 +47,14 @@ export function DosageMinigame({ seatingBeforeMain, onComplete }: DosageMinigame
   const [delivered, setDelivered] = useState<number[]>([])
   const [mistakes, setMistakes] = useState(0)
   const [sent, setSent] = useState(false)
+  const [revealed, setRevealed] = useState(true)
+
+  useEffect(() => {
+    const t = setTimeout(() => setRevealed(false), REVEAL_MS)
+    return () => clearTimeout(t)
+  }, [])
+
+  const [wrongPick, setWrongPick] = useState<number | null>(null)
 
   const nextExpected = delivered.length + 1
   const done = delivered.length === 4
@@ -54,6 +65,8 @@ export function DosageMinigame({ seatingBeforeMain, onComplete }: DosageMinigame
       setDelivered((prev) => [...prev, plateNumber])
     } else {
       setMistakes((prev) => prev + 1)
+      setWrongPick(plateNumber)
+      setTimeout(() => setWrongPick(null), 400)
     }
   }
 
@@ -83,7 +96,9 @@ export function DosageMinigame({ seatingBeforeMain, onComplete }: DosageMinigame
         fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)', color: 'var(--color-text-muted)',
         textAlign: 'center', marginBottom: 'var(--space-6)', fontStyle: 'italic',
       }}>
-        Sortez les assiettes du passe dans l&apos;ordre — 1, 2, 3, 4.
+        {revealed
+          ? 'Repérez la position de chaque assiette — les numéros vont disparaître.'
+          : 'Sortez les assiettes du passe dans l’ordre — 1, 2, 3, 4 — de mémoire.'}
       </p>
 
       {/* Passe — plaques à cliquer dans l'ordre */}
@@ -93,6 +108,7 @@ export function DosageMinigame({ seatingBeforeMain, onComplete }: DosageMinigame
       }}>
         {plateOrder.map((n) => {
           const isDelivered = delivered.includes(n)
+          const isWrong = wrongPick === n
           return (
             <button
               key={n}
@@ -100,17 +116,17 @@ export function DosageMinigame({ seatingBeforeMain, onComplete }: DosageMinigame
               disabled={isDelivered || done}
               style={{
                 height: 56,
-                background: isDelivered ? 'var(--color-surface-offset)' : 'var(--color-primary-highlight)',
-                border: `1px solid ${isDelivered ? 'var(--color-divider)' : 'var(--color-primary)'}`,
+                background: isWrong ? 'var(--color-error-highlight)' : isDelivered ? 'var(--color-surface-offset)' : 'var(--color-primary-highlight)',
+                border: `1px solid ${isWrong ? 'var(--color-error)' : isDelivered ? 'var(--color-divider)' : 'var(--color-primary)'}`,
                 borderRadius: 'var(--radius-md)',
                 fontFamily: 'var(--font-display)', fontSize: 'var(--text-lg)',
-                color: isDelivered ? 'var(--color-text-faint)' : 'var(--color-primary)',
+                color: isWrong ? 'var(--color-error)' : isDelivered ? 'var(--color-text-faint)' : 'var(--color-primary)',
                 opacity: isDelivered ? 0.4 : 1,
                 cursor: isDelivered || done ? 'default' : 'pointer',
                 transition: 'all var(--transition)',
               }}
             >
-              {isDelivered ? '✓' : `Assiette ${n}`}
+              {isDelivered ? '✓' : revealed ? `Assiette ${n}` : '?'}
             </button>
           )
         })}

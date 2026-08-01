@@ -103,6 +103,7 @@ export default function FinalPage() {
   const [deceasedCharacter, setDeceasedCharacter] = useState<CharacterId | null>(null)
   const [culpritGuess, setCulpritGuess] = useState<CharacterId | null>(null)
   const [deathGuess, setDeathGuess] = useState<CharacterId | 'none' | null>(null)
+  const [truthGuess, setTruthGuess] = useState<boolean | null>(null)
   const [revealed, setRevealed] = useState(false)
 
   useEffect(() => {
@@ -268,9 +269,45 @@ export default function FinalPage() {
               </div>
             </div>
 
+            <div style={{ marginBottom: 'var(--space-10)' }}>
+              <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)', color: 'var(--color-text)', marginBottom: 'var(--space-3)' }}>
+                Selon vous, la vérité va-t-elle finir par sortir de cette maison ?
+              </p>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--space-2)' }}>
+                <button
+                  onClick={() => setTruthGuess(true)}
+                  style={{
+                    padding: 'var(--space-2) var(--space-4)',
+                    background: truthGuess === true ? 'var(--color-primary-highlight)' : 'var(--color-surface)',
+                    border: `1px solid ${truthGuess === true ? 'var(--color-primary)' : 'var(--color-border)'}`,
+                    borderRadius: 'var(--radius-md)',
+                    fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)',
+                    color: truthGuess === true ? 'var(--color-primary)' : 'var(--color-text-muted)',
+                    cursor: 'pointer',
+                  }}
+                >
+                  Oui, elle sort
+                </button>
+                <button
+                  onClick={() => setTruthGuess(false)}
+                  style={{
+                    padding: 'var(--space-2) var(--space-4)',
+                    background: truthGuess === false ? 'var(--color-surface-offset)' : 'var(--color-surface)',
+                    border: `1px solid ${truthGuess === false ? 'var(--color-text-muted)' : 'var(--color-border)'}`,
+                    borderRadius: 'var(--radius-md)',
+                    fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)',
+                    color: truthGuess === false ? 'var(--color-text)' : 'var(--color-text-muted)',
+                    cursor: 'pointer',
+                  }}
+                >
+                  Non, elle reste enterrée
+                </button>
+              </div>
+            </div>
+
             <button
               onClick={() => setRevealed(true)}
-              disabled={!culpritGuess || !deathGuess}
+              disabled={!culpritGuess || !deathGuess || truthGuess === null}
               style={{
                 padding: 'var(--space-3) var(--space-8)',
                 background: 'var(--color-primary)',
@@ -280,8 +317,8 @@ export default function FinalPage() {
                 fontFamily: 'var(--font-body)',
                 fontSize: 'var(--text-sm)',
                 letterSpacing: '0.04em',
-                cursor: culpritGuess && deathGuess ? 'pointer' : 'not-allowed',
-                opacity: culpritGuess && deathGuess ? 1 : 0.5,
+                cursor: culpritGuess && deathGuess && truthGuess !== null ? 'pointer' : 'not-allowed',
+                opacity: culpritGuess && deathGuess && truthGuess !== null ? 1 : 0.5,
               }}
             >
               Découvrir la suite →
@@ -310,12 +347,18 @@ export default function FinalPage() {
               {culpritGuess === culprit ? '✓ ' : '✗ '}
               Vous {culpritGuess === culprit ? 'aviez' : 'n\'aviez pas'} deviné que {CHARACTERS.find((c) => c.id === culprit)?.firstName} avait organisé la soirée.
             </p>
-            <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)', color: 'var(--color-text-muted)', lineHeight: 1.7 }}>
+            <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)', color: 'var(--color-text-muted)', marginBottom: 'var(--space-2)', lineHeight: 1.7 }}>
               {(deathGuess === 'none' ? deceasedCharacter === null : deathGuess === deceasedCharacter) ? '✓ ' : '✗ '}
               {deceasedCharacter
                 ? `Vous ${deathGuess === deceasedCharacter ? 'aviez' : 'n\'aviez pas'} deviné que ${CHARACTERS.find((c) => c.id === deceasedCharacter)?.firstName} n'allait pas survivre.`
                 : `Vous ${deathGuess === 'none' ? 'aviez' : 'n\'aviez pas'} deviné que tout le monde allait s'en sortir.`}
             </p>
+            {truthGuess !== null && (
+              <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)', color: 'var(--color-text-muted)', lineHeight: 1.7 }}>
+                {truthGuess === (endingId === 'F7') ? '✓ ' : '✗ '}
+                Vous {truthGuess === (endingId === 'F7') ? 'aviez' : 'n\'aviez pas'} deviné que la vérité allait {endingId === 'F7' ? 'finir par sortir' : 'rester enterrée'}.
+              </p>
+            )}
           </div>
         )}
 

@@ -64,6 +64,7 @@ export function MorpionMinigame({ players, playerPov, onComplete }: MorpionMinig
   // dont le résultat de cette partie est le pivot causal du drame.
   const playerChar = playerPov === yanis ? yanis : sarah
   const aiChar = playerChar === sarah ? yanis : sarah
+  const isParticipant = playerPov === sarah || playerPov === yanis
 
   const [board, setBoard] = useState<Board>(Array(9).fill(null))
   const [currentTurn, setCurrentTurn] = useState<CharacterId>(playerChar)
@@ -146,6 +147,18 @@ export function MorpionMinigame({ players, playerPov, onComplete }: MorpionMinig
       }}>
         Mini-jeu — Qui sert ?
       </p>
+      {!isParticipant && (
+        <p style={{
+          fontFamily: 'var(--font-body)',
+          fontSize: 'var(--text-xs)',
+          color: 'var(--color-text-faint)',
+          textAlign: 'center',
+          marginBottom: 'var(--space-3)',
+          lineHeight: 1.5,
+        }}>
+          Tu regardes {label(sarah)} et {label(yanis)} s'affronter. Tu ne joues pas, à proprement parler — mais un mot glissé, un regard au bon moment du côté de {label(sarah)} pourrait faire pencher la partie sans que personne ne le remarque vraiment.
+        </p>
+      )}
       <p style={{
         fontFamily: 'var(--font-body)',
         fontSize: 'var(--text-sm)',

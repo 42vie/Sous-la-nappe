@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import Image from 'next/image'
 import { CharacterCard, CHARACTERS } from '@/components/ui/CharacterCard'
 import { DeducedSeatingPlan } from '@/components/ui/DeducedSeatingPlan'
 import { ImageSlot } from '@/components/ui/ImageSlot'
@@ -141,6 +142,18 @@ export default function DashboardPage() {
         <div aria-hidden style={{ position: 'absolute', inset: 0, zIndex: -1 }}>
           <ImageSlot src="/images/hero-accueil.jpg" alt="" scrim />
         </div>
+        <Image
+          src="/logo.png"
+          alt="Sous la nappe"
+          width={72}
+          height={55}
+          style={{
+            display: 'block',
+            margin: '0 auto var(--space-4)',
+            borderRadius: 'var(--radius-md)',
+            objectFit: 'cover',
+          }}
+        />
         <p
           style={{
             fontFamily: 'var(--font-body)',
