@@ -273,6 +273,126 @@
             "delta": 1
           }
         ]
+      },
+      {
+        "id": "s01_c_maelys_touch",
+        "verb": "examine_object",
+        "label": "Ajuster, une dernière fois, la position exacte d'un verre sur la table",
+        "availableFor": [
+          "maelys"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "maelysControle",
+            "delta": 4
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "id": "s01_c_noe_touch",
+        "verb": "examine_object",
+        "label": "Faire tourner les clés de la voiture entre ses doigts, dans l'allée",
+        "availableFor": [
+          "noe"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "noeLachete",
+            "delta": 3
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "id": "s01_c_ines_touch",
+        "verb": "examine_object",
+        "label": "Vérifier, du bout des doigts, que le dossier est bien dans son sac",
+        "availableFor": [
+          "ines"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "inesArrogance",
+            "delta": 3
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "id": "s01_c_lucas_touch",
+        "verb": "examine_object",
+        "label": "Serrer le téléphone dans sa poche, sans le sortir",
+        "availableFor": [
+          "lucas"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "lucasNeutralite",
+            "delta": 4
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "id": "s01_c_sarah_touch",
+        "verb": "examine_object",
+        "label": "Resserrer les doigts sur la poignée de son sac, un instant de trop",
+        "availableFor": [
+          "sarah"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "sarahStabilite",
+            "delta": -3
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "id": "s01_c_yanis_touch",
+        "verb": "examine_object",
+        "label": "Ajuster sa veste dans le rétroviseur avant de sonner",
+        "availableFor": [
+          "yanis"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "yanisJeuSocial",
+            "delta": 3
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 1
+          }
+        ]
       }
     ],
     "autoRevealClues": [],
@@ -556,6 +676,126 @@
             "type": "state_delta",
             "key": "socialTension",
             "delta": -2
+          }
+        ]
+      },
+      {
+        "id": "s02_c_maelys_touch",
+        "verb": "examine_object",
+        "label": "Tendre les mains pour prendre les manteaux, un par un",
+        "availableFor": [
+          "maelys"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "maelysControle",
+            "delta": 3
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "id": "s02_c_noe_touch",
+        "verb": "examine_object",
+        "label": "Tendre la bouteille qu'il a apportée, un peu trop vite",
+        "availableFor": [
+          "noe"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "noeMensonge",
+            "delta": 3
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "id": "s02_c_ines_touch",
+        "verb": "examine_object",
+        "label": "Essuyer ses chaussures avec un soin excessif sur le paillasson",
+        "availableFor": [
+          "ines"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "inesIrritabilite",
+            "delta": 3
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "id": "s02_c_lucas_touch",
+        "verb": "examine_object",
+        "label": "Poser la main un instant sur l'épaule de Noé, en guise de bonjour",
+        "availableFor": [
+          "lucas"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "lucasProtectionNoe",
+            "delta": 5
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "id": "s02_c_sarah_touch",
+        "verb": "examine_object",
+        "label": "Serrer trop fort la main tendue de Maëlys",
+        "availableFor": [
+          "sarah"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "sarahDependanceMaelys",
+            "delta": 5
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "id": "s02_c_yanis_touch",
+        "verb": "examine_object",
+        "label": "Prendre les clés de tout le monde pour les poser sur le meuble de l’entrée",
+        "availableFor": [
+          "yanis"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "yanisJeuSocial",
+            "delta": 4
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 1
           }
         ]
       }
@@ -857,6 +1097,126 @@
             "delta": 2
           }
         ]
+      },
+      {
+        "id": "s03_c_maelys_touch",
+        "verb": "examine_object",
+        "label": "Se servir un verre qu'elle ne boira pas de la soirée",
+        "availableFor": [
+          "maelys"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "maelysControle",
+            "delta": 5
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "id": "s03_c_noe_touch",
+        "verb": "examine_object",
+        "label": "Se resservir un verre, plus vite que les autres",
+        "availableFor": [
+          "noe"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "noeLachete",
+            "delta": 4
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 2
+          }
+        ]
+      },
+      {
+        "id": "s03_c_ines_touch",
+        "verb": "examine_object",
+        "label": "Faire tourner son verre sans boire, en écoutant Maëlys",
+        "availableFor": [
+          "ines"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "inesTensionSociale",
+            "delta": 4
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "id": "s03_c_lucas_touch",
+        "verb": "examine_object",
+        "label": "Se servir un verre d’eau, pour avoir une contenance",
+        "availableFor": [
+          "lucas"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "lucasNeutralite",
+            "delta": 4
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "id": "s03_c_sarah_touch",
+        "verb": "examine_object",
+        "label": "Accepter un verre qu’elle ne devrait pas boire, traitement oublié ou non",
+        "availableFor": [
+          "sarah"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "sarahStabilite",
+            "delta": -5
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 2
+          }
+        ]
+      },
+      {
+        "id": "s03_c_yanis_touch",
+        "verb": "help_service",
+        "label": "Remplir les verres de tout le monde, sans qu'on lui demande",
+        "availableFor": [
+          "yanis"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "yanisAlcoolCollectif",
+            "delta": 8
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": -1
+          }
+        ]
       }
     ],
     "autoRevealClues": [],
@@ -1137,6 +1497,126 @@
             "type": "state_delta",
             "key": "socialTension",
             "delta": 2
+          }
+        ]
+      },
+      {
+        "id": "s04_c_maelys_touch",
+        "verb": "examine_object",
+        "label": "Redresser, du bout des doigts, un couvert mal aligné",
+        "availableFor": [
+          "maelys"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "maelysControle",
+            "delta": 5
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "id": "s04_c_noe_touch",
+        "verb": "examine_object",
+        "label": "Faire glisser sa chaise bruyamment en s’asseyant",
+        "availableFor": [
+          "noe"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "noeInfluenceMaelys",
+            "delta": -3
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 2
+          }
+        ]
+      },
+      {
+        "id": "s04_c_ines_touch",
+        "verb": "examine_object",
+        "label": "Plier et déplier sa serviette, deux fois, avant de s’asseoir",
+        "availableFor": [
+          "ines"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "inesIrritabilite",
+            "delta": 3
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "id": "s04_c_lucas_touch",
+        "verb": "examine_object",
+        "label": "Toucher le dossier de sa chaise avant de s’asseoir, comme pour la tester",
+        "availableFor": [
+          "lucas"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "lucasLucidite",
+            "delta": 3
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "id": "s04_c_sarah_touch",
+        "verb": "examine_object",
+        "label": "Poser la main sur la nappe, un instant, pour se stabiliser",
+        "availableFor": [
+          "sarah"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "sarahStabilite",
+            "delta": -3
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "id": "s04_c_yanis_touch",
+        "verb": "examine_object",
+        "label": "Réajuster les verres pour que tout soit parfaitement symétrique",
+        "availableFor": [
+          "yanis"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "yanisInsouciance",
+            "delta": 4
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 1
           }
         ]
       }
@@ -1520,6 +2000,126 @@
             "note": "Déviation majeure : serviceHelper devient yanis, non sarah."
           }
         ]
+      },
+      {
+        "id": "s05_c_maelys_touch",
+        "verb": "examine_object",
+        "label": "Faire tourner son bracelet, sans quitter le jeu des yeux",
+        "availableFor": [
+          "maelys"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "maelysColere",
+            "delta": 3
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "id": "s05_c_noe_touch",
+        "verb": "examine_object",
+        "label": "Applaudir un peu trop fort à chaque coup joué",
+        "availableFor": [
+          "noe"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "noeLachete",
+            "delta": 3
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "id": "s05_c_ines_touch",
+        "verb": "examine_object",
+        "label": "Croiser les bras en regardant la partie, sans y participer",
+        "availableFor": [
+          "ines"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "inesArrogance",
+            "delta": 3
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "id": "s05_c_lucas_touch",
+        "verb": "examine_object",
+        "label": "Se resservir un café, pour avoir une raison de se lever",
+        "availableFor": [
+          "lucas"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "lucasNeutralite",
+            "delta": 3
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "id": "s05_c_sarah_touch",
+        "verb": "examine_object",
+        "label": "Serrer le stylo du jeu entre ses doigts, trop fort",
+        "availableFor": [
+          "sarah"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "sarahStabilite",
+            "delta": -4
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "id": "s05_c_yanis_touch",
+        "verb": "examine_object",
+        "label": "Réajuster les règles du jeu à voix haute, en gesticulant",
+        "availableFor": [
+          "yanis"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "yanisJeuSocial",
+            "delta": 5
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 1
+          }
+        ]
       }
     ],
     "autoRevealClues": [],
@@ -1831,6 +2431,128 @@
             "type": "state_delta",
             "key": "socialTension",
             "delta": -5
+          }
+        ]
+      },
+      {
+        "id": "s06_c_maelys_touch",
+        "verb": "examine_object",
+        "label": "Essuyer méticuleusement le plan de travail, déjà propre",
+        "availableFor": [
+          "maelys"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "maelysControle",
+            "delta": 6
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "id": "s06_c_noe_touch",
+        "verb": "examine_object",
+        "label": "Piocher un morceau de pain sur le plan de travail, en passant",
+        "availableFor": [
+          "noe"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "noeLachete",
+            "delta": 2
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "id": "s06_c_ines_touch",
+        "verb": "examine_object",
+        "label": "Ouvrir un placard sous un prétexte, pour voir ce qu’il y a dedans",
+        "availableFor": [
+          "ines"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "inesArrogance",
+            "delta": 4
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 2
+          }
+        ],
+        "revealsClue": "C-02"
+      },
+      {
+        "id": "s06_c_lucas_touch",
+        "verb": "examine_object",
+        "label": "Faire couler l’eau du robinet, pour se donner une contenance",
+        "availableFor": [
+          "lucas"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "lucasNeutralite",
+            "delta": 3
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "id": "s06_c_sarah_touch",
+        "verb": "examine_object",
+        "label": "Toucher, sans le vouloir vraiment, le petit récipient en grès",
+        "availableFor": [
+          "sarah"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "sarahMemoire",
+            "delta": 6
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 2
+          }
+        ],
+        "revealsClue": "C-09"
+      },
+      {
+        "id": "s06_c_yanis_touch",
+        "verb": "examine_object",
+        "label": "Goûter la sauce du bout du doigt, sans demander",
+        "availableFor": [
+          "yanis"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "yanisInsouciance",
+            "delta": 5
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 2
           }
         ]
       }
@@ -2240,6 +2962,126 @@
             "value": "base"
           }
         ]
+      },
+      {
+        "id": "s07_c_maelys_touch",
+        "verb": "examine_object",
+        "label": "Redresser les verres sur la nouvelle disposition de table",
+        "availableFor": [
+          "maelys"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "maelysControle",
+            "delta": 5
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "id": "s07_c_noe_touch",
+        "verb": "examine_object",
+        "label": "Tapoter la table du bout des doigts, mal à l’aise du silence",
+        "availableFor": [
+          "noe"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "noeLachete",
+            "delta": 3
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 2
+          }
+        ]
+      },
+      {
+        "id": "s07_c_ines_touch",
+        "verb": "examine_object",
+        "label": "Reposer sèchement son verre après la remarque sur Sarah",
+        "availableFor": [
+          "ines"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "inesIrritabilite",
+            "delta": 5
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 3
+          }
+        ]
+      },
+      {
+        "id": "s07_c_lucas_touch",
+        "verb": "examine_object",
+        "label": "Toucher le dossier de la nouvelle chaise de Sarah, en s’asseyant à côté",
+        "availableFor": [
+          "lucas"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "lucasProtectionNoe",
+            "delta": 4
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "id": "s07_c_sarah_touch",
+        "verb": "examine_object",
+        "label": "Serrer sa serviette dans son poing, sous la table",
+        "availableFor": [
+          "sarah"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "sarahStabilite",
+            "delta": -5
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 2
+          }
+        ]
+      },
+      {
+        "id": "s07_c_yanis_touch",
+        "verb": "examine_object",
+        "label": "Déplacer lui-même les verres et couverts pour le nouveau plan",
+        "availableFor": [
+          "yanis"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "yanisJeuSocial",
+            "delta": 5
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 1
+          }
+        ]
       }
     ],
     "autoRevealClues": [
@@ -2616,6 +3458,126 @@
           }
         ],
         "requiresFlag": "lucas_a_vu_reflet"
+      },
+      {
+        "id": "s08_c_maelys_touch",
+        "verb": "examine_object",
+        "label": "Ajuster, à peine, l’angle d’une assiette avant qu’elle ne parte",
+        "availableFor": [
+          "maelys"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "maelysControle",
+            "delta": 6
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 2
+          }
+        ]
+      },
+      {
+        "id": "s08_c_noe_touch",
+        "verb": "examine_object",
+        "label": "Se resservir du pain, sans regarder le service",
+        "availableFor": [
+          "noe"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "noeLachete",
+            "delta": 3
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "id": "s08_c_ines_touch",
+        "verb": "examine_object",
+        "label": "Attraper son assiette dès qu’elle arrive, presque avec impatience",
+        "availableFor": [
+          "ines"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "inesArrogance",
+            "delta": 3
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "id": "s08_c_lucas_touch",
+        "verb": "examine_object",
+        "label": "Effleurer le bras de Sarah en la voyant porter les assiettes",
+        "availableFor": [
+          "lucas"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "lucasCourage",
+            "delta": 4
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 2
+          }
+        ]
+      },
+      {
+        "id": "s08_c_sarah_touch",
+        "verb": "help_service",
+        "label": "Stabiliser les deux premières assiettes contre sa hanche, en équilibre",
+        "availableFor": [
+          "sarah"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "sarahStabilite",
+            "delta": -4
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 2
+          }
+        ]
+      },
+      {
+        "id": "s08_c_yanis_touch",
+        "verb": "help_service",
+        "label": "Aider à faire passer les assiettes, un peu maladroitement",
+        "availableFor": [
+          "yanis"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "yanisJeuSocial",
+            "delta": 3
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 1
+          }
+        ]
       }
     ],
     "autoRevealClues": [],
@@ -2957,6 +3919,126 @@
           }
         ],
         "revealsClue": "C-16"
+      },
+      {
+        "id": "s09_c_maelys_touch",
+        "verb": "examine_object",
+        "label": "Attraper un verre d’eau et le tendre, la main étonnamment stable",
+        "availableFor": [
+          "maelys"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "maelysControle",
+            "delta": 8
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 2
+          }
+        ]
+      },
+      {
+        "id": "s09_c_noe_touch",
+        "verb": "examine_object",
+        "label": "Se lever d’un coup, sans savoir quoi faire de ses mains",
+        "availableFor": [
+          "noe"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "noeLachete",
+            "delta": -3
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 3
+          }
+        ]
+      },
+      {
+        "id": "s09_c_ines_touch",
+        "verb": "examine_object",
+        "label": "Chercher son téléphone dans son sac, pour appeler quelqu’un",
+        "availableFor": [
+          "ines"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "inesIrritabilite",
+            "delta": 3
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 2
+          }
+        ]
+      },
+      {
+        "id": "s09_c_lucas_touch",
+        "verb": "intervene",
+        "label": "Prendre le pouls de Sarah, par réflexe professionnel",
+        "availableFor": [
+          "lucas"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "lucasCourage",
+            "delta": 6
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 2
+          }
+        ]
+      },
+      {
+        "id": "s09_c_sarah_touch",
+        "verb": "examine_object",
+        "label": "S’agripper au bord de la table, sans comprendre ce qui lui arrive",
+        "availableFor": [
+          "sarah"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "sarahStabilite",
+            "delta": -10
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 3
+          }
+        ]
+      },
+      {
+        "id": "s09_c_yanis_touch",
+        "verb": "examine_object",
+        "label": "Renverser son verre en se levant trop vite",
+        "availableFor": [
+          "yanis"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "yanisInsouciance",
+            "delta": -3
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 3
+          }
+        ]
       }
     ],
     "autoRevealClues": [
@@ -3382,6 +4464,126 @@
             "delta": 1
           }
         ]
+      },
+      {
+        "id": "s10_c_maelys_touch",
+        "verb": "examine_object",
+        "label": "Serrer une tasse de thé refroidie entre ses mains, sans la boire",
+        "availableFor": [
+          "maelys"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "maelysPanic",
+            "delta": 4
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "id": "s10_c_noe_touch",
+        "verb": "examine_object",
+        "label": "Se resservir un verre qu’il ne boira pas non plus",
+        "availableFor": [
+          "noe"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "noeMensonge",
+            "delta": 4
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "id": "s10_c_ines_touch",
+        "verb": "examine_object",
+        "label": "Ranger machinalement des verres sales, pour s’occuper les mains",
+        "availableFor": [
+          "ines"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "inesTensionSociale",
+            "delta": 3
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "id": "s10_c_lucas_touch",
+        "verb": "examine_object",
+        "label": "Sortir puis ranger son téléphone, sans l’ouvrir",
+        "availableFor": [
+          "lucas"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "lucasCourage",
+            "delta": -3
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "id": "s10_c_sarah_touch",
+        "verb": "examine_object",
+        "label": "Serrer contre elle une veste qui n’est pas la sienne",
+        "availableFor": [
+          "sarah"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "sarahStabilite",
+            "delta": -3
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "id": "s10_c_yanis_touch",
+        "verb": "examine_object",
+        "label": "Ramasser des morceaux de verre cassé au sol, en silence",
+        "availableFor": [
+          "yanis"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "yanisInsouciance",
+            "delta": -4
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 1
+          }
+        ]
       }
     ],
     "autoRevealClues": [],
@@ -3737,6 +4939,156 @@
             "type": "flag_set",
             "key": "lucas_confrontation_finale",
             "value": true
+          },
+          {
+            "type": "flag_set",
+            "key": "run_complete",
+            "value": true
+          }
+        ]
+      },
+      {
+        "id": "s11_c_maelys_touch",
+        "verb": "examine_object",
+        "label": "Toucher, dans sa poche, la page qu’elle a arrachée du carnet",
+        "availableFor": [
+          "maelys"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "maelysControle",
+            "delta": 5
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 1
+          },
+          {
+            "type": "flag_set",
+            "key": "run_complete",
+            "value": true
+          }
+        ]
+      },
+      {
+        "id": "s11_c_noe_touch",
+        "verb": "examine_object",
+        "label": "Enfiler son manteau trop vite, pressé de partir",
+        "availableFor": [
+          "noe"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "noeLachete",
+            "delta": 3
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 1
+          },
+          {
+            "type": "flag_set",
+            "key": "run_complete",
+            "value": true
+          }
+        ]
+      },
+      {
+        "id": "s11_c_ines_touch",
+        "verb": "examine_object",
+        "label": "Reposer, une dernière fois, la photo du couloir bien droite",
+        "availableFor": [
+          "ines"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "inesArrogance",
+            "delta": 2
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 1
+          },
+          {
+            "type": "flag_set",
+            "key": "run_complete",
+            "value": true
+          }
+        ]
+      },
+      {
+        "id": "s11_c_lucas_touch",
+        "verb": "examine_object",
+        "label": "Effleurer le cadre de la photo du couloir, sans le décrocher",
+        "availableFor": [
+          "lucas"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "lucasNeutralite",
+            "delta": 3
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 1
+          },
+          {
+            "type": "flag_set",
+            "key": "run_complete",
+            "value": true
+          }
+        ]
+      },
+      {
+        "id": "s11_c_sarah_touch",
+        "verb": "examine_object",
+        "label": "Serrer entre ses doigts un tissu qui n’est pas le sien, loin de la maison",
+        "availableFor": [
+          "sarah"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "sarahMemoire",
+            "delta": 3
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 0
+          },
+          {
+            "type": "flag_set",
+            "key": "run_complete",
+            "value": true
+          }
+        ]
+      },
+      {
+        "id": "s11_c_yanis_touch",
+        "verb": "examine_object",
+        "label": "Ranger son appareil photo, sans regarder les clichés pris plus tôt",
+        "availableFor": [
+          "yanis"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "yanisInsouciance",
+            "delta": -3
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 1
           },
           {
             "type": "flag_set",
