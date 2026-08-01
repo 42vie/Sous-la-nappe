@@ -6,6 +6,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { DeducedSeatingPlan } from '@/components/ui/DeducedSeatingPlan'
 import { ImageSlot } from '@/components/ui/ImageSlot'
+import { OnboardingPrelude, hasCompletedOnboarding } from '@/components/ui/OnboardingPrelude'
 import { TOTAL_CHAPTERS, getChapterNumberForScene } from '@/lib/engine/chapters'
 import { getManuscriptStatus, getEmptyManuscriptStatus } from '@/lib/engine/manuscript'
 import { getDeducedSeating } from '@/lib/engine/deducedSeating'
@@ -54,6 +55,7 @@ export default function DashboardPage() {
   const [checkingExisting, setCheckingExisting] = useState(true)
   const [confirmingReset, setConfirmingReset] = useState(false)
   const [resetting, setResetting] = useState(false)
+  const [onboarding, setOnboarding] = useState<'first' | 'help' | null>(null)
 
   useEffect(() => {
     fetch('/api/run/current')
@@ -64,6 +66,8 @@ export default function DashboardPage() {
       })
       .catch(() => {})
       .finally(() => setCheckingExisting(false))
+
+    if (!hasCompletedOnboarding()) setOnboarding('first')
   }, [])
 
   async function handleResetSave() {
@@ -160,9 +164,21 @@ export default function DashboardPage() {
           style={{
             fontFamily: 'var(--font-body)',
             fontSize: 'var(--text-sm)',
+            color: 'var(--color-text-muted)',
+            maxWidth: '48ch',
+            margin: '0 auto var(--space-3)',
+            lineHeight: 1.7,
+          }}
+        >
+          Votre objectif : reconstituer, à travers un regard toujours partiel, ce qui s'est vraiment passé ce soir-là — et ce que le groupe choisit d'en raconter après.
+        </p>
+        <p
+          style={{
+            fontFamily: 'var(--font-body)',
+            fontSize: 'var(--text-sm)',
             color: 'var(--color-text-faint)',
             maxWidth: '48ch',
-            margin: '0 auto',
+            margin: '0 auto var(--space-3)',
             lineHeight: 1.7,
           }}
         >
@@ -170,7 +186,26 @@ export default function DashboardPage() {
             ? 'Le carnet et le plan de table se complètent au fil de la partie.'
             : 'Rien n’est encore écrit. Choisissez un point de vue pour commencer.'}
         </p>
+        <button
+          onClick={() => setOnboarding('help')}
+          style={{
+            background: 'none',
+            border: 'none',
+            padding: 0,
+            fontFamily: 'var(--font-body)',
+            fontSize: 'var(--text-xs)',
+            color: 'var(--color-primary)',
+            textDecoration: 'underline',
+            cursor: 'pointer',
+          }}
+        >
+          ❔ Comment jouer
+        </button>
       </header>
+
+      {onboarding && (
+        <OnboardingPrelude mode={onboarding} onClose={() => setOnboarding(null)} />
+      )}
 
       {/* ── Entrée vers le Carnet (parties passées, succès, secrets, histoire) ── */}
       <Link
