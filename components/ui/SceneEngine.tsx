@@ -11,8 +11,11 @@ import { DosageMinigame } from './DosageMinigame'
 import { VariableGauges } from './VariableGauges'
 import { ManuscriptPanel } from './ManuscriptPanel'
 import { ImageSlot } from './ImageSlot'
+import { CHARACTERS } from './CharacterCard'
 import { getChapterNumberForScene } from '@/lib/engine/chapters'
 import { SCENE_IMAGE } from '@/lib/engine/sceneImages'
+import { RELATIONSHIP_MATRIX, relationshipLabel } from '@/lib/engine/backstory'
+import { computeImpairment, scrambleText } from '@/lib/engine/overheard'
 import type { CharacterId } from '@/lib/types/characters'
 import type { SceneId } from '@/lib/types/scenes'
 import type { RunState } from '@/types'
@@ -33,6 +36,9 @@ interface ChoiceData {
   verb: string
   label: string
   description?: string | null
+  /** Texte présenté au joueur — flouté/mélangé sous forte tension ou ivresse ambiante, calculé une fois au chargement de la scène. */
+  displayLabel?: string
+  blurPx?: number
 }
 
 interface SceneEngineProps {
@@ -66,6 +72,7 @@ export function SceneEngine({ runId, playerPov, initialSceneId, run }: SceneEngi
   const [showSeating, setShowSeating] = useState(false)
   const [showGauges, setShowGauges] = useState(false)
   const [showManuscript, setShowManuscript] = useState(false)
+  const [showRelations, setShowRelations] = useState(false)
 
   const discoveredClues = storeRun?.discoveredClues ?? run.discoveredClues ?? []
 
@@ -78,7 +85,24 @@ export function SceneEngine({ runId, playerPov, initialSceneId, run }: SceneEngi
       if (!res.ok) throw new Error('Impossible de charger la scène')
       const data = await res.json()
       setScene(data.scene)
-      setChoices(data.choices)
+
+      // Sous forte tension ou forte ivresse ambiante, les options elles-mêmes
+      // se troublent — pas juste ce qu'on entend. Calculé une seule fois ici
+      // (pas au rendu) pour ne pas re-mélanger le texte à chaque re-render.
+      const liveState = storeRun ?? run
+      const tension = liveState.variable.socialTension ?? 0
+      const impairment = computeImpairment(liveState, playerPov)
+      const tensionChaos = tension >= 70 ? ((tension - 70) / 30) * 0.3 : 0
+      const impairmentChaos = impairment >= 40 ? ((impairment - 40) / 60) * 0.35 : 0
+      const scrambleIntensity = Math.max(tensionChaos, impairmentChaos)
+      const blurPx = tension >= 60 ? Math.min(2.5, ((tension - 60) / 40) * 2.5) : 0
+
+      const distortedChoices: ChoiceData[] = data.choices.map((c: ChoiceData) => ({
+        ...c,
+        displayLabel: scrambleIntensity > 0 ? scrambleText(c.label, scrambleIntensity) : c.label,
+        blurPx,
+      }))
+      setChoices(distortedChoices)
       const hasMinigame = Boolean(data.scene.minigameId) && IMPLEMENTED_MINIGAMES.includes(data.scene.minigameId)
       setActiveMinigame(hasMinigame ? data.scene.minigameId : null)
       setPhase(hasMinigame ? 'minigame' : 'narrative')
@@ -308,6 +332,20 @@ export function SceneEngine({ runId, playerPov, initialSceneId, run }: SceneEngi
           >
             manuscrit
           </button>
+          <button
+            onClick={() => setShowRelations((v) => !v)}
+            style={{
+              fontFamily: 'var(--font-body)',
+              fontSize: 'var(--text-xs)',
+              color: 'var(--color-text-faint)',
+              textDecoration: 'underline',
+              cursor: 'pointer',
+              background: 'none',
+              border: 'none',
+            }}
+          >
+            relations
+          </button>
         </div>
       </div>
 
@@ -367,6 +405,56 @@ export function SceneEngine({ runId, playerPov, initialSceneId, run }: SceneEngi
             Le manuscrit — la vérité se complète avec vos indices
           </p>
           <ManuscriptPanel state={storeRun ?? run} />
+        </div>
+      )}
+
+      {/* ── Relations toggle — ce que le POV incarné ressent envers chacun ── */}
+      {showRelations && (
+        <div style={{
+          marginBottom: 'var(--space-6)',
+          padding: 'var(--space-4)',
+          background: 'var(--color-surface-offset)',
+          borderRadius: 'var(--radius-lg)',
+          border: '1px solid var(--color-divider)',
+        }}>
+          <p style={{
+            fontFamily: 'var(--font-body)',
+            fontSize: 'var(--text-xs)',
+            color: 'var(--color-text-muted)',
+            textTransform: 'uppercase',
+            letterSpacing: '0.08em',
+            marginBottom: 'var(--space-4)',
+          }}>
+            Ce que {CHARACTERS.find((c) => c.id === playerPov)?.firstName} ressent, envers chacun
+          </p>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
+            {CHARACTERS.filter((c) => c.id !== playerPov).map((c) => {
+              const rel = RELATIONSHIP_MATRIX[playerPov]?.[c.id]
+              if (!rel) return null
+              const positive = rel.value >= 0
+              return (
+                <div key={c.id}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2px' }}>
+                    <span style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', color: 'var(--color-text-muted)' }}>
+                      → {c.firstName}
+                    </span>
+                    <span style={{ fontFamily: 'var(--font-body)', fontSize: '10px', color: 'var(--color-text-faint)' }}>
+                      {relationshipLabel(rel.value)}{rel.note ? ` · ${rel.note}` : ''}
+                    </span>
+                  </div>
+                  <div style={{ height: 4, background: 'var(--color-surface)', borderRadius: 999, overflow: 'hidden', position: 'relative' }}>
+                    <div style={{
+                      position: 'absolute',
+                      left: positive ? '50%' : `${50 - Math.abs(rel.value) / 2}%`,
+                      width: `${Math.abs(rel.value) / 2}%`,
+                      height: '100%',
+                      background: positive ? 'var(--color-primary)' : 'var(--color-error, #a01f1f)',
+                    }} />
+                  </div>
+                </div>
+              )
+            })}
+          </div>
         </div>
       )}
 
@@ -532,8 +620,10 @@ export function SceneEngine({ runId, playerPov, initialSceneId, run }: SceneEngi
                     fontFamily: 'var(--font-body)',
                     fontSize: 'var(--text-sm)',
                     color: 'var(--color-text)',
+                    filter: choice.blurPx ? `blur(${choice.blurPx}px)` : 'none',
+                    transition: 'filter 400ms ease',
                   }}>
-                    {choice.label}
+                    {choice.displayLabel ?? choice.label}
                   </span>
                 </button>
               ))}
