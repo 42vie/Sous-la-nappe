@@ -6,14 +6,32 @@ export default function LoginPage() {
   return (
     <main
       style={{
+        position: 'relative',
         minHeight: '100dvh',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
         padding: 'var(--space-8)',
+        overflow: 'hidden',
       }}
     >
+      {/* Détail discret, tiré de la photo d'accueil — presque invisible, jamais expliqué */}
+      <img
+        src="/images/skeleton-hand.png"
+        alt=""
+        aria-hidden
+        style={{
+          position: 'absolute',
+          bottom: '-20px',
+          right: '-10px',
+          width: 130,
+          opacity: 0.55,
+          filter: 'grayscale(0.2)',
+          pointerEvents: 'none',
+          userSelect: 'none',
+        }}
+      />
       <div style={{ width: '100%', maxWidth: '400px', display: 'flex', flexDirection: 'column', gap: 'var(--space-8)' }}>
 
         {/* Logo / titre */}

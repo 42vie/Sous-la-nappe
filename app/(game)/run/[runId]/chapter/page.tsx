@@ -2,13 +2,12 @@
 
 import { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import { CharacterCard, CHARACTERS } from '@/components/ui/CharacterCard'
+import Link from 'next/link'
+import { CHARACTERS } from '@/components/ui/CharacterCard'
 import { CardCarousel } from '@/components/ui/CardCarousel'
-import { useRunStore } from '@/store/runStore'
 import { CHAPTERS, TOTAL_CHAPTERS } from '@/lib/engine/chapters'
 import { BLIND_SPOTS } from '@/lib/engine/blindSpots'
 import { CHARACTER_BIOS, CHRONOLOGY, RELATIONSHIP_MATRIX, relationshipLabel } from '@/lib/engine/backstory'
-import { getCharacterAction, formatCharacterAction } from '@/lib/engine/characterActions'
 import { getManuscriptStatus } from '@/lib/engine/manuscript'
 import type { CharacterId } from '@/lib/types/characters'
 import type { RunState } from '@/lib/types/engine'
@@ -26,12 +25,9 @@ export default function ChapterSelectPage() {
   const params = useParams()
   const router = useRouter()
   const runId = params.runId as string
-  const setRun = useRunStore((s) => s.setRun)
 
   const [run, setLocalRun] = useState<RunState | null>(null)
-  const [selected, setSelected] = useState<CharacterId | null>(null)
   const [loading, setLoading] = useState(true)
-  const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
@@ -49,7 +45,6 @@ export default function ChapterSelectPage() {
   const povHistory = run?.povHistory ?? (run ? [run.playerPov] : [])
   const nextChapterNumber = povHistory.length + 1
   const chapter = CHAPTERS[nextChapterNumber - 1]
-  const available = CHARACTERS.filter((c) => !povHistory.includes(c.id))
   const justPlayed = povHistory[povHistory.length - 1]
   const justPlayedName = justPlayed ? CHARACTER_NAMES[justPlayed].split(' ')[0] : null
   const blindSpots = justPlayed ? BLIND_SPOTS[justPlayed] : []
@@ -72,29 +67,6 @@ export default function ChapterSelectPage() {
     }
   }, [run, nextChapterNumber, runId, router])
 
-  async function handleConfirm() {
-    if (!selected || submitting) return
-    setSubmitting(true)
-    setError(null)
-    try {
-      const res = await fetch(`/api/run/${runId}/chapter`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ character: selected }),
-      })
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}))
-        throw new Error(data.error ?? 'Erreur serveur')
-      }
-      const data = await res.json()
-      setRun(data.run)
-      router.push(`/run/${runId}`)
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Erreur inconnue')
-      setSubmitting(false)
-    }
-  }
-
   if (loading || !run) {
     return (
       <main style={{ minHeight: '100dvh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -104,8 +76,6 @@ export default function ChapterSelectPage() {
       </main>
     )
   }
-
-  const selectedChar = available.find((c) => c.id === selected)
 
   // Les blocs de contexte (stats, bio, angles morts, chronologie) sont
   // regroupés en cartes défilables plutôt qu'empilés verticalement — voir
@@ -343,56 +313,24 @@ export default function ChapterSelectPage() {
         </div>
       )}
 
-      <p style={{
-        width: '100%', maxWidth: 'var(--content-wide)',
-        fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', color: 'var(--color-text-faint)',
-        textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 'var(--space-4)',
-      }}>
-        Choisir le prochain point de vue
-      </p>
-
-      <div style={{
-        width: '100%', maxWidth: 'var(--content-wide)',
-        display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(200px, 100%), 1fr))',
-        gap: 'var(--space-4)', marginBottom: 'var(--space-12)',
-      }}>
-        {available.map((c) => (
-          <CharacterCard
-            key={c.id}
-            character={c}
-            isSelected={selected === c.id}
-            onClick={() => setSelected((prev) => (prev === c.id ? null : c.id))}
-            accrocheOverride={formatCharacterAction(getCharacterAction(c.id, nextChapterNumber, tension))}
-          />
-        ))}
-      </div>
-
-      <div style={{
-        position: 'fixed', bottom: 0, left: 0, right: 0,
-        padding: 'var(--space-4) var(--space-8)',
-        background: 'var(--color-surface)', borderTop: '1px solid var(--color-divider)',
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 'var(--space-4)',
-        transform: selected ? 'translateY(0)' : 'translateY(100%)',
-        transition: 'transform 240ms cubic-bezier(0.16, 1, 0.3, 1)',
-        zIndex: 10, boxShadow: 'var(--shadow-lg)',
-      }}>
-        <p style={{ fontFamily: 'var(--font-display)', fontSize: 'var(--text-lg)', color: selectedChar?.color, fontStyle: 'italic' }}>
-          {selectedChar?.firstName}
-        </p>
-        <button
-          onClick={handleConfirm}
-          disabled={!selected || submitting}
-          style={{
-            padding: 'var(--space-3) var(--space-8)',
-            background: selectedChar?.color ?? 'var(--color-primary)',
-            color: '#fff', border: 'none', borderRadius: 'var(--radius-md)',
-            fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)', letterSpacing: '0.04em',
-            cursor: submitting ? 'wait' : 'pointer', opacity: submitting ? 0.7 : 1,
-          }}
-        >
-          {submitting ? 'Chargement…' : `Continuer en ${selectedChar?.firstName ?? '...'} →`}
-        </button>
-      </div>
+      <Link
+        href={`/run/${runId}/chapter/select`}
+        style={{
+          display: 'inline-block',
+          padding: 'var(--space-3) var(--space-8)',
+          background: 'var(--color-primary)',
+          color: 'var(--color-text-inverse)',
+          border: 'none',
+          borderRadius: 'var(--radius-md)',
+          fontFamily: 'var(--font-body)',
+          fontSize: 'var(--text-sm)',
+          letterSpacing: '0.04em',
+          textDecoration: 'none',
+          marginBottom: 'var(--space-12)',
+        }}
+      >
+        🎭 Choisir le prochain point de vue →
+      </Link>
     </main>
   )
 }

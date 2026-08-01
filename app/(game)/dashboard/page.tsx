@@ -4,11 +4,9 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
-import { CharacterCard, CHARACTERS } from '@/components/ui/CharacterCard'
 import { DeducedSeatingPlan } from '@/components/ui/DeducedSeatingPlan'
 import { ImageSlot } from '@/components/ui/ImageSlot'
 import { TOTAL_CHAPTERS, getChapterNumberForScene } from '@/lib/engine/chapters'
-import { getCharacterAction, formatCharacterAction } from '@/lib/engine/characterActions'
 import { getManuscriptStatus, getEmptyManuscriptStatus } from '@/lib/engine/manuscript'
 import { getDeducedSeating } from '@/lib/engine/deducedSeating'
 import type { CharacterId } from '@/lib/types/characters'
@@ -50,10 +48,7 @@ function ManuscriptCarnet({ manuscript }: { manuscript: ReturnType<typeof getEmp
 
 export default function DashboardPage() {
   const router = useRouter()
-  const [selected, setSelected] = useState<CharacterId | null>(null)
-  const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [showCharacterSelect, setShowCharacterSelect] = useState(false)
 
   const [existingRun, setExistingRun] = useState<ExistingRun | null>(null)
   const [checkingExisting, setCheckingExisting] = useState(true)
@@ -87,30 +82,6 @@ export default function DashboardPage() {
     }
   }
 
-  async function handleStart() {
-    if (!selected || loading) return
-    setLoading(true)
-    setError(null)
-    try {
-      const res = await fetch('/api/run/new', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ character: selected }),
-      })
-      if (!res.ok) {
-        const data = await res.json()
-        if (res.status === 401) { router.push('/login?next=/dashboard'); return }
-        throw new Error(data.error ?? 'Erreur serveur')
-      }
-      const { runId } = await res.json()
-      router.push(`/run/${runId}`)
-    } catch (err: unknown) {
-      setError((err as Error).message)
-      setLoading(false)
-    }
-  }
-
-  const selectedChar = CHARACTERS.find((c) => c.id === selected)
   const manuscript = existingRun ? getManuscriptStatus(existingRun) : getEmptyManuscriptStatus()
   const deducedSeats = getDeducedSeating(existingRun)
 
@@ -145,13 +116,20 @@ export default function DashboardPage() {
         <Image
           src="/logo.png"
           alt="Sous la nappe"
-          width={72}
-          height={55}
+          width={1254}
+          height={960}
+          priority
+          sizes="(max-width: 480px) 90vw, 380px"
           style={{
             display: 'block',
-            margin: '0 auto var(--space-4)',
-            borderRadius: 'var(--radius-md)',
-            objectFit: 'cover',
+            width: 'min(100%, 380px)',
+            height: 'auto',
+            margin: '0 auto var(--space-2)',
+            // Les bords de la photo sont déjà quasi noirs — un fondu plutôt
+            // qu'un cadre net évite l'effet "icône dans une boîte" et la
+            // fait se fondre dans le fond sombre de la page.
+            maskImage: 'radial-gradient(ellipse 68% 62% at center, black 55%, transparent 100%)',
+            WebkitMaskImage: 'radial-gradient(ellipse 68% 62% at center, black 55%, transparent 100%)',
           }}
         />
         <p
@@ -336,11 +314,12 @@ export default function DashboardPage() {
             </div>
           )}
 
-          {/* ── Pas de partie en cours : CTA pour révéler la sélection de personnage ── */}
-          {!existingRun && !showCharacterSelect && (
-            <button
-              onClick={() => setShowCharacterSelect(true)}
+          {/* ── Pas de partie en cours : lien vers la page dédiée de sélection de personnage ── */}
+          {!existingRun && (
+            <Link
+              href="/dashboard/nouvelle-partie"
               style={{
+                display: 'inline-block',
                 padding: 'var(--space-3) var(--space-8)',
                 background: 'var(--color-primary)',
                 color: 'var(--color-text-inverse)',
@@ -349,113 +328,12 @@ export default function DashboardPage() {
                 fontFamily: 'var(--font-body)',
                 fontSize: 'var(--text-sm)',
                 letterSpacing: '0.04em',
-                cursor: 'pointer',
+                textDecoration: 'none',
                 marginBottom: 'var(--space-12)',
               }}
             >
               🎭 Commencer une nouvelle soirée →
-            </button>
-          )}
-
-          {/* ── Grille de cartes — sélection de personnage ── */}
-          {!existingRun && showCharacterSelect && (
-          <>
-          <div
-            style={{
-              width: '100%',
-              maxWidth: 'var(--content-wide)',
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(min(200px, 100%), 1fr))',
-              gap: 'var(--space-4)',
-              marginBottom: 'var(--space-12)',
-              animation: 'fadeInUp 420ms cubic-bezier(0.16, 1, 0.3, 1) both',
-            }}
-          >
-            {CHARACTERS.map((c) => (
-              <CharacterCard
-                key={c.id}
-                character={c}
-                isSelected={selected === c.id}
-                onClick={() => setSelected((prev) => (prev === c.id ? null : c.id))}
-                accrocheOverride={formatCharacterAction(getCharacterAction(c.id, 1, 0))}
-              />
-            ))}
-          </div>
-
-          {/* Bandeau bas fixe — apparaît quand un perso est sélectionné */}
-          <div
-            style={{
-              position: 'fixed',
-              bottom: 0,
-              left: 0,
-              right: 0,
-              padding: 'var(--space-4) var(--space-8)',
-              background: 'var(--color-surface)',
-              borderTop: '1px solid var(--color-divider)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              gap: 'var(--space-4)',
-              transform: selected ? 'translateY(0)' : 'translateY(100%)',
-              transition: 'transform 240ms cubic-bezier(0.16, 1, 0.3, 1)',
-              zIndex: 10,
-              boxShadow: 'var(--shadow-lg)',
-            }}
-          >
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-1)' }}>
-              {selectedChar && (
-                <>
-                  <p
-                    style={{
-                      fontFamily: 'var(--font-display)',
-                      fontSize: 'var(--text-lg)',
-                      color: selectedChar.color,
-                      fontStyle: 'italic',
-                      lineHeight: 1,
-                    }}
-                  >
-                    {selectedChar.firstName}
-                  </p>
-                  <p
-                    style={{
-                      fontFamily: 'var(--font-body)',
-                      fontSize: 'var(--text-xs)',
-                      color: 'var(--color-text-faint)',
-                    }}
-                  >
-                    {formatCharacterAction(getCharacterAction(selectedChar.id, 1, 0))}
-                  </p>
-                </>
-              )}
-              {error && (
-                <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', color: 'var(--color-error)' }}>
-                  {error}
-                </p>
-              )}
-            </div>
-
-            <button
-              onClick={handleStart}
-              disabled={loading || !selected}
-              style={{
-                flexShrink: 0,
-                padding: 'var(--space-3) var(--space-8)',
-                background: selectedChar ? selectedChar.color : 'var(--color-primary)',
-                color: '#fff',
-                border: 'none',
-                borderRadius: 'var(--radius-md)',
-                fontFamily: 'var(--font-body)',
-                fontSize: 'var(--text-sm)',
-                letterSpacing: '0.04em',
-                cursor: loading ? 'wait' : 'pointer',
-                opacity: loading ? 0.7 : 1,
-                transition: 'all var(--transition)',
-              }}
-            >
-              {loading ? 'Chargement…' : '🎭 Jouer ce rôle →'}
-            </button>
-          </div>
-          </>
+            </Link>
           )}
         </>
       )}
