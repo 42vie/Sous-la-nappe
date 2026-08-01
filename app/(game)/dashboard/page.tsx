@@ -355,6 +355,7 @@ export default function DashboardPage() {
               gridTemplateColumns: 'repeat(auto-fill, minmax(min(200px, 100%), 1fr))',
               gap: 'var(--space-4)',
               marginBottom: 'var(--space-12)',
+              animation: 'fadeInUp 420ms cubic-bezier(0.16, 1, 0.3, 1) both',
             }}
           >
             {CHARACTERS.map((c) => (
