@@ -54,7 +54,7 @@ const ENDING_LABELS: Record<string, string> = {
 }
 
 export default function CarnetPage() {
-  const { user } = useAuthStore()
+  const { user, isReady } = useAuthStore()
   const router = useRouter()
   const [runs, setRuns] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
@@ -79,6 +79,15 @@ export default function CarnetPage() {
   }
 
   useEffect(() => {
+    // isReady ne passe à true qu'une fois que Firebase Auth a confirmé
+    // l'état (onAuthStateChanged, async) — tant que ce n'est pas arrivé,
+    // "user" vaut encore null même pour quelqu'un de connecté. Rediriger
+    // sur ce seul test envoyait tout le monde vers /login au premier rendu,
+    // qui rebondissait ensuite vers /dashboard une fois l'auth confirmée —
+    // "le carnet redirige direct sur l'accueil". Plus net en PWA (démarrage
+    // à froid), où la réhydratation de l'auth est plus lente. On attend
+    // isReady avant de trancher.
+    if (!isReady) return
     if (!user) { router.push('/login'); return }
     // Un seul filtre d'égalité (playerId — le champ réellement écrit par
     // /api/run/new et /api/run/[runId]/advance, jamais "userId") : le tri
@@ -94,7 +103,7 @@ export default function CarnetPage() {
       setRuns(completed)
       setLoading(false)
     })
-  }, [user, router])
+  }, [user, isReady, router])
 
   // ── Calcul des succès débloqués ──────────────────────────────────────────
   const allCluesFound = new Set(runs.flatMap((r) => (r.discoveredClues ?? []).map((dc: any) => dc.clueId)))
@@ -162,7 +171,7 @@ export default function CarnetPage() {
         <Link href="/dashboard" style={{ color: 'rgba(212,207,200,0.4)', fontFamily: 'var(--font-body)', fontSize: '12px', letterSpacing: '0.1em', textDecoration: 'none', textTransform: 'uppercase', display: 'block', marginBottom: '24px' }}>← Retour</Link>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px' }}>
           <div>
-            <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2rem,5vw,3.2rem)', color: '#f5f3ee', fontWeight: 400, fontStyle: 'italic', margin: 0 }}>Le Carnet</h1>
+            <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2rem,5vw,3.2rem)', color: '#f5f3ee', fontWeight: 400, fontStyle: 'italic', margin: 0 }}>📓 Le Carnet</h1>
             <p style={{ color: 'rgba(212,207,200,0.5)', fontFamily: 'var(--font-body)', fontSize: '13px', marginTop: '8px' }}>
               {runs.length} partie{runs.length !== 1 ? 's' : ''} terminée{runs.length !== 1 ? 's' : ''} · {unlockedAchIds.size}/{achievementsData.length} succès · {unlockedStoryIds.size}/{storyBlocksData.length} fragments d'histoire
             </p>
@@ -171,7 +180,7 @@ export default function CarnetPage() {
             padding: '10px 22px', background: '#8b1a1a', color: '#f5f3ee', borderRadius: '6px',
             fontFamily: 'var(--font-body)', fontSize: '13px', letterSpacing: '0.04em', textDecoration: 'none', flexShrink: 0,
           }}>
-            Nouvelle soirée →
+            🎭 Nouvelle soirée →
           </Link>
         </div>
       </div>
@@ -255,7 +264,7 @@ export default function CarnetPage() {
                       textTransform: 'uppercase', cursor: 'pointer', padding: 0,
                     }}
                   >
-                    Effacer cette partie
+                    🗑 Effacer cette partie
                   </button>
                 ) : (
                   <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
