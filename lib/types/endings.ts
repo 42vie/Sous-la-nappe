@@ -30,7 +30,8 @@ export type EndingId =
   | 'F0' | 'F1' | 'F2' | 'F3' | 'F4' | 'F5' | 'F6' | 'F7' | 'F8'
   | 'E1' | 'E2' | 'E3'
   | 'F9' | 'F13' | 'F14' | 'F_SAMU_TOT' | 'F_INES_PIVOT' | 'F_YANIS_PART'
-  | 'F_SARAH_MORT' | 'F_NOE_DISPARAIT' | 'F_SARAH_RETOURNE' | 'F_SARAH_SAIT_ET_COUVRE' | 'F_RUPTURE_FINALE';
+  | 'F_SARAH_MORT' | 'F_NOE_DISPARAIT' | 'F_SARAH_RETOURNE' | 'F_SARAH_SAIT_ET_COUVRE' | 'F_RUPTURE_FINALE'
+  | 'F_NOE_MORT_SILENCE' | 'F_NOE_MORT_VERITE' | 'F_NOE_MORT_RECIT_FAUX';
 
 export interface EndingCondition {
   type: 'flag' | 'state' | 'variable' | 'pov';

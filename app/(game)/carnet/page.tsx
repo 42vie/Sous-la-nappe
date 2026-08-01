@@ -6,6 +6,7 @@ import Link from 'next/link'
 import achievementsData from '@/data/achievements.json'
 import storyBlocksData from '@/data/story_blocks.json'
 import cluesData from '@/data/clues.json'
+import { ENDING_SUMMARIES } from '@/lib/engine/endingSummaries'
 import type { RunState } from '@/lib/types/engine'
 import type { DiscoveredClue } from '@/lib/types/clues'
 import type { CharacterId } from '@/lib/types/characters'
@@ -63,9 +64,6 @@ const ENDING_LABELS: Record<string, string> = {
   F6: 'Noé survit, Sarah détruite',
   F7: 'Vérité complète post-hôpital',
   F8: 'Fin noire',
-  D1: 'Double victime',
-  D2: 'L\'auto-contamination',
-  S1: 'L\'interruption',
   E1: 'Inès co-coupable',
   E2: 'Solidarité toxique',
   E3: 'Preuve effacée',
@@ -76,6 +74,9 @@ const ENDING_LABELS: Record<string, string> = {
   F_YANIS_PART: 'Yanis est parti avant',
   F14: 'Le silence de groupe',
   F_SARAH_MORT: 'Sarah ne revient pas',
+  F_NOE_MORT_SILENCE: 'Noé ne revient pas',
+  F_NOE_MORT_VERITE: 'La vérité, trop tard pour lui',
+  F_NOE_MORT_RECIT_FAUX: 'Le récit qui reste',
   F_NOE_DISPARAIT: 'Noé disparaît',
   F_SARAH_RETOURNE: 'Sarah se retourne contre Noé',
   F_SARAH_SAIT_ET_COUVRE: 'Sarah sait et se tait',
@@ -86,8 +87,9 @@ export default function CarnetPage() {
   const router = useRouter()
   const [runs, setRuns] = useState<CompletedRun[]>([])
   const [loading, setLoading] = useState(true)
-  const [activeTab, setActiveTab] = useState<'parties' | 'secrets' | 'succes' | 'histoire'>('parties')
+  const [activeTab, setActiveTab] = useState<'parties' | 'secrets' | 'succes' | 'histoire' | 'fins'>('parties')
   const [openBlock, setOpenBlock] = useState<string | null>(null)
+  const [openEnding, setOpenEnding] = useState<string | null>(null)
   const [confirmingDelete, setConfirmingDelete] = useState<string | null>(null)
   const [deleting, setDeleting] = useState<string | null>(null)
 
@@ -196,7 +198,7 @@ export default function CarnetPage() {
           <div>
             <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2rem,5vw,3.2rem)', color: '#f5f3ee', fontWeight: 400, fontStyle: 'italic', margin: 0 }}>📓 Le Carnet</h1>
             <p style={{ color: 'rgba(212,207,200,0.5)', fontFamily: 'var(--font-body)', fontSize: '13px', marginTop: '8px' }}>
-              {runs.length} partie{runs.length !== 1 ? 's' : ''} terminée{runs.length !== 1 ? 's' : ''} · {unlockedAchIds.size}/{achievementsData.length} succès · {unlockedStoryIds.size}/{storyBlocksData.length} fragments d'histoire
+              {runs.length} partie{runs.length !== 1 ? 's' : ''} terminée{runs.length !== 1 ? 's' : ''} · {unlockedAchIds.size}/{achievementsData.length} succès · {unlockedStoryIds.size}/{storyBlocksData.length} fragments d'histoire · {allEndings.size}/{Object.keys(ENDING_SUMMARIES).length} fins découvertes
             </p>
           </div>
           <Link href="/dashboard" style={{
@@ -210,9 +212,9 @@ export default function CarnetPage() {
 
       {/* Tabs */}
       <div style={{ display: 'flex', gap: '8px', marginBottom: '32px', flexWrap: 'wrap' }}>
-        {(['parties', 'secrets', 'succes', 'histoire'] as const).map((t) => (
+        {(['parties', 'secrets', 'succes', 'histoire', 'fins'] as const).map((t) => (
           <button key={t} style={tab(activeTab === t)} onClick={() => setActiveTab(t)}>
-            {t === 'parties' ? '📋 Parties' : t === 'secrets' ? '🔍 Secrets' : t === 'succes' ? '🏆 Succès' : '📖 Histoire'}
+            {t === 'parties' ? '📋 Parties' : t === 'secrets' ? '🔍 Secrets' : t === 'succes' ? '🏆 Succès' : t === 'histoire' ? '📖 Histoire' : '🎭 Fins'}
           </button>
         ))}
       </div>
@@ -239,7 +241,7 @@ export default function CarnetPage() {
                     {CHAR_LABELS[run.playerPov] ?? run.playerPov}
                   </span>
                   <span style={{ background: 'rgba(255,255,255,0.05)', color: 'rgba(212,207,200,0.7)', padding: '3px 10px', borderRadius: '4px', fontSize: '11px', fontFamily: 'var(--font-body)' }}>
-                    {(run.ending && ENDING_LABELS[run.ending]) ?? run.ending ?? '—'}
+                    {(run.ending && ENDING_LABELS[run.ending]) ?? 'Fin inconnue'}
                   </span>
                   {run.finalScore != null && (
                     <span style={{ color: run.finalScore >= 75 ? '#c8a96e' : 'rgba(212,207,200,0.5)', fontSize: '12px', fontFamily: 'var(--font-body)' }}>
@@ -429,6 +431,58 @@ export default function CarnetPage() {
                   <p style={{ color: 'rgba(212,207,200,0.75)', fontFamily: 'var(--font-body)', fontSize: '13px', lineHeight: 1.8, margin: '14px 0 0', borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '14px' }}>
                     {block.text}
                   </p>
+                )}
+              </div>
+            )
+          })}
+        </div>
+      )}
+
+      {/* ── FINS ──────────────────────────────── */}
+      {activeTab === 'fins' && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          <p style={{ color: 'rgba(212,207,200,0.4)', fontFamily: 'var(--font-body)', fontSize: '12px', marginBottom: '8px' }}>
+            {allEndings.size}/{Object.keys(ENDING_SUMMARIES).length} dénouements découverts. Les fins non vécues restent floutées, pour ne rien spoiler d'une future partie.
+          </p>
+          {(Object.keys(ENDING_SUMMARIES) as EndingId[]).map((id) => {
+            const unlocked = allEndings.has(id)
+            const isOpen = openEnding === id
+            const summary = ENDING_SUMMARIES[id]
+            return (
+              <div
+                key={id}
+                style={{ ...card, opacity: unlocked ? 1 : 0.5, cursor: unlocked ? 'pointer' : 'default' }}
+                onClick={() => unlocked && setOpenEnding(isOpen ? null : id)}
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '12px' }}>
+                  <p style={{
+                    color: unlocked ? '#f5f3ee' : 'rgba(212,207,200,0.5)',
+                    fontFamily: 'var(--font-display)', fontSize: '16px', fontStyle: 'italic', margin: 0,
+                    filter: unlocked ? 'none' : 'blur(5px)',
+                    userSelect: unlocked ? 'auto' : 'none',
+                  }}>
+                    {summary.title}
+                  </p>
+                  {unlocked ? (
+                    <span style={{ color: 'rgba(212,207,200,0.4)', fontSize: '12px', flexShrink: 0 }}>{isOpen ? '▲' : '▼'}</span>
+                  ) : (
+                    <span style={{ color: 'rgba(212,207,200,0.3)', fontSize: '16px', flexShrink: 0 }}>🔒</span>
+                  )}
+                </div>
+                {unlocked && !isOpen && (
+                  <p style={{ color: 'rgba(212,207,200,0.55)', fontFamily: 'var(--font-body)', fontSize: '12px', margin: '8px 0 0', lineHeight: 1.6 }}>
+                    {summary.short}
+                  </p>
+                )}
+                {unlocked && isOpen && (
+                  <div style={{ marginTop: '14px', paddingTop: '14px', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+                    <p style={{ color: 'rgba(212,207,200,0.8)', fontFamily: 'var(--font-body)', fontSize: '13px', lineHeight: 1.8, margin: 0 }}>
+                      {summary.detail}
+                    </p>
+                    <p style={{ color: '#c8a96e', fontFamily: 'var(--font-display)', fontStyle: 'italic', fontSize: '14px', margin: '14px 0 0' }}>
+                      {summary.lastLine}
+                    </p>
+                  </div>
                 )}
               </div>
             )

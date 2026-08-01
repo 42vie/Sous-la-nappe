@@ -121,6 +121,29 @@ function isYanisPart(state: RunState): boolean {
   return Boolean(state.flags['yanis_veut_partir'])
 }
 
+// Noé peut mourir — pas seulement survivre. Sans ça, la tension ne
+// débouchait jamais sur rien de vraiment grave pour lui : MUST_SURVIVE_ENDINGS
+// bloquait le calcul de gravité au coma, jamais à la mort, quelle que soit la
+// tension accumulée. Trois variantes, selon ce qui ressort après — même
+// logique de distinction que F6/F7/F8, mais avec la mort au bout.
+// Calibré par simulation (20000 runs à choix aléatoires, 2026-08-01) : la
+// tension sociale plafonne en pratique autour de 60-62 même dans les runs
+// les plus tendus (p99 = 46), donc un seuil à 65 était mathématiquement
+// inatteignable (0% sur 20000 runs). 38 correspond au sommet réel de la
+// distribution (~top 4-5%, la tension "vraiment montée trop haut"), et
+// laisse les trois issues encore filtrées par isSarahMorte et les cascades
+// F1-F5 avant d'être atteintes : le taux final observé reste rare.
+const TENSION_DEATH_THRESHOLD = 38
+
+function resolveNoeMortVariant(state: RunState): EndingId | null {
+  const tension = state.variable.socialTension ?? 0
+  if (tension < TENSION_DEATH_THRESHOLD) return null
+
+  if (hasKeyEvidence(state) && state.flags['lucas_a_parle']) return 'F_NOE_MORT_VERITE'
+  if (state.variable.survivingNarrative === 'false_sarah_self_harm') return 'F_NOE_MORT_RECIT_FAUX'
+  return 'F_NOE_MORT_SILENCE'
+}
+
 /** F14 — silence total, tension quasi nulle : rien ne s'est jamais vraiment mis en mouvement. */
 function isSilenceGroupePermanent(state: RunState): boolean {
   const tension = state.variable.socialTension ?? 0
@@ -262,9 +285,14 @@ export function calculateEnding(state: RunState): EndingId {
   // Noé est la cible réellement atteinte — ce qui se passe après l'hôpital tranche.
 
   // F_SARAH_MORT — vérifiée en tout premier dans cette branche : si la
-  // cascade de silences est complète, rien d'autre ne compte plus. La
-  // seule fin du jeu où quelqu'un meurt réellement (voir epilogue.ts).
+  // cascade de silences est complète, rien d'autre ne compte plus.
   if (isSarahMorte(state)) return 'F_SARAH_MORT'
+
+  // Noé meurt — vérifié avant toutes les variantes "il survit" (E1-E3,
+  // F9-F14, F7/F8/F6/F0) : à tension très élevée, la mécanique ne
+  // s'arrête plus au coma. Trois issues selon ce qui ressort après.
+  const noeMortVariant = resolveNoeMortVariant(state)
+  if (noeMortVariant) return noeMortVariant
 
   // E1 — le mobile financier de Noé sort au jour, et Inès savait depuis la
   // cuisine (S06) sans jamais rien dire : sa survie à lui expose sa
@@ -326,29 +354,32 @@ export function calculateEnding(state: RunState): EndingId {
 
 /** Description courte, affichable au joueur, de ce qui a déclenché sa fin — la "matrice" de la bible en version lisible. */
 export const ENDING_TRIGGERS: Record<EndingId, string> = {
-  F0: "Noé a reçu l'assiette visée, a fait une détresse sévère, est parti à l'hôpital, et a survécu — sans qu'aucun autre déclencheur (interruption, preuve assemblée, silence total) ne prenne le dessus.",
-  F1: "L'assiette visée n'a pas atteint Noé : elle a atteint Sarah. Le récit faux qui circule après coup s'est imposé sans contestation sérieuse.",
-  F2: "L'assiette visée n'a pas atteint Noé : elle a atteint Inès, à la place initialement prévue avant tout déplacement.",
-  F3: "L'assiette visée a fini par toucher Sarah et Inès à la fois — la soirée a basculé en catastrophe collective plutôt qu'en incident ciblé.",
-  F4: "Le service a fini par se retourner contre Maëlys elle-même — la seule fin où elle est physiquement atteinte par son propre dispositif.",
-  F5: "Le service ou le morpion ont été interrompus avant d'aller au bout, ou une confrontation a eu lieu sans réunir assez de preuves : personne n'est physiquement touché, mais le groupe se fracture avant toute certitude.",
-  F6: "Noé a survécu à l'hôpital, mais personne n'a vraiment parlé — le silence a tenu, et la vérité est restée enterrée malgré la gravité de ce qui venait de se passer.",
-  F7: "Noé a survécu, et assez de preuves matérielles (une photo, un vocal, un carnet) ont fini par s'assembler pendant que quelqu'un acceptait enfin de parler.",
-  F8: "Noé a survécu, mais le récit qui est sorti de la maison a fini par écraser Sarah — dans une tension déjà montée trop haut pour que quiconque la défende.",
-  E1: "Noé a survécu, mais le mobile financier qui pesait sur lui est sorti au jour — et Inès, qui avait vu de quoi il retournait dans la cuisine ou qui s'est tue une fois de trop en aftermath, s'est retrouvée complice par son silence.",
-  E2: "Noé a survécu, mais Sarah connaissait un passé avec Maëlys que personne d'autre ne soupçonnait — et elle a choisi de partir sans rien dire, protégeant la mauvaise personne.",
-  E3: "Noé a survécu, et la photo qui aurait pu tout prouver a existé — mais Maëlys en a su l'existence avant que quiconque d'autre ne la voie, et la preuve a disparu avant de compter.",
-  F9: "Noé a survécu, la photo de Yanis a été vue, et quelqu'un est allé jusqu'à appeler la police — la preuve est devenue une affaire, pas juste une conviction privée.",
-  F13: "Noé a survécu, la photo de Yanis a été vue et comprise — mais personne n'est allé jusqu'à la police. La vérité tient, en privé, sans devenir une affaire.",
-  F_SAMU_TOT: "Le SAMU a été appelé immédiatement après l'incident, sans attendre que quelqu'un d'autre ne s'en charge — le geste le plus concret de toute la soirée.",
-  F_INES_PIVOT: "Inès a vu ou tu, à un moment ou un autre de la soirée, et cette complicité muette a fini par peser sur elle plus que sur quiconque d'autre.",
-  F_YANIS_PART: "Yanis a proposé de partir avant même l'incident — un instinct qu'il n'a pas su nommer sur le moment, mais qui n'était pas faux.",
-  F14: "Noé a survécu, mais rien ne s'est jamais vraiment mis en mouvement cette nuit-là — ni interruption, ni confrontation, ni tension qui monte. Un silence presque paisible, et c'est ça le plus troublant.",
-  F_SARAH_MORT: "Noé savait que Sarah était fragile ce soir-là. Il n'a rien fait, à aucun moment où ça aurait compté — ni le SAMU, ni une interruption du service, ni même l'avertir pour son traitement. Cette fois, elle ne s'en relève pas.",
-  F_NOE_DISPARAIT: "Sarah a montré à Noé, sans un mot, une dernière preuve de ce qu'il savait. Il n'est jamais revenu — ni à l'hôpital, ni ailleurs.",
+  F0: "Noé a reçu l'assiette visée. Il a fait une détresse sévère, il est parti à l'hôpital, et il a survécu. Aucun autre déclencheur n'a pris le dessus.",
+  F1: "L'assiette visée n'a pas atteint Noé. Elle a atteint Sarah. Le récit faux qui circule après coup s'est imposé sans contestation sérieuse.",
+  F2: "L'assiette visée n'a pas atteint Noé. Elle a atteint Inès, à la place initialement prévue avant tout déplacement.",
+  F3: "L'assiette visée a fini par toucher Sarah et Inès à la fois. La soirée a basculé en catastrophe collective plutôt qu'en incident ciblé.",
+  F4: "Le service a fini par se retourner contre Maëlys elle-même. C'est la seule fin où elle est physiquement atteinte par son propre dispositif.",
+  F5: "Le service ou le morpion ont été interrompus avant d'aller au bout, ou une confrontation a eu lieu sans réunir assez de preuves. Personne n'est physiquement touché, mais le groupe se fracture avant toute certitude.",
+  F6: "Noé a survécu à l'hôpital, mais personne n'a vraiment parlé. Le silence a tenu, et la vérité est restée enterrée malgré la gravité de ce qui venait de se passer.",
+  F7: "Noé a survécu, et assez de preuves matérielles ont fini par s'assembler pendant que quelqu'un acceptait enfin de parler.",
+  F8: "Noé a survécu, mais le récit qui est sorti de la maison a fini par écraser Sarah, dans une tension déjà montée trop haut pour que quiconque la défende.",
+  E1: "Noé a survécu, mais le mobile financier qui pesait sur lui est sorti au jour. Inès, qui savait, s'est retrouvée complice par son silence.",
+  E2: "Noé a survécu, mais Sarah connaissait un passé avec Maëlys que personne d'autre ne soupçonnait. Elle a choisi de partir sans rien dire, protégeant la mauvaise personne.",
+  E3: "Noé a survécu, et la photo qui aurait pu tout prouver a existé. Mais Maëlys en a su l'existence avant que quiconque d'autre ne la voie, et la preuve a disparu avant de compter.",
+  F9: "Noé a survécu, la photo de Yanis a été vue, et quelqu'un est allé jusqu'à appeler la police. La preuve est devenue une affaire, pas juste une conviction privée. Ce qui suit coûte cher à tout le monde : l'enquête, le procès, le groupe qui ne se reforme jamais.",
+  F13: "Noé a survécu, la photo de Yanis a été vue et comprise. Mais personne n'est allé jusqu'à la police. La vérité tient, en privé, sans devenir une affaire. Elle pèse quand même sur celui qui la porte seul.",
+  F_SAMU_TOT: "Le SAMU a été appelé immédiatement après l'incident, sans attendre que quelqu'un d'autre ne s'en charge. Le geste le plus net de toute la soirée, et pourtant celui qui l'a fait finit par payer, socialement, le prix de cette rapidité.",
+  F_INES_PIVOT: "Inès a vu ou tu, à un moment ou un autre de la soirée. Cette complicité muette a fini par peser sur elle plus que sur quiconque d'autre.",
+  F_YANIS_PART: "Yanis a proposé de partir avant même l'incident. Un instinct qu'il n'a pas su nommer sur le moment, mais qui n'était pas faux, et qui le hante encore.",
+  F14: "Noé a survécu, mais rien ne s'est jamais vraiment mis en mouvement cette nuit-là. Ni interruption, ni confrontation, ni tension qui monte. Un silence presque paisible, et c'est ça le plus troublant.",
+  F_SARAH_MORT: "Noé savait que Sarah était fragile ce soir-là. Il n'a rien fait, à aucun moment où ça aurait compté. Ni le SAMU, ni une interruption du service, ni même l'avertir pour son traitement. Cette fois, elle ne s'en relève pas.",
+  F_NOE_DISPARAIT: "Sarah a montré à Noé, sans un mot, une dernière preuve de ce qu'il savait. Il n'est jamais revenu, ni à l'hôpital, ni ailleurs.",
   F_SARAH_RETOURNE: "Sarah a compris que Noé savait qu'elle était en danger, et qu'il n'avait rien fait. Elle a appelé Lucas pour le dire.",
-  F_SARAH_SAIT_ET_COUVRE: "Sarah a compris. Elle a choisi de se taire — de couvrir, une fois de plus, ce qu'elle savait de Noé.",
+  F_SARAH_SAIT_ET_COUVRE: "Sarah a compris. Elle a choisi de se taire, de couvrir une fois de plus ce qu'elle savait de Noé.",
   F_RUPTURE_FINALE: "Sarah a mis fin, une bonne fois pour toutes, à ce que Noé pensait pouvoir encore lui demander.",
+  F_NOE_MORT_SILENCE: "La tension est montée trop haut, et cette fois la mécanique est allée jusqu'au bout. Noé n'a pas survécu. Personne n'a parlé, et le silence a fini par tout recouvrir, y compris sa mort.",
+  F_NOE_MORT_VERITE: "La tension est montée trop haut, et cette fois Noé n'a pas survécu. Mais les preuves se sont assemblées, et quelqu'un a fini par parler. La vérité sort, trop tard pour lui, à temps pour le reste.",
+  F_NOE_MORT_RECIT_FAUX: "La tension est montée trop haut, et cette fois Noé n'a pas survécu. Le récit qui sort de la maison désigne Sarah plutôt que Maëlys. Personne n'a la force de le contester.",
 }
 
 /**
@@ -372,7 +403,7 @@ export function buildFinalReport(state: RunState) {
       whatsaid: buildNarrativeLine(v.survivingNarrative),
     },
     narrated: {
-      targetWho: 'Personne — accident',
+      targetWho: 'Personne, officiellement un accident',
       targetWhy: 'Fragilité, médicaments, stress',
       mechanism: 'Incohérence avec le traitement',
       whoKnew: 'Tout le groupe, dans la version sortie',

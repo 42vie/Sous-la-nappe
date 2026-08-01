@@ -133,6 +133,27 @@
     "conditions": { "targetActual": ["noe"], "note": "noeLachete >= 75 + !samu_appele_tot + !lucas_a_interrompu_service + !lucas_previent_sarah — la seule fin où quelqu'un meurt réellement" }
   },
   {
+    "id": "F_NOE_MORT_SILENCE",
+    "title": "Noé ne revient pas",
+    "description": "La tension est montée trop haut. Cette fois personne n'a parlé à temps, et Noé n'a pas survécu.",
+    "playerMessage": "Personne n'a parlé. C'est peut-être pour ça que personne ne s'est arrêté à temps.",
+    "conditions": { "targetActual": ["noe"], "note": "socialTension >= 65, sans preuve clé ni parole de Lucas, sans récit faux dominant" }
+  },
+  {
+    "id": "F_NOE_MORT_VERITE",
+    "title": "La vérité, trop tard pour lui",
+    "description": "Noé n'a pas survécu, mais les preuves se sont assemblées, et quelqu'un a fini par parler.",
+    "playerMessage": "La vérité est sortie. Elle n'a sauvé personne, mais elle a fini par compter.",
+    "conditions": { "targetActual": ["noe"], "note": "socialTension >= 65 + preuve clé découverte + lucas_a_parle" }
+  },
+  {
+    "id": "F_NOE_MORT_RECIT_FAUX",
+    "title": "Le récit qui reste",
+    "description": "Noé n'a pas survécu. Le récit qui sort de la maison désigne Sarah, pas Maëlys.",
+    "playerMessage": "Il est mort. Et c'est encore elle qu'on accuse.",
+    "conditions": { "targetActual": ["noe"], "note": "socialTension >= 65 + survivingNarrative = false_sarah_self_harm" }
+  },
+  {
     "id": "F_NOE_DISPARAIT",
     "title": "Noé disparaît",
     "description": "Sarah lui a montré, sans un mot, une dernière preuve de ce qu'il savait. Il n'est jamais revenu.",

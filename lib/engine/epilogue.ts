@@ -65,6 +65,12 @@ const ENDING_VICTIMS: Record<EndingId, CharacterId[]> = {
   F_SARAH_RETOURNE: ['noe'],
   F_SARAH_SAIT_ET_COUVRE: ['noe'],
   F_RUPTURE_FINALE: ['noe'],
+  // Noé meurt — volontairement absentes de MUST_SURVIVE_ENDINGS plus bas :
+  // à tension extrême (gravity >= 85), medicalTier() calcule 'decede' tout
+  // seul, sans override manuel comme pour F_SARAH_MORT.
+  F_NOE_MORT_SILENCE: ['noe'],
+  F_NOE_MORT_VERITE: ['noe'],
+  F_NOE_MORT_RECIT_FAUX: ['noe'],
 }
 
 // Bump de gravité propre à certaines fins, au-delà de la tension seule :
@@ -72,6 +78,14 @@ const ENDING_VICTIMS: Record<EndingId, CharacterId[]> = {
 const ENDING_GRAVITY_BUMP: Partial<Record<EndingId, number>> = {
   F3: 10,
   F8: 15,
+  // Les 3 fins où Noé meurt se déclenchent dès socialTension >= 38
+  // (TENSION_DEATH_THRESHOLD, endingCalculator.ts, calibré par simulation :
+  // la tension plafonne en pratique autour de 60), mais medicalTier()
+  // n'atteint le palier 'decede' qu'à gravity >= 85. Le bump de 50 garantit
+  // gravity >= 88 dès que le seuil est atteint, avec de la marge.
+  F_NOE_MORT_SILENCE: 50,
+  F_NOE_MORT_VERITE: 50,
+  F_NOE_MORT_RECIT_FAUX: 50,
 }
 
 // F0/F6/F7/F8 tiennent tous sur l'invariant central de la réécriture :
@@ -90,7 +104,7 @@ function medicalTier(gravity: number, mustSurvive: boolean): { condition: Charac
   if (gravity < 25) return { condition: 'ebranle', label: 'malaise passager, remis·e sur pied dans la soirée' }
   if (gravity < 45) return { condition: 'blesse', label: 'hospitalisé·e quelques heures, hors de danger' }
   if (gravity < 65) return { condition: 'critique', label: "hospitalisé·e, plusieurs jours d'observation, pronostic incertain la première nuit" }
-  if (gravity < 85 || mustSurvive) return { condition: 'critique', label: 'plongé·e dans un coma artificiel, pronostic réservé — mais vivant·e' }
+  if (gravity < 85 || mustSurvive) return { condition: 'critique', label: 'plongé·e dans un coma artificiel, pronostic réservé, mais vivant·e' }
   return { condition: 'decede', label: "n'a pas survécu à cette nuit" }
 }
 
@@ -106,12 +120,12 @@ export function buildEpilogue(state: RunState): Epilogue {
     const statuses: EpilogueCharacterStatus[] = ALL_CHARACTERS.map((c) => ({
       character: c,
       condition: (c === 'sarah' ? 'decede' : 'indemne') as CharacterCondition,
-      detail: c === 'sarah' ? "N'a pas survécu à cette nuit." : 'Présent·e, indemne — physiquement.',
+      detail: c === 'sarah' ? "N'a pas survécu à cette nuit." : 'Présent·e, indemne physiquement.',
     }))
     return {
       gravity: 100,
       headline: 'Une nuit dont on ne revient pas',
-      paragraph: "Sarah s'est écroulée. Cette fois, personne n'a agi à temps — ni le SAMU, ni une interruption du service, ni même un mot d'avertissement plus tôt dans la soirée sur son traitement oublié. Noé, qui savait qu'elle était fragile ce soir-là, n'a rien fait non plus, à aucun moment où ça aurait compté. Elle ne s'en relève pas.",
+      paragraph: "Sarah s'est écroulée. Cette fois, personne n'a agi à temps. Pas de SAMU appelé tout de suite, pas d'interruption du service, pas même un mot d'avertissement plus tôt dans la soirée sur son traitement oublié. Noé savait qu'elle était fragile ce soir-là. Il n'a rien fait non plus, à aucun moment où ça aurait compté. Elle ne s'en relève pas.",
       statuses,
     }
   }
@@ -140,14 +154,14 @@ export function buildEpilogue(state: RunState): Epilogue {
     let paragraph: string
     if (gravity < 30) {
       headline = 'Un désaccord, vite refermé'
-      paragraph = "La soirée s'est arrêtée avant d'aller au bout. Un malaise, une gêne — mais rien qui ne survive à la nuit. Personne n'a rien prouvé. Personne n'a rien nié non plus."
+      paragraph = "La soirée s'est arrêtée avant d'aller au bout. Il y a eu un malaise, une gêne. Mais rien qui ne survive à la nuit. Personne n'a rien prouvé. Personne n'a rien nié non plus."
     } else if (gravity < 60) {
       headline = 'Une rupture publique'
-      paragraph = "L'accusation est sortie devant tout le monde, sans preuve suffisante pour la tenir. Le groupe s'est fracturé sur place — pas de sang, mais plus personne ne se regarde tout à fait pareil."
+      paragraph = "L'accusation est sortie devant tout le monde, sans preuve suffisante pour la tenir. Le groupe s'est fracturé sur place. Pas de sang, mais plus personne ne se regarde tout à fait pareil."
       setStatus('lucas', 'ebranle', 'A accusé publiquement, sans preuve suffisante pour être cru.')
     } else {
       headline = 'Une fracture totale'
-      paragraph = "L'accusation a explosé la soirée avant même que l'incident n'ait lieu. Personne n'est blessé, mais le groupe ne survit pas à ce qui vient d'être dit — certains ne se reparleront plus jamais."
+      paragraph = "L'accusation a explosé la soirée avant même que l'incident n'ait lieu. Personne n'est blessé, mais le groupe ne survit pas à ce qui vient d'être dit. Certains ne se reparleront plus jamais."
       setStatus('lucas', 'ebranle', "A tout arrêté, seul contre tous, sans certitude d'avoir raison.")
     }
     return { gravity, headline, paragraph, statuses }
@@ -155,7 +169,7 @@ export function buildEpilogue(state: RunState): Epilogue {
 
   const tier = medicalTier(gravity, MUST_SURVIVE_ENDINGS.has(ending))
   for (const victim of victims) {
-    setStatus(victim, tier.condition, capitalise(LABELS[victim]) + ' — ' + tier.label + '.')
+    setStatus(victim, tier.condition, capitalise(LABELS[victim]) + ', ' + tier.label + '.')
   }
 
   const names = victims.map((v) => LABELS[v])
@@ -164,14 +178,14 @@ export function buildEpilogue(state: RunState): Epilogue {
 
   let headline: string
   if (tier.condition === 'ebranle') headline = 'Un malaise, vite refermé'
-  else if (tier.condition === 'blesse') headline = 'Une ambulance, une nuit d’observation'
+  else if (tier.condition === 'blesse') headline = "Une ambulance, une nuit d'observation"
   else if (tier.condition === 'critique' && gravity < 65) headline = "Plusieurs jours d'observation"
   else if (tier.condition === 'critique') headline = 'Le pronostic reste réservé'
   else headline = "Une nuit dont on ne revient pas"
 
   const paragraph = victims.length > 1
-    ? `${nameList} ont fini par recevoir la charge, l'une comme l'autre — ${pronoun} ${tier.label}. Ce qui devait rester un incident ciblé s'est transformé en catastrophe collective.`
-    : `${nameList} a fini par recevoir ce qui n'était pas censé lui arriver — ${pronoun} ${tier.label}. ${nameList === 'Noé' ? "Sa survie ouvre une vérité plus sale que sa mort n'en aurait ouvert : tout le monde doit maintenant vivre avec ce qu'il sait, ce qu'il soupçonne, et ce qu'il choisit de ne pas dire." : "Le reste du groupe repart avec ce qu'il a vu, ou refusé de voir."}`
+    ? `${nameList} ont fini par recevoir la charge, l'une comme l'autre. ${capitalise(pronoun)} ${tier.label}. Ce qui devait rester un incident ciblé s'est transformé en catastrophe collective.`
+    : `${nameList} a fini par recevoir ce qui n'était pas censé lui arriver. ${capitalise(pronoun)} ${tier.label}. ${nameList === 'Noé' ? "Sa survie ouvre une vérité plus sale que sa mort n'en aurait ouvert. Tout le monde doit maintenant vivre avec ce qu'il sait, ce qu'il soupçonne, et ce qu'il choisit de ne pas dire." : "Le reste du groupe repart avec ce qu'il a vu, ou refusé de voir."}`
 
   return { gravity, headline, paragraph, statuses }
 }

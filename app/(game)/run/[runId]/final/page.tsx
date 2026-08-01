@@ -68,12 +68,28 @@ interface FinalReport {
   narrated: Record<string, string>
 }
 
-const COLUMN_LABELS: Record<string, string> = {
-  targetWho: 'Qui',
-  targetWhy: 'Pourquoi',
-  mechanism: 'Comment',
-  whoKnew: 'Qui savait',
-  whatsaid: 'Ce qui a été dit',
+function lowerFirst(s: string): string {
+  return s.length > 0 ? s.charAt(0).toLowerCase() + s.slice(1) : s
+}
+
+/**
+ * Les 3 colonnes du rapport (planned/actual/narrated) sont des couples
+ * clé/valeur fixes, produits par buildFinalReport (endingCalculator.ts).
+ * Plutôt que de les afficher en liste "label — valeur", on les tisse en
+ * une phrase suivie par colonne : c'est un rapport, pas un tableau.
+ */
+function reportParagraph(col: 'planned' | 'actual' | 'narrated', r: Record<string, string>): string {
+  if (col === 'planned') {
+    return `Le plan visait ${r.targetWho}, motivé par une ${lowerFirst(r.targetWhy)}. Le moyen choisi : ${lowerFirst(r.mechanism)}. ${r.whoKnew} était dans la confidence. Pour tous les autres, la soirée ne devait être que ${lowerFirst(r.whatsaid)}.`
+  }
+  if (col === 'actual') {
+    const plural = r.targetWho.includes(',')
+    const knewClause = r.whoKnew === 'Personne'
+      ? "Personne n'a vu le geste au moment où il comptait."
+      : `${r.whoKnew} a vu, et n'a rien dit sur le coup.`
+    return `Dans les faits, c'est ${r.targetWho} qui a fini par être touché${plural ? '·e·s' : '·e'}. En cause : ${lowerFirst(r.targetWhy)}. ${r.mechanism}. ${knewClause} Ce qui a fini par circuler ensuite : ${lowerFirst(r.whatsaid)}.`
+  }
+  return `La version qui est ressortie de la maison ne nomme personne. Officiellement, ce n'est qu'un accident : ${lowerFirst(r.targetWhy)}, ${lowerFirst(r.mechanism)}. ${r.whoKnew}. C'est cette histoire-là qui a fini par tenir : ${lowerFirst(r.whatsaid)}.`
 }
 
 export default function FinalPage() {
@@ -406,7 +422,7 @@ export default function FinalPage() {
           letterSpacing: '0.12em',
           marginBottom: 'var(--space-4)',
         }}>
-          Fin — {endingId}
+          L&apos;issue de cette nuit-là
         </p>
 
         <h1 style={{
@@ -444,18 +460,31 @@ export default function FinalPage() {
 
         {/* Pourquoi cette fin — la matrice de déclenchement, en version lisible */}
         {endingTrigger && (
-          <p style={{
-            fontFamily: 'var(--font-body)',
-            fontSize: 'var(--text-xs)',
-            color: 'var(--color-text-faint)',
-            fontStyle: 'italic',
-            lineHeight: '1.7',
+          <div style={{
             marginBottom: 'var(--space-12)',
             paddingLeft: 'var(--space-4)',
             borderLeft: '2px solid var(--color-divider)',
           }}>
-            Pourquoi cette fin — {endingTrigger}
-          </p>
+            <p style={{
+              fontFamily: 'var(--font-body)',
+              fontSize: 'var(--text-xs)',
+              color: 'var(--color-text-faint)',
+              textTransform: 'uppercase',
+              letterSpacing: '0.08em',
+              marginBottom: 'var(--space-2)',
+            }}>
+              Pourquoi cette fin
+            </p>
+            <p style={{
+              fontFamily: 'var(--font-body)',
+              fontSize: 'var(--text-xs)',
+              color: 'var(--color-text-faint)',
+              fontStyle: 'italic',
+              lineHeight: '1.7',
+            }}>
+              {endingTrigger}
+            </p>
+          </div>
         )}
 
         {/* Score indices */}
@@ -477,7 +506,7 @@ export default function FinalPage() {
           {score !== null && (
             <div>
               <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', color: 'var(--color-text-faint)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 'var(--space-1)' }}>
-                Score — ce que vous avez vraiment compris
+                Score, ce que vous avez vraiment compris
               </p>
               <p style={{ fontFamily: 'var(--font-display)', fontSize: 'var(--text-2xl)', color: 'var(--color-text)' }}>
                 {score}<span style={{ fontSize: 'var(--text-sm)', color: 'var(--color-text-faint)' }}>/100</span>
@@ -516,11 +545,7 @@ export default function FinalPage() {
                   <strong style={{ color: 'var(--color-primary)', fontStyle: 'normal' }}>
                     {col === 'planned' ? 'Ce qui était prévu. ' : col === 'actual' ? 'Ce qui s’est réellement passé. ' : 'Ce qui a été raconté. '}
                   </strong>
-                  {Object.entries(report[col]).map(([key, value], i, arr) => (
-                    <span key={key}>
-                      {COLUMN_LABELS[key] ?? key} — {value}{i < arr.length - 1 ? '. ' : '.'}
-                    </span>
-                  ))}
+                  {reportParagraph(col, report[col])}
                 </p>
               ))}
             </section>
@@ -565,13 +590,13 @@ export default function FinalPage() {
           {/* Le contexte */}
           {chronology.length > 0 && (
             <section style={{ marginBottom: 'var(--space-10)' }}>
-              <h2 style={sectionHeadingStyle}>Le contexte — sept ans, six fractures</h2>
+              <h2 style={sectionHeadingStyle}>Le contexte, sept ans, six fractures</h2>
               {chronology.map((phase) => (
                 <p key={phase.id} style={{ ...paragraphStyle, marginBottom: 'var(--space-3)' }}>
                   <strong style={{ color: 'var(--color-text)', fontStyle: 'italic', fontFamily: 'var(--font-display)' }}>
                     {phase.label}
                   </strong>
-                  <span style={{ fontSize: '10px', color: 'var(--color-text-faint)' }}> · {phase.period} — </span>
+                  <span style={{ fontSize: '10px', color: 'var(--color-text-faint)' }}> · {phase.period}. </span>
                   {phase.text}
                 </p>
               ))}
@@ -588,7 +613,7 @@ export default function FinalPage() {
                   if (!rel) return null
                   return (
                     <span key={to.id}>
-                      envers {to.firstName} — {relationshipLabel(rel.value)}{rel.note ? ` (${rel.note})` : ''}{i < arr.length - 1 ? ' ; ' : '.'}
+                      envers {to.firstName}, {relationshipLabel(rel.value)}{rel.note ? ` (${rel.note})` : ''}{i < arr.length - 1 ? ' ; ' : '.'}
                     </span>
                   )
                 })}
@@ -599,7 +624,7 @@ export default function FinalPage() {
           {/* Bonus optionnel — reconstituer le plan de table du moment critique */}
           {seatingBonusAvailable && (
             <section style={{ marginBottom: 'var(--space-10)' }}>
-              <h2 style={sectionHeadingStyle}>Bonus — +15 points possibles</h2>
+              <h2 style={sectionHeadingStyle}>Bonus, +15 points possibles</h2>
               <p style={{ ...paragraphStyle, fontStyle: 'italic', marginBottom: 'var(--space-4)' }}>
                 Qui était où, au moment critique du service ? Placez les six convives, si vous vous en souvenez.
               </p>
@@ -653,15 +678,24 @@ export default function FinalPage() {
           {povSummaries.length > 0 && (
             <section style={{ marginBottom: 'var(--space-10)' }}>
               <h2 style={sectionHeadingStyle}>Ma vérité</h2>
+              <p style={{ ...paragraphStyle, fontStyle: 'italic', marginBottom: 'var(--space-5)' }}>
+                Voici, dans l&apos;ordre, les choix qui ont façonné ce que vous avez vécu cette nuit-là.
+              </p>
               {povSummaries.map((s) => {
                 const character = CHARACTERS.find((c) => c.id === s.character)
+                const labels = s.choiceLabels
+                const choiceText = labels.length === 0
+                  ? "n'a pas eu l'occasion de choisir."
+                  : labels.length === 1
+                    ? `a choisi de ${lowerFirst(labels[0])}.`
+                    : `a choisi de ${labels.slice(0, -1).map(lowerFirst).join(', ')} et de ${lowerFirst(labels[labels.length - 1])}.`
                 return (
                   <p key={s.chapterNumber} style={{ ...paragraphStyle, marginBottom: 'var(--space-4)' }}>
                     <strong style={{ color: character?.color ?? 'var(--color-text)', fontStyle: 'italic', fontFamily: 'var(--font-display)' }}>
                       {character?.firstName ?? s.character}
                     </strong>
-                    <span style={{ fontSize: '10px', color: 'var(--color-text-faint)' }}> · chapitre {s.chapterNumber}, {s.chapterTitle} — </span>
-                    {s.choiceLabels.length > 0 ? s.choiceLabels.join(' ; ') + '.' : 'Aucun choix enregistré.'}
+                    <span style={{ fontSize: '10px', color: 'var(--color-text-faint)' }}> (chapitre {s.chapterNumber}, {s.chapterTitle}) </span>
+                    {choiceText}
                   </p>
                 )
               })}
@@ -676,7 +710,7 @@ export default function FinalPage() {
           {manuscript.length > 0 && (
             <section style={{ marginBottom: 'var(--space-10)' }}>
               <h2 style={sectionHeadingStyle}>
-                Le manuscrit — {manuscript.filter((e) => e.status === 'complete').length} / {manuscript.length} vérités établies
+                Le manuscrit, {manuscript.filter((e) => e.status === 'complete').length} / {manuscript.length} vérités établies
               </h2>
               {manuscript.some((e) => e.status === 'complete') ? (
                 <p style={{ ...paragraphStyle, fontFamily: 'var(--font-display)', fontStyle: 'italic' }}>
@@ -684,7 +718,7 @@ export default function FinalPage() {
                 </p>
               ) : (
                 <p style={{ ...paragraphStyle, fontStyle: 'italic', color: 'var(--color-text-faint)' }}>
-                  Aucune vérité établie cette fois-ci — rien à montrer que vous n&apos;ayez pas vous-même découvert.
+                  Aucune vérité établie cette fois-ci. Rien à montrer que vous n&apos;ayez pas vous-même découvert.
                 </p>
               )}
             </section>
