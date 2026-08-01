@@ -48,6 +48,23 @@ const ENDING_VICTIMS: Record<EndingId, CharacterId[]> = {
   E1: ['noe'],
   E2: ['noe'],
   E3: ['noe'],
+  // Phase 5 — mêmes variantes de la branche Noé (F9, F13, F14, F_SAMU_TOT,
+  // F_INES_PIVOT, F_YANIS_PART) ou de l'Acte 3 / histoire Sarah-Noé
+  // (F_NOE_DISPARAIT, F_SARAH_RETOURNE, F_SARAH_SAIT_ET_COUVRE,
+  // F_RUPTURE_FINALE) : Noé survit dans toutes, sauf F_SARAH_MORT — la
+  // seule fin du jeu à ne pas suivre ce tableau, traitée à part dans
+  // buildEpilogue (victime différente, gravité forcée, pas de tier calculé).
+  F9: ['noe'],
+  F13: ['noe'],
+  F_SAMU_TOT: ['noe'],
+  F_INES_PIVOT: ['noe'],
+  F_YANIS_PART: ['noe'],
+  F14: ['noe'],
+  F_SARAH_MORT: ['sarah'],
+  F_NOE_DISPARAIT: ['noe'],
+  F_SARAH_RETOURNE: ['noe'],
+  F_SARAH_SAIT_ET_COUVRE: ['noe'],
+  F_RUPTURE_FINALE: ['noe'],
 }
 
 // Bump de gravité propre à certaines fins, au-delà de la tension seule :
@@ -61,7 +78,13 @@ const ENDING_GRAVITY_BUMP: Partial<Record<EndingId, number>> = {
 // Noé survit. La tension peut faire monter la gravité de son épisode
 // jusqu'au coma artificiel, jamais jusqu'à sa mort — sinon ce ne serait
 // plus ces fins-là.
-const MUST_SURVIVE_ENDINGS: Set<EndingId> = new Set(['F0', 'F6', 'F7', 'F8', 'E1', 'E2', 'E3'])
+const MUST_SURVIVE_ENDINGS: Set<EndingId> = new Set([
+  'F0', 'F6', 'F7', 'F8', 'E1', 'E2', 'E3',
+  'F9', 'F13', 'F_SAMU_TOT', 'F_INES_PIVOT', 'F_YANIS_PART', 'F14',
+  'F_NOE_DISPARAIT', 'F_SARAH_RETOURNE', 'F_SARAH_SAIT_ET_COUVRE', 'F_RUPTURE_FINALE',
+  // F_SARAH_MORT est volontairement absente : c'est la seule fin où
+  // quelqu'un meurt réellement, traitée à part ci-dessous.
+])
 
 function medicalTier(gravity: number, mustSurvive: boolean): { condition: CharacterCondition; label: string } {
   if (gravity < 25) return { condition: 'ebranle', label: 'malaise passager, remis·e sur pied dans la soirée' }
@@ -74,6 +97,25 @@ function medicalTier(gravity: number, mustSurvive: boolean): { condition: Charac
 export function buildEpilogue(state: RunState): Epilogue {
   const tension = state.variable.socialTension ?? 0
   const ending = state.ending ?? 'F0'
+
+  // F_SARAH_MORT — la seule fin du jeu avec une mort réelle. Traitée à
+  // part : ni le calcul de gravité par tension, ni medicalTier (pensé pour
+  // des issues qui peuvent varier), ne doivent s'appliquer ici — cette fin
+  // signifie toujours la même chose, quelle que soit la tension accumulée.
+  if (ending === 'F_SARAH_MORT') {
+    const statuses: EpilogueCharacterStatus[] = ALL_CHARACTERS.map((c) => ({
+      character: c,
+      condition: (c === 'sarah' ? 'decede' : 'indemne') as CharacterCondition,
+      detail: c === 'sarah' ? "N'a pas survécu à cette nuit." : 'Présent·e, indemne — physiquement.',
+    }))
+    return {
+      gravity: 100,
+      headline: 'Une nuit dont on ne revient pas',
+      paragraph: "Sarah s'est écroulée. Cette fois, personne n'a agi à temps — ni le SAMU, ni une interruption du service, ni même un mot d'avertissement plus tôt dans la soirée sur son traitement oublié. Noé, qui savait qu'elle était fragile ce soir-là, n'a rien fait non plus, à aucun moment où ça aurait compté. Elle ne s'en relève pas.",
+      statuses,
+    }
+  }
+
   const bump = ENDING_GRAVITY_BUMP[ending] ?? 0
   const gravity = Math.max(0, Math.min(100, tension + bump))
 

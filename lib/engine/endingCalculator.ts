@@ -56,6 +56,83 @@ function isPreuveEffacee(state: RunState): boolean {
   return Boolean(state.flags['maelys_a_su_photo']) && !state.flags['yanis_photo_vue']
 }
 
+// Phase 5 (docs/roadmap-v2-expansion.md §4, docs/expansion-v3 §nouvelles
+// conditions de fins, docs/expansion-v4 volet B) — toutes des variantes de
+// la branche Noé, comme E1-E3. Les seuils numériques du doc d'origine
+// (ex. yanisDoute >= 60, inesAttachementNoe <= 50) supposaient qu'un même
+// personnage pouvait cumuler des deltas sur plusieurs chapitres — impossible
+// ici (un seul personnage par chapitre, jamais rejoué) : ramenés à des
+// conditions réellement atteignables en une soirée, généralement des flags.
+
+/** F_SARAH_MORT — la seule fin du jeu où quelqu'un meurt réellement. Cascade
+ * qui doit s'aligner ENTIÈREMENT : Noé lâche, personne n'agit (SAMU,
+ * interruption, avertissement), ET Sarah elle-même doit avoir sombré tout
+ * du long (sarahStabilite très bas — n'arrive que si le POV qui la joue
+ * enchaîne des choix négatifs, pas par défaut). Sans ce dernier verrou
+ * numérique, les trois drapeaux "personne n'a agi" sont déjà l'absence par
+ * défaut de la plupart des runs — ça rendait cette fin bien trop commune
+ * (~11% en simulation) pour ce qui doit rester la plus sombre et la plus
+ * rare du jeu. */
+function isSarahMorte(state: RunState): boolean {
+  const cs = state.variable.characterState
+  return (
+    (cs.noeLachete ?? 0) >= 70 &&
+    (cs.sarahStabilite ?? 100) <= 35 &&
+    !state.flags['samu_appele_tot'] &&
+    !state.flags['lucas_a_interrompu_service'] &&
+    !state.flags['lucas_previent_sarah']
+  )
+}
+
+function isSarahRetourne(state: RunState): boolean {
+  return discoveredClueSet(state).has('C-42') && Boolean(state.flags['sarah_appelle_lucas'])
+}
+
+function isNoeDisparait(state: RunState): boolean {
+  return Boolean(state.flags['noe_disparait'])
+}
+
+function isRuptureFinale(state: RunState): boolean {
+  return Boolean(state.flags['sarah_rupture_finale'])
+}
+
+function isSarahSaitEtCouvre(state: RunState): boolean {
+  return Boolean(state.flags['sarah_se_tait_final'])
+}
+
+function isJusticeFormelle(state: RunState): boolean {
+  return Boolean(state.flags['yanis_photo_vue']) && Boolean(state.flags['lucas_appelle_police'])
+}
+
+function isYanisTemoinCle(state: RunState): boolean {
+  return Boolean(state.flags['yanis_photo_vue']) && !state.flags['lucas_appelle_police']
+}
+
+function isSamuTot(state: RunState): boolean {
+  return Boolean(state.flags['samu_appele_tot']) && (state.variable.characterState.lucasCourage ?? 0) >= 45
+}
+
+function isInesPivot(state: RunState): boolean {
+  const inesSilence = Boolean(state.flags['ines_vu_boites']) || Boolean(state.flags['ines_silence_actif'])
+  return inesSilence && (state.variable.characterState.inesCompliciteMorale ?? 0) >= 10
+}
+
+function isYanisPart(state: RunState): boolean {
+  return Boolean(state.flags['yanis_veut_partir'])
+}
+
+/** F14 — silence total, tension quasi nulle : rien ne s'est jamais vraiment mis en mouvement. */
+function isSilenceGroupePermanent(state: RunState): boolean {
+  const tension = state.variable.socialTension ?? 0
+  return (
+    tension < 8 &&
+    !state.flags['lucas_a_interrompu_morpion'] &&
+    !state.flags['lucas_a_interrompu_service'] &&
+    !state.flags['lucas_confrontation_finale'] &&
+    !state.flags['lucas_a_parle']
+  )
+}
+
 // Rééquilibrage F5 (2026-08-01) : dans la structure à 110 actions, chacun
 // des trois moments de rupture (interrompre le morpion en scène 5,
 // interrompre le service en scène 8, confronter en scène 11) est devenu
@@ -184,6 +261,11 @@ export function calculateEnding(state: RunState): EndingId {
 
   // Noé est la cible réellement atteinte — ce qui se passe après l'hôpital tranche.
 
+  // F_SARAH_MORT — vérifiée en tout premier dans cette branche : si la
+  // cascade de silences est complète, rien d'autre ne compte plus. La
+  // seule fin du jeu où quelqu'un meurt réellement (voir epilogue.ts).
+  if (isSarahMorte(state)) return 'F_SARAH_MORT'
+
   // E1 — le mobile financier de Noé sort au jour, et Inès savait depuis la
   // cuisine (S06) sans jamais rien dire : sa survie à lui expose sa
   // complicité à elle.
@@ -199,6 +281,24 @@ export function calculateEnding(state: RunState): EndingId {
   // compter.
   if (isPreuveEffacee(state)) return 'E3'
 
+  // Histoire croisée Sarah/Noé (Acte 3, scène 14) — quatre issues selon ce
+  // que Sarah choisit de faire une fois qu'elle sait.
+  if (isSarahRetourne(state)) return 'F_SARAH_RETOURNE'
+  if (isNoeDisparait(state)) return 'F_NOE_DISPARAIT'
+  if (isRuptureFinale(state)) return 'F_RUPTURE_FINALE'
+  if (isSarahSaitEtCouvre(state)) return 'F_SARAH_SAIT_ET_COUVRE'
+
+  // Justice formelle vs. compréhension privée — même preuve (la photo de
+  // Yanis), deux issues selon qu'on appelle la police ou non.
+  if (isJusticeFormelle(state)) return 'F9'
+  if (isYanisTemoinCle(state)) return 'F13'
+
+  // Trois issues "quelqu'un a fait un geste au bon moment", chacune portée
+  // par un personnage différent.
+  if (isSamuTot(state)) return 'F_SAMU_TOT'
+  if (isInesPivot(state)) return 'F_INES_PIVOT'
+  if (isYanisPart(state)) return 'F_YANIS_PART'
+
   // F7 — le dossier s'assemble (photo, vocal ou carnet) et quelqu'un a parlé.
   if (hasKeyEvidence(state) && flags['lucas_a_parle']) return 'F7'
 
@@ -211,6 +311,11 @@ export function calculateEnding(state: RunState): EndingId {
   // spectre observé (percentile ~85-90) : F8 reste la fin la plus dure à
   // obtenir de la branche Noé, mais elle redevient atteignable.
   if (state.variable.survivingNarrative === 'false_sarah_self_harm' && tension >= 30) return 'F8'
+
+  // F14 — silence total : en plus de personne n'ayant parlé (F6), rien ne
+  // s'est jamais mis en mouvement — la tension est restée quasi nulle du
+  // début à la fin. Une variante plus douce, plus rare, de F6.
+  if (isSilenceGroupePermanent(state)) return 'F14'
 
   // F6 — Noé survit mais le silence tient : personne n'a vraiment parlé.
   if (!flags['lucas_a_parle']) return 'F6'
@@ -233,6 +338,17 @@ export const ENDING_TRIGGERS: Record<EndingId, string> = {
   E1: "Noé a survécu, mais le mobile financier qui pesait sur lui est sorti au jour — et Inès, qui avait vu de quoi il retournait dans la cuisine ou qui s'est tue une fois de trop en aftermath, s'est retrouvée complice par son silence.",
   E2: "Noé a survécu, mais Sarah connaissait un passé avec Maëlys que personne d'autre ne soupçonnait — et elle a choisi de partir sans rien dire, protégeant la mauvaise personne.",
   E3: "Noé a survécu, et la photo qui aurait pu tout prouver a existé — mais Maëlys en a su l'existence avant que quiconque d'autre ne la voie, et la preuve a disparu avant de compter.",
+  F9: "Noé a survécu, la photo de Yanis a été vue, et quelqu'un est allé jusqu'à appeler la police — la preuve est devenue une affaire, pas juste une conviction privée.",
+  F13: "Noé a survécu, la photo de Yanis a été vue et comprise — mais personne n'est allé jusqu'à la police. La vérité tient, en privé, sans devenir une affaire.",
+  F_SAMU_TOT: "Le SAMU a été appelé immédiatement après l'incident, sans attendre que quelqu'un d'autre ne s'en charge — le geste le plus concret de toute la soirée.",
+  F_INES_PIVOT: "Inès a vu ou tu, à un moment ou un autre de la soirée, et cette complicité muette a fini par peser sur elle plus que sur quiconque d'autre.",
+  F_YANIS_PART: "Yanis a proposé de partir avant même l'incident — un instinct qu'il n'a pas su nommer sur le moment, mais qui n'était pas faux.",
+  F14: "Noé a survécu, mais rien ne s'est jamais vraiment mis en mouvement cette nuit-là — ni interruption, ni confrontation, ni tension qui monte. Un silence presque paisible, et c'est ça le plus troublant.",
+  F_SARAH_MORT: "Noé savait que Sarah était fragile ce soir-là. Il n'a rien fait, à aucun moment où ça aurait compté — ni le SAMU, ni une interruption du service, ni même l'avertir pour son traitement. Cette fois, elle ne s'en relève pas.",
+  F_NOE_DISPARAIT: "Sarah a montré à Noé, sans un mot, une dernière preuve de ce qu'il savait. Il n'est jamais revenu — ni à l'hôpital, ni ailleurs.",
+  F_SARAH_RETOURNE: "Sarah a compris que Noé savait qu'elle était en danger, et qu'il n'avait rien fait. Elle a appelé Lucas pour le dire.",
+  F_SARAH_SAIT_ET_COUVRE: "Sarah a compris. Elle a choisi de se taire — de couvrir, une fois de plus, ce qu'elle savait de Noé.",
+  F_RUPTURE_FINALE: "Sarah a mis fin, une bonne fois pour toutes, à ce que Noé pensait pouvoir encore lui demander.",
 }
 
 /**

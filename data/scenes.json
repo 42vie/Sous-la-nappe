@@ -165,6 +165,81 @@
             "delta": 2
           }
         ]
+      },
+      {
+        "id": "s00a_c_lucas_2",
+        "verb": "examine_object",
+        "label": "Vérifier l'heure, une dernière fois, avant de partir",
+        "availableFor": [
+          "lucas"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "lucasNeutralite",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "id": "s00a_c_noe_2",
+        "verb": "stay_silent",
+        "label": "Ne rien envoyer, espérer que ça passe",
+        "availableFor": [
+          "noe"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "noeLachete",
+            "delta": 2
+          }
+        ]
+      },
+      {
+        "id": "s00a_c_ines_2",
+        "verb": "speak",
+        "label": "Décider d'arriver en avance, comme toujours",
+        "availableFor": [
+          "ines"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "inesAttachementNoe",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "id": "s00a_c_sarah_2",
+        "verb": "stay_silent",
+        "label": "Laisser tomber, se dire que ça ira",
+        "availableFor": [
+          "sarah"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "sarahMemoire",
+            "delta": -1
+          }
+        ]
+      },
+      {
+        "id": "s00a_c_yanis_2",
+        "verb": "examine_object",
+        "label": "Vérifier son reflet dans le miroir de l'entrée",
+        "availableFor": [
+          "yanis"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "yanisInsouciance",
+            "delta": 1
+          }
+        ]
       }
     ],
     "canonicalFacts": [
@@ -326,6 +401,81 @@
           "yanis"
         ],
         "effects": []
+      },
+      {
+        "id": "s00b_c_lucas_2",
+        "verb": "let_pass",
+        "label": "Ne pas y penser plus que ça",
+        "availableFor": [
+          "lucas"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "lucasNeutralite",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "id": "s00b_c_noe_2",
+        "verb": "stay_silent",
+        "label": "Raccrocher vite, sans vraiment s'excuser",
+        "availableFor": [
+          "noe"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "noeLachete",
+            "delta": 3
+          }
+        ]
+      },
+      {
+        "id": "s00b_c_ines_2",
+        "verb": "observe",
+        "label": "Se demander si c'est encore une excuse",
+        "availableFor": [
+          "ines"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "inesIrritabilite",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "id": "s00b_c_sarah_2",
+        "verb": "observe",
+        "label": "Noter que Noé est encore en retard, comme toujours",
+        "availableFor": [
+          "sarah"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "sarahMemoire",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "id": "s00b_c_yanis_2",
+        "verb": "speak",
+        "label": "Plaisanter sur les retards chroniques de Noé",
+        "availableFor": [
+          "yanis"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 1
+          }
+        ]
       }
     ],
     "canonicalFacts": [
@@ -469,6 +619,81 @@
           "yanis"
         ],
         "effects": []
+      },
+      {
+        "id": "s00c_c_maelys_2",
+        "verb": "speak",
+        "label": "Lui proposer de l'aide, pour occuper le silence",
+        "availableFor": [
+          "maelys"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "maelysControle",
+            "delta": 2
+          }
+        ]
+      },
+      {
+        "id": "s00c_c_lucas_2",
+        "verb": "observe",
+        "label": "Se douter qu'Inès est du genre à arriver en avance",
+        "availableFor": [
+          "lucas"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "lucasLucidite",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "id": "s00c_c_noe_2",
+        "verb": "examine_object",
+        "label": "Vérifier l'heure dans la voiture, agacé d'être en retard",
+        "availableFor": [
+          "noe"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "noeLachete",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "id": "s00c_c_sarah_2",
+        "verb": "examine_object",
+        "label": "Se préparer lentement, sans se presser",
+        "availableFor": [
+          "sarah"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "sarahStabilite",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "id": "s00c_c_yanis_2",
+        "verb": "examine_object",
+        "label": "Choisir la bouteille à apporter, sans se presser",
+        "availableFor": [
+          "yanis"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "yanisInsouciance",
+            "delta": 1
+          }
+        ]
       }
     ],
     "canonicalFacts": [
@@ -1046,6 +1271,66 @@
           {
             "type": "state_delta",
             "key": "socialTension",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "id": "s01b_c_noe_2",
+        "verb": "speak",
+        "label": "Saluer Maëlys un peu trop chaleureusement",
+        "availableFor": [
+          "noe"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "maelysColere",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "id": "s01b_c_ines_2",
+        "verb": "observe",
+        "label": "Remarquer le ton bas de Maëlys, sans s'arrêter",
+        "availableFor": [
+          "ines"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "inesIrritabilite",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "id": "s01b_c_sarah_2",
+        "verb": "observe",
+        "label": "Se demander, une seconde, ce qu'ils se disent",
+        "availableFor": [
+          "sarah"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "sarahMemoire",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "id": "s01b_c_yanis_2",
+        "verb": "let_pass",
+        "label": "Passer directement au salon, affamé",
+        "availableFor": [
+          "yanis"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "yanisInsouciance",
             "delta": 1
           }
         ]
@@ -1632,6 +1917,66 @@
             "delta": -1
           }
         ]
+      },
+      {
+        "id": "s02b_c_maelys_2",
+        "verb": "let_pass",
+        "label": "Ne pas s'attarder, continuer d'accueillir tout le monde",
+        "availableFor": [
+          "maelys"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "maelysControle",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "id": "s02b_c_noe_2",
+        "verb": "observe",
+        "label": "Remarquer Yanis sourire à son téléphone, sans y penser",
+        "availableFor": [
+          "noe"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "noeLachete",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "id": "s02b_c_ines_2",
+        "verb": "observe",
+        "label": "Trouver ça déplacé, un téléphone sorti à l'entrée",
+        "availableFor": [
+          "ines"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "inesIrritabilite",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "id": "s02b_c_sarah_2",
+        "verb": "observe",
+        "label": "Remarquer, vaguement, que Yanis a l'air troublé",
+        "availableFor": [
+          "sarah"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "sarahMemoire",
+            "delta": 1
+          }
+        ]
       }
     ],
     "canonicalFacts": [
@@ -2206,6 +2551,66 @@
             "delta": 1
           }
         ]
+      },
+      {
+        "id": "s03b_c_maelys_2",
+        "verb": "let_pass",
+        "label": "Continuer de s'occuper des autres invités",
+        "availableFor": [
+          "maelys"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "maelysControle",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "id": "s03b_c_noe_2",
+        "verb": "observe",
+        "label": "Se demander, une seconde, de quoi elles parlent",
+        "availableFor": [
+          "noe"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "noeLachete",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "id": "s03b_c_ines_2",
+        "verb": "observe",
+        "label": "Juger que ce n'est pas le moment de s'en mêler",
+        "availableFor": [
+          "ines"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "inesIrritabilite",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "id": "s03b_c_yanis_2",
+        "verb": "observe",
+        "label": "Remarquer Sarah pâlir, sans comprendre pourquoi",
+        "availableFor": [
+          "yanis"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "yanisInsouciance",
+            "delta": -1
+          }
+        ]
       }
     ],
     "canonicalFacts": [
@@ -2755,6 +3160,66 @@
             "type": "state_delta",
             "key": "yanisInsouciance",
             "delta": 1
+          }
+        ]
+      },
+      {
+        "id": "s04b_c_noe_2",
+        "verb": "stay_silent",
+        "label": "Chercher, une fraction de seconde, le regard de Sarah",
+        "availableFor": [
+          "noe"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "noeMensonge",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "id": "s04b_c_ines_2",
+        "verb": "observe",
+        "label": "Regarder la table, pas les gens",
+        "availableFor": [
+          "ines"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "inesTensionSociale",
+            "delta": -1
+          }
+        ]
+      },
+      {
+        "id": "s04b_c_sarah_2",
+        "verb": "stay_silent",
+        "label": "Fixer son assiette, pour ne croiser aucun regard",
+        "availableFor": [
+          "sarah"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "sarahStabilite",
+            "delta": -1
+          }
+        ]
+      },
+      {
+        "id": "s04b_c_yanis_2",
+        "verb": "observe",
+        "label": "Lever les yeux, une seconde, sans rien y comprendre",
+        "availableFor": [
+          "yanis"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "yanisInsouciance",
+            "delta": -1
           }
         ]
       }
@@ -3452,6 +3917,51 @@
             "delta": 2
           }
         ]
+      },
+      {
+        "id": "s05b_c_ines_2",
+        "verb": "stay_silent",
+        "label": "Se taire, sentant que c'est allé trop loin",
+        "availableFor": [
+          "ines"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "inesIrritabilite",
+            "delta": -2
+          }
+        ]
+      },
+      {
+        "id": "s05b_c_sarah_2",
+        "verb": "observe",
+        "label": "Chercher un appui du regard, sans le trouver",
+        "availableFor": [
+          "sarah"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "sarahStabilite",
+            "delta": -2
+          }
+        ]
+      },
+      {
+        "id": "s05b_c_yanis_2",
+        "verb": "speak",
+        "label": "Rire un peu trop fort, pour détendre l'ambiance",
+        "availableFor": [
+          "yanis"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": -1
+          }
+        ]
       }
     ],
     "canonicalFacts": [
@@ -4050,6 +4560,66 @@
             "type": "state_delta",
             "key": "sarahMemoire",
             "delta": 1
+          }
+        ]
+      },
+      {
+        "id": "s06b_c_maelys_2",
+        "verb": "let_pass",
+        "label": "Se resservir un verre, pour patienter",
+        "availableFor": [
+          "maelys"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "maelysControle",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "id": "s06b_c_noe_2",
+        "verb": "observe",
+        "label": "Se demander de quoi ils parlent, dehors",
+        "availableFor": [
+          "noe"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "noeLachete",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "id": "s06b_c_ines_2",
+        "verb": "observe",
+        "label": "Remarquer leur air sérieux en rentrant",
+        "availableFor": [
+          "ines"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "inesIrritabilite",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "id": "s06b_c_sarah_2",
+        "verb": "let_pass",
+        "label": "Ne rien remarquer, ailleurs dans ses pensées",
+        "availableFor": [
+          "sarah"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "sarahMemoire",
+            "delta": -1
           }
         ]
       }
@@ -4768,6 +5338,66 @@
           "yanis"
         ],
         "effects": []
+      },
+      {
+        "id": "s07b_c_maelys_2",
+        "verb": "let_pass",
+        "label": "Retourner à la cuisine, sans s'attarder",
+        "availableFor": [
+          "maelys"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "maelysControle",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "id": "s07b_c_ines_2",
+        "verb": "observe",
+        "label": "Noter que Noé a l'air tendu en revenant",
+        "availableFor": [
+          "ines"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "inesIrritabilite",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "id": "s07b_c_sarah_2",
+        "verb": "observe",
+        "label": "Remarquer le visage fermé de Lucas en revenant",
+        "availableFor": [
+          "sarah"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "sarahMemoire",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "id": "s07b_c_yanis_2",
+        "verb": "speak",
+        "label": "Demander innocemment ce qu'ils se disaient",
+        "availableFor": [
+          "yanis"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 1
+          }
+        ]
       }
     ],
     "canonicalFacts": [
@@ -5962,6 +6592,51 @@
             "delta": 2
           }
         ]
+      },
+      {
+        "id": "s09b_c_noe_2",
+        "verb": "speak",
+        "label": "Demander, d'une voix blanche, si elle va s'en sortir",
+        "availableFor": [
+          "noe"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "noeLachete",
+            "delta": -2
+          }
+        ]
+      },
+      {
+        "id": "s09b_c_yanis_2",
+        "verb": "let_pass",
+        "label": "Poser le verre, sans savoir quoi faire d'autre",
+        "availableFor": [
+          "yanis"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "yanisInsouciance",
+            "delta": -2
+          }
+        ]
+      },
+      {
+        "id": "s09b_c_sarah_2",
+        "verb": "examine_object",
+        "label": "Se rincer le visage à l'eau froide, pour reprendre pied",
+        "availableFor": [
+          "sarah"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "sarahStabilite",
+            "delta": 2
+          }
+        ]
       }
     ],
     "canonicalFacts": [
@@ -7150,6 +7825,51 @@
             "delta": -2
           }
         ]
+      },
+      {
+        "id": "s12_c_ines_2",
+        "verb": "stay_silent",
+        "label": "Rester silencieuse, incapable de trouver les mots",
+        "availableFor": [
+          "ines"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "inesAttachementNoe",
+            "delta": 2
+          }
+        ]
+      },
+      {
+        "id": "s12_c_yanis_2",
+        "verb": "stay_silent",
+        "label": "Ranger son téléphone, ce n'est pas le moment",
+        "availableFor": [
+          "yanis"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "yanisDoute",
+            "delta": -2
+          }
+        ]
+      },
+      {
+        "id": "s12_c_noe_2",
+        "verb": "stay_silent",
+        "label": "Essayer de se rendormir, pour échapper aux voix",
+        "availableFor": [
+          "noe"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "noeLachete",
+            "delta": 1
+          }
+        ]
       }
     ],
     "canonicalFacts": [
@@ -7316,6 +8036,81 @@
             "delta": 5
           }
         ]
+      },
+      {
+        "id": "s13_c_lucas_2",
+        "verb": "speak",
+        "label": "Lui proposer de l'aide, pour rompre le silence",
+        "availableFor": [
+          "lucas"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "lucasCourage",
+            "delta": 3
+          }
+        ]
+      },
+      {
+        "id": "s13_c_ines_2",
+        "verb": "observe",
+        "label": "L'observer ranger, sans oser demander",
+        "availableFor": [
+          "ines"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "inesIrritabilite",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "id": "s13_c_sarah_2",
+        "verb": "examine_object",
+        "label": "Envoyer un message à Lucas, resté sans réponse",
+        "availableFor": [
+          "sarah"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "sarahStabilite",
+            "delta": -1
+          }
+        ]
+      },
+      {
+        "id": "s13_c_noe_2",
+        "verb": "observe",
+        "label": "Repenser, seul, à ce que Maëlys a bien pu faire après son départ",
+        "availableFor": [
+          "noe"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "noeMensonge",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "id": "s13_c_yanis_2",
+        "verb": "stay_silent",
+        "label": "Éteindre son téléphone, épuisé",
+        "availableFor": [
+          "yanis"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "yanisDoute",
+            "delta": -1
+          }
+        ]
       }
     ],
     "canonicalFacts": [
@@ -7425,6 +8220,11 @@
             "type": "state_delta",
             "key": "sarahDependanceMaelys",
             "delta": 5
+          },
+          {
+            "type": "flag_set",
+            "key": "sarah_se_tait_final",
+            "value": true
           }
         ]
       },
@@ -7536,6 +8336,71 @@
             "type": "state_delta",
             "key": "yanisDoute",
             "delta": -3
+          }
+        ]
+      },
+      {
+        "id": "s14_c_sarah_c",
+        "verb": "confront",
+        "label": "Lui dire de partir, une bonne fois pour toutes",
+        "availableFor": [
+          "sarah"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "sarahStabilite",
+            "delta": 4
+          },
+          {
+            "type": "flag_set",
+            "key": "sarah_rupture_finale",
+            "value": true
+          }
+        ]
+      },
+      {
+        "id": "s14_c_sarah_d",
+        "verb": "examine_object",
+        "label": "Lui montrer une dernière preuve, sans un mot",
+        "availableFor": [
+          "sarah"
+        ],
+        "effects": [
+          {
+            "type": "flag_set",
+            "key": "noe_disparait",
+            "value": true
+          }
+        ]
+      },
+      {
+        "id": "s14_c_maelys_2",
+        "verb": "speak",
+        "label": "Appeler tout le monde, un par un, pour verrouiller la version",
+        "availableFor": [
+          "maelys"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "maelysControle",
+            "delta": 3
+          }
+        ]
+      },
+      {
+        "id": "s14_c_noe_2",
+        "verb": "speak",
+        "label": "Ajouter un détail à la version, pour la rendre plus crédible",
+        "availableFor": [
+          "noe"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "noeMensonge",
+            "delta": 5
           }
         ]
       }

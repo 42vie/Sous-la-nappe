@@ -69,6 +69,17 @@ const ENDING_LABELS: Record<string, string> = {
   E1: 'Inès co-coupable',
   E2: 'Solidarité toxique',
   E3: 'Preuve effacée',
+  F9: 'Justice formelle',
+  F13: 'Yanis comprend',
+  F_SAMU_TOT: 'Le geste au bon moment',
+  F_INES_PIVOT: 'Le poids du silence d\'Inès',
+  F_YANIS_PART: 'Yanis est parti avant',
+  F14: 'Le silence de groupe',
+  F_SARAH_MORT: 'Sarah ne revient pas',
+  F_NOE_DISPARAIT: 'Noé disparaît',
+  F_SARAH_RETOURNE: 'Sarah se retourne contre Noé',
+  F_SARAH_SAIT_ET_COUVRE: 'Sarah sait et se tait',
+  F_RUPTURE_FINALE: 'La rupture finale',
 }
 
 export default function CarnetPage() {

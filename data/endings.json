@@ -82,5 +82,82 @@
     "description": "Noé survit, et la photo qui aurait pu tout prouver a existé — mais Maëlys en a su l'existence avant que quiconque d'autre ne la voie.",
     "playerMessage": "La preuve a existé. Le temps qu'on comprenne ce qu'elle montrait, elle n'existait déjà plus.",
     "conditions": { "targetActual": ["noe"], "note": "Maëlys découvre la photo de Yanis (S10) avant que Lucas ne la voie" }
+  },
+  {
+    "id": "F9",
+    "title": "Justice formelle",
+    "description": "Noé survit, la photo de Yanis a été vue, et quelqu'un est allé jusqu'à appeler la police.",
+    "playerMessage": "La preuve n'est plus restée entre eux. C'est ça, la différence.",
+    "conditions": { "targetActual": ["noe"], "note": "yanis_photo_vue + lucas_appelle_police (S12 ou S14)" }
+  },
+  {
+    "id": "F13",
+    "title": "Yanis comprend",
+    "description": "Noé survit, la photo de Yanis a été vue et comprise — mais personne n'a appelé la police.",
+    "playerMessage": "Il avait la preuve depuis le début. Il ne le savait juste pas encore.",
+    "conditions": { "targetActual": ["noe"], "note": "yanis_photo_vue sans lucas_appelle_police" }
+  },
+  {
+    "id": "F_SAMU_TOT",
+    "title": "Le geste au bon moment",
+    "description": "Le SAMU a été appelé immédiatement après l'incident, sans attendre.",
+    "playerMessage": "Une seule chose, cette nuit-là, s'est faite sans hésitation.",
+    "conditions": { "targetActual": ["noe"], "note": "samu_appele_tot (S09b) + lucasCourage >= 45" }
+  },
+  {
+    "id": "F_INES_PIVOT",
+    "title": "Le poids du silence d'Inès",
+    "description": "Inès a vu ou tu, à un moment de la soirée — et cette complicité muette finit par peser sur elle.",
+    "playerMessage": "Elle a toujours été celle qui protège. Personne ne lui a jamais demandé ce que ça lui coûtait.",
+    "conditions": { "targetActual": ["noe"], "note": "(ines_vu_boites ou ines_silence_actif) + inesCompliciteMorale >= 10" }
+  },
+  {
+    "id": "F_YANIS_PART",
+    "title": "Yanis est parti avant",
+    "description": "Yanis a proposé de partir avant même l'incident — un instinct qu'il n'a pas su nommer, mais qui n'était pas faux.",
+    "playerMessage": "Il n'a jamais su ce qu'il avait évité. Il a juste eu raison, une fois, sans preuve.",
+    "conditions": { "targetActual": ["noe"], "note": "yanis_veut_partir (S06b)" }
+  },
+  {
+    "id": "F14",
+    "title": "Le silence de groupe",
+    "description": "Noé survit, mais rien ne s'est jamais vraiment mis en mouvement cette nuit-là.",
+    "playerMessage": "Rien n'a jamais vraiment dérapé. C'est bien ce qui est le plus inquiétant.",
+    "conditions": { "targetActual": ["noe"], "note": "socialTension < 8, aucune interruption ni confrontation ni parole" }
+  },
+  {
+    "id": "F_SARAH_MORT",
+    "title": "Sarah ne revient pas",
+    "description": "Ce n'est pas un meurtre. C'est une succession de silences — personne n'a agi, nulle part, à aucun moment où ça aurait compté.",
+    "playerMessage": "Personne n'a voulu ça. C'est bien pour ça que personne n'a rien fait.",
+    "conditions": { "targetActual": ["noe"], "note": "noeLachete >= 75 + !samu_appele_tot + !lucas_a_interrompu_service + !lucas_previent_sarah — la seule fin où quelqu'un meurt réellement" }
+  },
+  {
+    "id": "F_NOE_DISPARAIT",
+    "title": "Noé disparaît",
+    "description": "Sarah lui a montré, sans un mot, une dernière preuve de ce qu'il savait. Il n'est jamais revenu.",
+    "playerMessage": "Personne n'a menti. Personne n'a vraiment dit la vérité. Elle a juste montré une preuve que lui seul devait voir.",
+    "conditions": { "targetActual": ["noe"], "note": "flag noe_disparait (S14, choix de Sarah)" }
+  },
+  {
+    "id": "F_SARAH_RETOURNE",
+    "title": "Sarah se retourne contre Noé",
+    "description": "Elle a compris qu'il savait, et qu'il n'avait rien fait. Elle a appelé Lucas pour le dire.",
+    "playerMessage": "Elle n'a pas crié. Elle a juste arrêté de faire comme si elle ne savait pas.",
+    "conditions": { "targetActual": ["noe"], "note": "C-42 découvert + flag sarah_appelle_lucas (S14)" }
+  },
+  {
+    "id": "F_SARAH_SAIT_ET_COUVRE",
+    "title": "Sarah sait et se tait",
+    "description": "Elle a compris ce que Noé savait. Elle a choisi de se taire, une fois de plus.",
+    "playerMessage": "Elle savait. Elle a choisi, une fois de plus, de porter ça seule.",
+    "conditions": { "targetActual": ["noe"], "note": "flag sarah_se_tait_final (S14)" }
+  },
+  {
+    "id": "F_RUPTURE_FINALE",
+    "title": "La rupture finale",
+    "description": "Elle lui a dit de partir. Une bonne fois pour toutes.",
+    "playerMessage": "Elle n'a rien révélé à personne. Elle a juste arrêté de lui laisser une place.",
+    "conditions": { "targetActual": ["noe"], "note": "flag sarah_rupture_finale (S14)" }
   }
 ]
