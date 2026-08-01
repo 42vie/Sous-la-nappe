@@ -176,6 +176,33 @@ export const RELATIONSHIP_MATRIX: Record<CharacterId, Partial<Record<CharacterId
   },
 }
 
+const ALL_CHARACTERS: CharacterId[] = ['maelys', 'noe', 'ines', 'lucas', 'sarah', 'yanis']
+
+/**
+ * Regard mutuel du groupe sur un personnage : moyenne de ce qu'il ressent
+ * pour chacun des cinq autres ET de ce que chacun des cinq autres ressent
+ * pour lui ("le regard qu'on a sur les autres et vice versa"). Sert à
+ * pondérer, dans endingCalculator.ts, si une accusation ou une interruption
+ * de ce personnage est prise au sérieux par le reste du groupe — un
+ * personnage envers qui le groupe est en confiance réciproque est écouté ;
+ * un personnage isolé ou méfié est balayé, même s'il a raison.
+ * Renvoie une valeur -100..+100 (même échelle que RELATIONSHIP_MATRIX).
+ */
+export function mutualTrustScore(character: CharacterId): number {
+  const others = ALL_CHARACTERS.filter((c) => c !== character)
+  let total = 0
+  for (const other of others) {
+    total += RELATIONSHIP_MATRIX[character]?.[other]?.value ?? 0
+    total += RELATIONSHIP_MATRIX[other]?.[character]?.value ?? 0
+  }
+  return total / (others.length * 2)
+}
+
+/** Version normalisée 0..1 de mutualTrustScore, pour se combiner avec un ratio comme clueScoreRatio. */
+export function mutualTrustRatio(character: CharacterId): number {
+  return Math.max(0, Math.min(1, (mutualTrustScore(character) + 100) / 200))
+}
+
 /** Étiquette qualitative pour une valeur de la matrice, -100 à +100 */
 export function relationshipLabel(value: number): string {
   if (value >= 70) return 'loyauté inconditionnelle'

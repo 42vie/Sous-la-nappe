@@ -150,14 +150,14 @@ export function SceneEngine({ runId, playerPov, initialSceneId, run }: SceneEngi
     await syncMinigameVariable(nextVariable)
   }
 
-  async function handleToneComplete(result: { correctCount: number; total: number }) {
-    // Bien lire le sous-texte apaise un peu la tension ; la mal lire l'alimente.
-    const wrongCount = result.total - result.correctCount
-    const delta = result.correctCount * -3 + wrongCount * 4
+  async function handleToneComplete(result: { tensionDelta: number }) {
+    // Chaque lecture choisie porte son propre effet sur la tension — voir
+    // ToneMinigame.tsx : ce n'est pas une bonne ou une mauvaise réponse,
+    // juste une interprétation qui a des conséquences.
     const current = (storeRun ?? run).variable
     const nextVariable = {
       ...current,
-      socialTension: Math.max(0, Math.min(100, (current.socialTension ?? 0) + delta)),
+      socialTension: Math.max(0, Math.min(100, (current.socialTension ?? 0) + result.tensionDelta)),
     }
     await syncMinigameVariable(nextVariable)
   }

@@ -7,121 +7,129 @@
  * (on ne se demande pas ce que son propre sous-texte signifie). Le jeu
  * varie donc selon qui est joué, pas seulement selon la scène — rejouer
  * avec un autre personnage au chapitre 1 donne un vrai mini-jeu différent.
- * Bien lire la pièce apaise un peu la tension ambiante ; mal la lire
- * l'alimente — cohérent avec socialTension qui pilote déjà les fins.
+ *
+ * Il n'y a pas de bonne lecture : chaque option est une interprétation
+ * plausible, pas un test de perspicacité. Ce qui varie, c'est l'effet —
+ * une lecture qui cherche le sous-texte tend à calmer le joueur lui-même
+ * (moins de surprise plus tard), une lecture qui prend les choses au
+ * premier degré ou qui prête une intention hostile laisse la tension
+ * s'accumuler sans qu'on l'ait vue venir. socialTension pilote déjà les
+ * fins (F3/F4/F8) : cette interprétation y contribue directement, sans
+ * jugement de "juste" ou "faux" affiché au joueur.
  */
 
 import { useState, useMemo } from 'react'
 import type { CharacterId } from '@/lib/types/characters'
+
+interface ToneOption {
+  label: string
+  /** Effet sur la tension collective si cette lecture est choisie — pas un score de justesse. */
+  tensionDelta: number
+}
 
 interface ToneItem {
   speaker: CharacterId
   time: string
   room: string
   line: string
-  options: string[]
-  correctIndex: number
+  options: ToneOption[]
 }
 
+// Chaque option porte son propre effet sur la tension — pas de "bonne"
+// réponse comparée à un index caché. Une lecture qui cherche le sous-texte
+// (souvent l'option du milieu, mais pas une règle) calme un peu ; une
+// lecture au premier degré laisse la tension s'accumuler sans qu'on la
+// voie ; une lecture qui prête une intention hostile l'alimente le plus.
 const MOMENTS: Record<string, ToneItem> = {
   noe_depasses: {
     speaker: 'noe',
     time: '20h18', room: 'Salon',
     line: '« On a tous été un peu dépassés. »',
     options: [
-      'Une observation neutre sur la soirée',
-      'Une diversion — dit pour ne pas en dire plus',
-      'Une blague qui tombe à plat',
+      { label: 'Une observation neutre sur la soirée', tensionDelta: 2 },
+      { label: 'Une diversion — dit pour ne pas en dire plus', tensionDelta: -3 },
+      { label: 'Une blague qui tombe à plat', tensionDelta: 4 },
     ],
-    correctIndex: 1,
   },
   maelys_tu_as_raison: {
     speaker: 'maelys',
     time: '20h20', room: 'Salon',
     line: '« Tu as raison. » — en réponse à Inès, sur la maison',
     options: [
-      'Elle est vraiment d’accord, soulagée',
-      'Elle coupe court, pour fermer le sujet net',
-      'Elle se moque d’Inès',
+      { label: 'Elle est vraiment d’accord, soulagée', tensionDelta: 2 },
+      { label: 'Elle coupe court, pour fermer le sujet net', tensionDelta: -3 },
+      { label: 'Elle se moque d’Inès', tensionDelta: 4 },
     ],
-    correctIndex: 1,
   },
   yanis_rire_seul: {
     speaker: 'yanis',
     time: '20h19', room: 'Salon',
     line: 'Il rit, seul, à sa propre blague sur « un dîner ou une réunion »',
     options: [
-      'Il détend vraiment l’ambiance',
-      'Il ne voit pas que personne d’autre ne rit',
-      'Il cherche à provoquer Inès',
+      { label: 'Il détend vraiment l’ambiance', tensionDelta: 2 },
+      { label: 'Il ne voit pas que personne d’autre ne rit', tensionDelta: -3 },
+      { label: 'Il cherche à provoquer Inès', tensionDelta: 4 },
     ],
-    correctIndex: 1,
   },
   sarah_sourire_couteux: {
     speaker: 'sarah',
     time: '20h14', room: 'Entrée',
     line: 'Elle arrive la dernière, avec un sourire qui lui coûte quelque chose.',
     options: [
-      'Elle est simplement fatiguée',
-      'Elle tient quelque chose ensemble, et ça lui demande un effort réel',
-      'Elle est agacée d’être là',
+      { label: 'Elle est simplement fatiguée', tensionDelta: 2 },
+      { label: 'Elle tient quelque chose ensemble, et ça lui demande un effort réel', tensionDelta: -3 },
+      { label: 'Elle est agacée d’être là', tensionDelta: 4 },
     ],
-    correctIndex: 1,
   },
   maelys_remercie: {
     speaker: 'maelys',
     time: '20h17', room: 'Salon',
     line: 'Face à une pique d’Inès sur la vente, elle remercie plutôt que de répondre.',
     options: [
-      'Elle apprécie sincèrement la remarque',
-      'Elle déstabilise plus par ce détour que par une vraie réponse',
-      'Elle n’a pas entendu la pique',
+      { label: 'Elle apprécie sincèrement la remarque', tensionDelta: 2 },
+      { label: 'Elle déstabilise plus par ce détour que par une vraie réponse', tensionDelta: -3 },
+      { label: 'Elle n’a pas entendu la pique', tensionDelta: 4 },
     ],
-    correctIndex: 1,
   },
   ines_chiffres: {
     speaker: 'ines',
     time: '20h16', room: 'Salon',
     line: '« La maison a toujours été à son nom, ce n’est pas une opinion. » — chiffres à l’appui',
     options: [
-      'Elle énonce un fait, sans arrière-pensée',
-      'Elle teste, pour voir si quelqu’un va la contredire',
-      'Elle plaisante pour détendre l’ambiance',
+      { label: 'Elle énonce un fait, sans arrière-pensée', tensionDelta: 2 },
+      { label: 'Elle teste, pour voir si quelqu’un va la contredire', tensionDelta: -3 },
+      { label: 'Elle plaisante pour détendre l’ambiance', tensionDelta: 4 },
     ],
-    correctIndex: 1,
   },
   maelys_ferme_visage: {
     speaker: 'maelys',
     time: '20h18', room: 'Salon',
     line: 'Après la phrase de Noé, quelque chose se ferme, une seconde, dans son visage.',
     options: [
-      'Elle est simplement fatiguée par la soirée',
-      'Quelque chose vient de se décider en elle, à cet instant précis',
-      'Elle est agacée que Noé ait pris la parole',
+      { label: 'Elle est simplement fatiguée par la soirée', tensionDelta: 2 },
+      { label: 'Quelque chose vient de se décider en elle, à cet instant précis', tensionDelta: -3 },
+      { label: 'Elle est agacée que Noé ait pris la parole', tensionDelta: 4 },
     ],
-    correctIndex: 1,
   },
   yanis_sert_large: {
     speaker: 'yanis',
     time: '20h13', room: 'Salon',
     line: 'Il ouvre une deuxième bouteille et sert large, dès les premiers échanges.',
     options: [
-      'Il est simplement généreux, comme toujours',
-      'Il sent que quelque chose est tendu et essaie de le noyer',
-      'Il veut que tout le monde soit ivre pour une raison précise',
+      { label: 'Il est simplement généreux, comme toujours', tensionDelta: 2 },
+      { label: 'Il sent que quelque chose est tendu et essaie de le noyer', tensionDelta: -3 },
+      { label: 'Il veut que tout le monde soit ivre pour une raison précise', tensionDelta: 4 },
     ],
-    correctIndex: 1,
   },
   lucas_regard_sarah: {
     speaker: 'lucas',
     time: '20h15', room: 'Salon',
     line: 'Il ne quitte pas Sarah des yeux depuis qu’elle est arrivée.',
     options: [
-      'Il apprécie simplement sa compagnie',
-      'Il a remarqué qu’elle ne va pas bien et n’ose rien dire',
-      'Il la surveille par méfiance',
+      { label: 'Il apprécie simplement sa compagnie', tensionDelta: 2 },
+      { label: 'Il a remarqué qu’elle ne va pas bien et n’ose rien dire', tensionDelta: -3 },
+      { label: 'Il la surveille par méfiance', tensionDelta: 4 },
     ],
-    correctIndex: 1,
   },
 }
 
@@ -144,7 +152,7 @@ const LABELS: Record<CharacterId, string> = {
 
 interface ToneMinigameProps {
   playerPov: CharacterId
-  onComplete: (result: { correctCount: number; total: number }) => void
+  onComplete: (result: { tensionDelta: number }) => void
 }
 
 export function ToneMinigame({ playerPov, onComplete }: ToneMinigameProps) {
@@ -153,22 +161,32 @@ export function ToneMinigame({ playerPov, onComplete }: ToneMinigameProps) {
     [playerPov]
   )
   const [answers, setAnswers] = useState<Record<number, number>>({})
-  const [revealed, setRevealed] = useState(false)
+  const [locked, setLocked] = useState(false)
   const [sent, setSent] = useState(false)
 
   const allAnswered = ITEMS.every((_, i) => answers[i] !== undefined)
-  const correctCount = ITEMS.filter((item, i) => answers[i] === item.correctIndex).length
+  const totalDelta = ITEMS.reduce((sum, item, i) => {
+    const chosen = answers[i]
+    return chosen === undefined ? sum : sum + item.options[chosen].tensionDelta
+  }, 0)
 
   function handleValidate() {
     if (!allAnswered) return
-    setRevealed(true)
+    setLocked(true)
   }
 
   function handleConfirm() {
     if (sent) return
     setSent(true)
-    onComplete({ correctCount, total: ITEMS.length })
+    onComplete({ tensionDelta: totalDelta })
   }
+
+  const readingSummary =
+    totalDelta <= -3
+      ? 'Ce que vous avez perçu tenait surtout du non-dit — vous avez cherché sous les phrases.'
+      : totalDelta >= 6
+        ? 'Vous avez surtout prêté aux autres des intentions précises, parfois hostiles.'
+        : 'Un mélange de lectures — parfois au premier degré, parfois plus loin.'
 
   return (
     <div style={{
@@ -211,30 +229,22 @@ export function ToneMinigame({ playerPov, onComplete }: ToneMinigameProps) {
             <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
               {item.options.map((opt, oi) => {
                 const isSelected = answers[i] === oi
-                const isCorrect = revealed && oi === item.correctIndex
-                const isWrongSelected = revealed && isSelected && oi !== item.correctIndex
                 return (
                   <button
                     key={oi}
-                    onClick={() => !revealed && setAnswers((prev) => ({ ...prev, [i]: oi }))}
-                    disabled={revealed}
+                    onClick={() => !locked && setAnswers((prev) => ({ ...prev, [i]: oi }))}
+                    disabled={locked}
                     style={{
                       textAlign: 'left',
                       padding: 'var(--space-2) var(--space-3)',
-                      background: isCorrect
-                        ? 'var(--color-primary-highlight)'
-                        : isWrongSelected
-                          ? 'var(--color-error-bg)'
-                          : isSelected
-                            ? 'var(--color-surface-offset)'
-                            : 'transparent',
-                      border: `1px solid ${isCorrect ? 'var(--color-primary)' : isWrongSelected ? 'var(--color-error)' : isSelected ? 'var(--color-text-faint)' : 'var(--color-border)'}`,
+                      background: isSelected ? 'var(--color-surface-offset)' : 'transparent',
+                      border: `1px solid ${isSelected ? 'var(--color-text-faint)' : 'var(--color-border)'}`,
                       borderRadius: 'var(--radius-md)',
                       fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', color: 'var(--color-text-muted)',
-                      cursor: revealed ? 'default' : 'pointer',
+                      cursor: locked ? 'default' : 'pointer',
                     }}
                   >
-                    {opt}
+                    {opt.label}
                   </button>
                 )
               })}
@@ -243,7 +253,7 @@ export function ToneMinigame({ playerPov, onComplete }: ToneMinigameProps) {
         ))}
       </div>
 
-      {!revealed ? (
+      {!locked ? (
         <button
           onClick={handleValidate}
           disabled={!allAnswered}
@@ -261,9 +271,9 @@ export function ToneMinigame({ playerPov, onComplete }: ToneMinigameProps) {
         <>
           <p style={{
             fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)', color: 'var(--color-text)',
-            textAlign: 'center', marginBottom: 'var(--space-4)',
+            textAlign: 'center', marginBottom: 'var(--space-4)', fontStyle: 'italic',
           }}>
-            {correctCount} / {ITEMS.length} — {correctCount === ITEMS.length ? 'vous sentez tout.' : correctCount === 0 ? 'rien de tout ça ne vous a atteint.' : 'une partie du sous-texte vous échappe.'}
+            {readingSummary}
           </p>
           <button
             onClick={handleConfirm}

@@ -7,9 +7,11 @@
 // nouveaux noms — voir ENDING_TRIGGERS pour le détail affichable au joueur.
 import type { RunState } from '@/types'
 import type { EndingId } from '@/lib/types/endings'
+import type { CharacterId } from '@/lib/types/characters'
 import type { ClueId } from '@/lib/types/clues'
-import { countCriticalClues } from './clueResolver'
 import { isRunComplete } from './transitions'
+import { clueScoreRatio } from './clueScoring'
+import { mutualTrustRatio } from './backstory'
 
 /** Indices dont la présence assemble le dossier post-hôpital (photo, vocal, carnet). */
 const KEY_EVIDENCE_CLUES: ClueId[] = ['C-19', 'C-20', 'C-22']
@@ -19,13 +21,60 @@ function hasKeyEvidence(state: RunState): boolean {
   return KEY_EVIDENCE_CLUES.some((id) => discovered.has(id))
 }
 
+// Rééquilibrage F5 (2026-08-01) : dans la structure à 110 actions, chacun
+// des trois moments de rupture (interrompre le morpion en scène 5,
+// interrompre le service en scène 8, confronter en scène 11) est devenu
+// disponible pour n'importe quel personnage, avec ~50% de chances d'être
+// choisi à chaque fois. En cascade OR pure, ça faisait mécaniquement
+// dominer F5 (~80% en simulation) : agir sans preuve devenait presque
+// toujours la fin, peu importe ce que le joueur avait vraiment reconstitué.
+//
+// La correction, demandée explicitement : garder la matrice de points par
+// indice (clueScoreRatio, clueScoring.ts) comme générateur du score de
+// reconstitution, et faire peser "le regard qu'on a sur les autres et vice
+// versa" — la matrice relationnelle (mutualTrustRatio, backstory.ts) —
+// dans le calcul. Un personnage qui interrompt ou confronte n'aboutit à la
+// rupture ambiguë F5 que s'il n'a NI assez reconstitué (peu d'indices, peu
+// de poids) NI assez de crédit auprès du groupe (relations mutuelles
+// faibles) : agir avec de quoi étayer son geste — preuves ou confiance du
+// groupe — laisse la mécanique aller à son terme, et c'est alors ce qui se
+// passe réellement (targetActual) et ce qui se dit après qui tranchent la
+// fin, pas l'interruption elle-même. F5 reste possible — logiquement,
+// c'est même la fin la plus commune d'un personnage lucide mais isolé ou
+// peu informé — mais elle cesse d'écraser tout le reste.
+const STANDING_THRESHOLD = 0.34
+const STANDING_CLUE_WEIGHT = 0.55
+const STANDING_TRUST_WEIGHT = 0.45
+
+/** POV du chapitre N (1-indexé), avec repli sur le POV courant si l'historique est incomplet. */
+function povForChapter(state: RunState, chapterNumber: number): CharacterId {
+  return state.povHistory[chapterNumber - 1] ?? state.playerPov
+}
+
+/**
+ * "Standing" d'une tentative d'interruption/confrontation : combien le
+ * personnage qui agit a-t-il de quoi étayer son geste, entre ce qu'il/elle
+ * a effectivement reconstitué (clueScoreRatio, la matrice) et le crédit que
+ * le groupe lui accorde mutuellement (mutualTrustRatio, la matrice
+ * relationnelle). 0..1.
+ */
+function interventionStanding(state: RunState, actor: CharacterId): number {
+  return (
+    clueScoreRatio(state) * STANDING_CLUE_WEIGHT +
+    mutualTrustRatio(actor) * STANDING_TRUST_WEIGHT
+  )
+}
+
 /**
  * Déterminer la fin en fonction de l'état final du run.
  *
  * Ordre de priorité :
  * 1. F5 — le service ou le morpion sont interrompus, ou une confrontation a
- *    lieu sans preuve suffisante : la mécanique s'arrête avant d'aller au
- *    bout, personne n'est physiquement touché.
+ *    lieu, mais seulement si le personnage qui agit n'a NI assez reconstitué
+ *    (clueScoreRatio, la matrice de points) NI assez de crédit auprès du
+ *    groupe (mutualTrustRatio, la matrice relationnelle) pour que son geste
+ *    tienne — voir interventionStanding ci-dessous. Sinon la mécanique va à
+ *    son terme et c'est la suite (2, 3) qui tranche.
  * 2. Qui a été réellement atteint (targetActual, moteur de déviation,
  *    lib/engine/deviation.ts) détermine la branche principale :
  *    Maëlys elle-même → F4, Sarah et Inès → F3, Inès seule → F2,
@@ -39,19 +88,30 @@ export function calculateEnding(state: RunState): EndingId {
   if (!isRunComplete(state)) return 'F0'
 
   const flags = state.flags
-  const criticalCount = countCriticalClues(state)
   const tension = state.variable.socialTension ?? 0
   const targetActual = state.variable.targetActual ?? []
   const hitSarah = targetActual.includes('sarah')
   const hitInes = targetActual.includes('ines')
   const hitMaelys = targetActual.includes('maelys')
 
-  // F5 — la mécanique s'arrête avant d'aller au bout.
-  if (
-    flags['lucas_a_interrompu_service'] ||
-    flags['lucas_a_interrompu_morpion'] ||
-    (flags['lucas_confrontation_finale'] && criticalCount < 6)
-  ) return 'F5'
+  // F5 — la mécanique s'arrête avant d'aller au bout, mais seulement si
+  // celui ou celle qui interrompt/confronte n'a pas de quoi étayer son
+  // geste (voir interventionStanding, en tête de fichier). Chaque moment de
+  // rupture est porté par le POV du chapitre où il a lieu : le morpion
+  // (scène 5) et le service (scène 8) sont dans des chapitres différents de
+  // la confrontation finale (scène 11), donc potentiellement trois
+  // personnages distincts, chacun jugé sur son propre crédit.
+  const morpionHalts =
+    !!flags['lucas_a_interrompu_morpion'] &&
+    interventionStanding(state, povForChapter(state, 2)) < STANDING_THRESHOLD
+  const serviceHalts =
+    !!flags['lucas_a_interrompu_service'] &&
+    interventionStanding(state, povForChapter(state, 3)) < STANDING_THRESHOLD
+  const confrontationHalts =
+    !!flags['lucas_confrontation_finale'] &&
+    interventionStanding(state, povForChapter(state, 4)) < STANDING_THRESHOLD
+
+  if (morpionHalts || serviceHalts || confrontationHalts) return 'F5'
 
   // F4 — Maëlys, ironiquement, atteinte par son propre dispositif : soit le
   // moteur de déviation l'a littéralement désignée (chance résiduelle dans
@@ -79,8 +139,15 @@ export function calculateEnding(state: RunState): EndingId {
   // F7 — le dossier s'assemble (photo, vocal ou carnet) et quelqu'un a parlé.
   if (hasKeyEvidence(state) && flags['lucas_a_parle']) return 'F7'
 
-  // F8 — fin noire : le récit qui sort écrase Sarah, dans une tension déjà haute.
-  if (state.variable.survivingNarrative === 'false_sarah_self_harm' && tension >= 60) return 'F8'
+  // F8 — fin noire : le récit qui sort écrase Sarah, dans une tension déjà
+  // haute. Seuil recalibré (60 → 30) : en jeu réel, socialTension part de 0
+  // et s'accumule par petits deltas (+/-2 à 12 par choix, +/-3/4 au mini-
+  // jeu "lire la pièce") sur 11 scènes ; 60 n'était jamais atteint en
+  // pratique (0% en simulation sur 1000+ runs), ce qui rendait F8
+  // inaccessible hors état construit à la main. 30 reste le haut du
+  // spectre observé (percentile ~85-90) : F8 reste la fin la plus dure à
+  // obtenir de la branche Noé, mais elle redevient atteignable.
+  if (state.variable.survivingNarrative === 'false_sarah_self_harm' && tension >= 30) return 'F8'
 
   // F6 — Noé survit mais le silence tient : personne n'a vraiment parlé.
   if (!flags['lucas_a_parle']) return 'F6'
