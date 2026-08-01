@@ -39,7 +39,7 @@
     "title": "Lucas interrompt, accuse trop tôt",
     "description": "Personne ne meurt. Et c'est presque pire : plus personne ne saura jamais avec certitude.",
     "playerMessage": "Vous ne saurez jamais avec certitude si vous aviez raison.",
-    "conditions": { "flags": ["lucas_a_interrompu_service", "lucas_a_interrompu_morpion", "lucas_confrontation_finale sans preuve suffisante"] }
+    "conditions": { "flags": ["lucas_a_interrompu_service", "lucas_a_interrompu_morpion", "lucas_confrontation_finale"], "note": "déclenché seulement si le personnage qui agit n'a ni assez reconstitué (clueScoreRatio) ni assez de crédit auprès du groupe (mutualTrustRatio, matrice relationnelle) — voir interventionStanding dans endingCalculator.ts" }
   },
   {
     "id": "F6",
@@ -60,6 +60,6 @@
     "title": "Fin noire — Noé détruit Sarah publiquement",
     "description": "Deux survivants avaient tous les deux quelque chose à cacher. Un seul avait le pouvoir de choisir lequel comptait.",
     "playerMessage": "La soirée a produit deux survivants qui avaient tous les deux quelque chose à cacher.",
-    "conditions": { "targetActual": ["noe"], "survivingNarrative": "false_sarah_self_harm", "socialTension": ">= 60" }
+    "conditions": { "targetActual": ["noe"], "survivingNarrative": "false_sarah_self_harm", "socialTension": ">= 30" }
   }
 ]

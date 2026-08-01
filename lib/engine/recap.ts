@@ -36,14 +36,18 @@ interface FlagRecapRule {
 
 const RULES: FlagRecapRule[] = [
   { flag: 'lucas_a_reecouté_vocal', scene: 'scene_01_opening_memory', line: (w) => `${w.name} a réécouté le vocal qu'${w.il} n'avait jamais effacé.` },
+  { flag: 'lucas_a_verifie_sarah', scene: 'scene_03_first_exchanges', line: (w) => `${w.name} a profité d'un instant de tension entre Maëlys et Inès pour s'assurer, du regard, que Sarah allait bien.` },
+  { flag: 'lucas_a_note_placement', scene: 'scene_04_seating', line: (w) => `${w.name} a remarqué le regard de Maëlys vers le passe, juste avant que tout le monde s'assoie.` },
   { flag: 'lucas_a_vu_reflet', scene: 'scene_06_kitchen_aside', line: (w) => `${w.name} a vu, dans le reflet de la vitre du cellier, un geste que Maëlys ne voulait montrer à personne.` },
   { flag: 'lucas_a_note_echange_places', scene: 'scene_07_social_game_2', line: (w) => `${w.name} a remarqué l'échange de places entre Inès et Sarah, sans réagir sur le moment.` },
   { flag: 'lucas_a_interrompu_morpion', scene: 'scene_05_social_game_1', line: (w) => `${w.name} a pris la place de Sarah dans le jeu du salon — Yanis a fini par servir à sa place.` },
+  { flag: 'lucas_temoin_morpion', scene: 'scene_05_social_game_1', line: (w) => `${w.name} a regardé Sarah perdre le jeu sans intervenir — une décision qui pesait plus qu'elle n'y paraissait sur le moment.` },
   { flag: 'lucas_temoin_service_silencieux', scene: 'scene_08_critical_service', line: (w) => `${w.name} a vu le service se dérouler sans intervenir — un silence qui pèsera plus tard.` },
   { flag: 'lucas_a_interrompu_service', scene: 'scene_08_critical_service', line: (w) => `${w.name} a interrompu le service et pris l'assiette de Sarah — la chaîne s'est brisée là.` },
   { flag: 'lucas_silence_moral', scene: 'scene_10_aftermath', line: (w) => `${w.name} a choisi le silence face à la version qui se construisait.` },
   { flag: 'lucas_a_parle', scene: 'scene_10_aftermath', line: (w) => `${w.name} a pris la parole — pas tout dit, mais assez pour que ça compte.` },
   { flag: 'lucas_confrontation_finale', scene: 'scene_11_reconstruction', line: (w) => `${w.name} a confronté Maëlys en tête-à-tête, juste avant de partir.` },
+  { flag: 'lucas_silence_final', scene: 'scene_11_reconstruction', line: (w) => `${w.name} est ${w.il === 'elle' ? 'partie' : 'parti'} sans un mot, laissant la version de Noé tenir telle quelle.` },
 ]
 
 export function buildRecap(state: RunState): string[] {

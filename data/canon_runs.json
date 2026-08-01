@@ -64,12 +64,12 @@
       "scene_11_reconstruction"
     ],
     "keyChoices": {
-      "scene_05_social_game_1": "s05_c01",
-      "scene_06_kitchen_aside": "s06_c01",
-      "scene_07_social_game_2": "s07_c01",
-      "scene_08_critical_service": "s08_c01",
-      "scene_10_aftermath": "s10_c01",
-      "scene_11_reconstruction": "s11_c01"
+      "scene_05_social_game_1": "s05_c_lucas_pass",
+      "scene_06_kitchen_aside": "s06_c_lucas_act",
+      "scene_07_social_game_2": "s07_c_lucas_pass",
+      "scene_08_critical_service": "s08_c_lucas_pass",
+      "scene_10_aftermath": "s10_c_lucas_pass",
+      "scene_11_reconstruction": "s11_c_lucas_leave"
     },
     "cluesRevealedInOrder": ["C-20", "C-03", "C-07", "C-11", "C-15", "C-25"],
     "endingId": "F1",

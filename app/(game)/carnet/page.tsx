@@ -6,9 +6,27 @@ import Link from 'next/link'
 import achievementsData from '@/data/achievements.json'
 import storyBlocksData from '@/data/story_blocks.json'
 import cluesData from '@/data/clues.json'
+import type { RunState } from '@/lib/types/engine'
+import type { DiscoveredClue } from '@/lib/types/clues'
+import type { CharacterId } from '@/lib/types/characters'
+import type { EndingId } from '@/lib/types/endings'
 
 type Achievement = typeof achievementsData[0]
 type StoryBlock = typeof storyBlocksData[0]
+/** finalScore/updatedAt sont écrits à côté du RunState (routes /final et /advance), pas dans le type du moteur. */
+type CompletedRun = RunState & { id: string; updatedAt?: number; finalScore?: number }
+
+/** Une forme par valeur de condition.type dans achievements.json — évite le "as any" sur un champ multi-forme. */
+type AchievementCondition =
+  | { type: 'runs_completed'; min: number }
+  | { type: 'unique_povs_used'; min: number }
+  | { type: 'clue_found_any_run'; clueId: string }
+  | { type: 'flag_set_any_run'; flag: string }
+  | { type: 'pov_completed'; pov: CharacterId }
+  | { type: 'pov_ending_with_flag_absent'; pov: CharacterId; flag: string }
+  | { type: 'ending_reached'; endingId: EndingId }
+  | { type: 'all_endings_reached'; endingIds: EndingId[] }
+  | { type: 'final_score_gte'; score: number }
 
 const TIER_LABEL: Record<number, string> = {
   1: 'Première soirée',
@@ -52,7 +70,7 @@ const ENDING_LABELS: Record<string, string> = {
 
 export default function CarnetPage() {
   const router = useRouter()
-  const [runs, setRuns] = useState<any[]>([])
+  const [runs, setRuns] = useState<CompletedRun[]>([])
   const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState<'parties' | 'secrets' | 'succes' | 'histoire'>('parties')
   const [openBlock, setOpenBlock] = useState<string | null>(null)
@@ -97,14 +115,14 @@ export default function CarnetPage() {
   }, [router])
 
   // ── Calcul des succès débloqués ──────────────────────────────────────────
-  const allCluesFound = new Set(runs.flatMap((r) => (r.discoveredClues ?? []).map((dc: any) => dc.clueId)))
+  const allCluesFound: Set<string> = new Set(runs.flatMap((r) => (r.discoveredClues ?? []).map((dc: DiscoveredClue) => dc.clueId)))
   const allFlags = Object.assign({}, ...runs.map((r) => r.flags ?? {}))
   const allPovs = new Set(runs.map((r) => r.playerPov))
   const allEndings = new Set(runs.map((r) => r.ending))
   const maxScore = Math.max(0, ...runs.map((r) => r.finalScore ?? 0))
 
   function isUnlocked(ach: Achievement): boolean {
-    const c = ach.condition as any
+    const c = ach.condition as AchievementCondition
     if (c.type === 'runs_completed') return runs.length >= c.min
     if (c.type === 'unique_povs_used') return allPovs.size >= c.min
     if (c.type === 'clue_found_any_run') return allCluesFound.has(c.clueId)
@@ -114,7 +132,7 @@ export default function CarnetPage() {
       return runs.some((r) => r.playerPov === c.pov && !r.flags?.[c.flag])
     }
     if (c.type === 'ending_reached') return allEndings.has(c.endingId)
-    if (c.type === 'all_endings_reached') return c.endingIds.every((id: string) => allEndings.has(id))
+    if (c.type === 'all_endings_reached') return c.endingIds.every((id) => allEndings.has(id))
     if (c.type === 'final_score_gte') return maxScore >= c.score
     return false
   }
@@ -207,7 +225,7 @@ export default function CarnetPage() {
                     {CHAR_LABELS[run.playerPov] ?? run.playerPov}
                   </span>
                   <span style={{ background: 'rgba(255,255,255,0.05)', color: 'rgba(212,207,200,0.7)', padding: '3px 10px', borderRadius: '4px', fontSize: '11px', fontFamily: 'var(--font-body)' }}>
-                    {ENDING_LABELS[run.ending] ?? run.ending ?? '—'}
+                    {(run.ending && ENDING_LABELS[run.ending]) ?? run.ending ?? '—'}
                   </span>
                   {run.finalScore != null && (
                     <span style={{ color: run.finalScore >= 75 ? '#c8a96e' : 'rgba(212,207,200,0.5)', fontSize: '12px', fontFamily: 'var(--font-body)' }}>
@@ -223,7 +241,7 @@ export default function CarnetPage() {
                     {run.discoveredClues.length} indice{run.discoveredClues.length > 1 ? 's' : ''} trouvé{run.discoveredClues.length > 1 ? 's' : ''}
                   </p>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-                    {run.discoveredClues.map((dc: any) => {
+                    {run.discoveredClues.map((dc: DiscoveredClue) => {
                       const meta = cluesMeta[dc.clueId]
                       return (
                         <span key={dc.clueId} style={{

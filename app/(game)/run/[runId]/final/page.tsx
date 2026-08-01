@@ -172,18 +172,36 @@ export default function FinalPage() {
 
   return (
     <main style={{
+      position: 'relative',
       minHeight: '100dvh',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
       padding: 'var(--space-16) var(--space-8)',
+      overflow: 'hidden',
     }}>
+      {/* Détail discret, tiré de la photo d'accueil — presque invisible, jamais expliqué */}
+      <img
+        src="/images/skeleton-hand.png"
+        alt=""
+        aria-hidden
+        style={{
+          position: 'absolute',
+          top: '-15px',
+          left: '-15px',
+          width: 140,
+          opacity: 0.45,
+          filter: 'grayscale(0.2)',
+          pointerEvents: 'none',
+          userSelect: 'none',
+        }}
+      />
       <div style={{ width: '100%', maxWidth: 'var(--content-narrow)' }}>
 
         {error && (
           <p style={{
             fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', color: 'var(--color-error)',
-            padding: 'var(--space-3) var(--space-4)', background: 'var(--color-error-bg)',
+            padding: 'var(--space-3) var(--space-4)', background: 'var(--color-error-highlight)',
             border: '1px solid var(--color-error)', borderRadius: 'var(--radius-md)',
             marginBottom: 'var(--space-8)',
           }}>{error}</p>

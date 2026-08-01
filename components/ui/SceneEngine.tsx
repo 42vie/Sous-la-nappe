@@ -278,73 +278,80 @@ export function SceneEngine({ runId, playerPov, initialSceneId, run }: SceneEngi
         <div style={{ display: 'flex', gap: 'var(--space-4)' }}>
           <button
             onClick={() => setShowSeating((v) => !v)}
+            title="Plan de table"
+            aria-label="Plan de table"
             style={{
-              fontFamily: 'var(--font-body)',
-              fontSize: 'var(--text-xs)',
+              fontSize: 'var(--text-base)',
               color: 'var(--color-text-faint)',
-              textDecoration: 'underline',
               cursor: 'pointer',
               background: 'none',
               border: 'none',
+              lineHeight: 1,
             }}
           >
-            plan de table
+            🍽️
           </button>
           <button
             onClick={() => setShowClues((v) => !v)}
+            title={`${discoveredClues.length} indice${discoveredClues.length !== 1 ? 's' : ''}`}
+            aria-label={`${discoveredClues.length} indice${discoveredClues.length !== 1 ? 's' : ''}`}
             style={{
+              display: 'flex', alignItems: 'center', gap: '2px',
               fontFamily: 'var(--font-body)',
               fontSize: 'var(--text-xs)',
               color: discoveredClues.length > 0 ? 'var(--color-primary)' : 'var(--color-text-faint)',
-              textDecoration: 'underline',
               cursor: 'pointer',
               background: 'none',
               border: 'none',
+              lineHeight: 1,
             }}
           >
-            {discoveredClues.length} indice{discoveredClues.length !== 1 ? 's' : ''}
+            <span style={{ fontSize: 'var(--text-base)' }}>🔍</span>{discoveredClues.length}
           </button>
           <button
             onClick={() => setShowGauges((v) => !v)}
+            title="Tensions du groupe"
+            aria-label="Tensions du groupe"
             style={{
-              fontFamily: 'var(--font-body)',
-              fontSize: 'var(--text-xs)',
+              fontSize: 'var(--text-base)',
               color: 'var(--color-text-faint)',
-              textDecoration: 'underline',
               cursor: 'pointer',
               background: 'none',
               border: 'none',
+              lineHeight: 1,
             }}
           >
-            tensions
+            📊
           </button>
           <button
             onClick={() => setShowManuscript((v) => !v)}
+            title="Manuscrit"
+            aria-label="Manuscrit"
             style={{
-              fontFamily: 'var(--font-body)',
-              fontSize: 'var(--text-xs)',
+              fontSize: 'var(--text-base)',
               color: 'var(--color-text-faint)',
-              textDecoration: 'underline',
               cursor: 'pointer',
               background: 'none',
               border: 'none',
+              lineHeight: 1,
             }}
           >
-            manuscrit
+            📖
           </button>
           <button
             onClick={() => setShowRelations((v) => !v)}
+            title="Relations"
+            aria-label="Relations"
             style={{
-              fontFamily: 'var(--font-body)',
-              fontSize: 'var(--text-xs)',
+              fontSize: 'var(--text-base)',
               color: 'var(--color-text-faint)',
-              textDecoration: 'underline',
               cursor: 'pointer',
               background: 'none',
               border: 'none',
+              lineHeight: 1,
             }}
           >
-            relations
+            🤝
           </button>
         </div>
       </div>
@@ -354,7 +361,7 @@ export function SceneEngine({ runId, playerPov, initialSceneId, run }: SceneEngi
         <div style={{ marginBottom: 'var(--space-6)' }}>
           <SeatingPlan
             state={storeRun ?? run}
-            highlightSeat={scene?.id === 'scene_08_critical_service' ? 2 : undefined}
+            highlightSeat={scene?.id === 'scene_08_critical_service' ? 4 : undefined}
           />
         </div>
       )}
@@ -483,7 +490,7 @@ export function SceneEngine({ runId, playerPov, initialSceneId, run }: SceneEngi
       {error && (
         <div style={{
           padding: 'var(--space-3) var(--space-4)',
-          background: 'var(--color-error-bg)',
+          background: 'var(--color-error-highlight)',
           border: '1px solid var(--color-error)',
           borderRadius: 'var(--radius-md)',
           marginBottom: 'var(--space-6)',
