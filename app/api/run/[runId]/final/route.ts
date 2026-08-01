@@ -1,10 +1,13 @@
 // GET /api/run/[runId]/final — rapport 3 colonnes, manuscrit, épilogue, score
 // POST /api/run/[runId]/final — soumettre le plan de table deviné (bonus optionnel)
 //
-// Pas de questionnaire : le score se calcule depuis ce que le joueur a
-// réellement découvert en jouant (le manuscrit), pas depuis un QCM rempli
-// après coup. Le seul geste qui reste à la fin est optionnel et concret :
-// reconstituer le plan de table du moment critique.
+// Pas de questionnaire : README_CONTEXTE_MATRICES_2026-08-01.md (section 6)
+// définit un barème de score par indice révélé, pensé à l'origine pour
+// noter 8 questions finales déclaratives. On n'a pas ce questionnaire (voir
+// la suppression du QCM) — le barème par indice reste identique, mais il se
+// déclenche directement depuis les indices réellement trouvés en jouant,
+// sans étape de déclaration en plus. Le seul geste qui reste à la fin est
+// optionnel et concret : reconstituer le plan de table du moment critique.
 import { NextRequest, NextResponse } from 'next/server'
 import { adminDb } from '@/lib/firebase/admin'
 import { COLLECTIONS } from '@/types/firebase'
@@ -13,11 +16,12 @@ import { getManuscriptStatus } from '@/lib/engine/manuscript'
 import { getPovSummaries } from '@/lib/engine/povSummary'
 import { buildEpilogue } from '@/lib/engine/epilogue'
 import { buildRecap } from '@/lib/engine/recap'
+import { clueScoreRatio } from '@/lib/engine/clueScoring'
 import { CHRONOLOGY, RELATIONSHIP_MATRIX } from '@/lib/engine/backstory'
 import type { RunState } from '@/types'
 
 const SEAT_IDS = [1, 2, 3, 4, 5, 6]
-const MANUSCRIPT_WEIGHT = 85
+const CLUE_WEIGHT = 85
 const SEATING_WEIGHT = 15
 
 type StoredRun = RunState & {
@@ -25,11 +29,8 @@ type StoredRun = RunState & {
   finalSeatingGuess?: Record<string, string>
 }
 
-function manuscriptScore(state: RunState): number {
-  const manuscript = getManuscriptStatus(state)
-  if (manuscript.length === 0) return 0
-  const ratio = manuscript.reduce((sum, e) => sum + e.progress, 0) / manuscript.length
-  return Math.round(ratio * MANUSCRIPT_WEIGHT)
+function reconstructionScore(state: RunState): number {
+  return Math.round(clueScoreRatio(state) * CLUE_WEIGHT)
 }
 
 /** GET — rapport final, manuscrit, épilogue et score (calculé, pas déclaré) */
@@ -48,7 +49,7 @@ export async function GET(
     }
 
     const report = buildFinalReport(state)
-    const baseScore = manuscriptScore(state)
+    const baseScore = reconstructionScore(state)
     const seatingSubmitted = state.finalSeatingGuess != null
     const score = seatingSubmitted ? (state.finalScore ?? baseScore) : baseScore
     const epilogue = buildEpilogue(state)
@@ -106,7 +107,7 @@ export async function POST(
       (seat) => seatingGuess[String(seat)] && seatingGuess[String(seat)] === trueSeating[seat as unknown as keyof typeof trueSeating]
     ).length
     const seatingBonus = Math.round((correctSeats / SEAT_IDS.length) * SEATING_WEIGHT)
-    const score = Math.max(0, Math.min(100, manuscriptScore(state) + seatingBonus))
+    const score = Math.max(0, Math.min(100, reconstructionScore(state) + seatingBonus))
 
     await adminDb.collection(COLLECTIONS.runs).doc(params.runId).update({
       finalScore: score,
