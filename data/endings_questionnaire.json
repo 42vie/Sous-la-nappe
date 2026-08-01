@@ -1,0 +1,245 @@
+[
+  {
+    "endingGroup": "all",
+    "version": "v4",
+    "description": "Questionnaire de fin — 8 questions universelles + 2 questions contextuelles selon la fin obtenue. Score sur 100 pts. Plan de table personnalisé généré selon les réponses.",
+    "questions": [
+      {
+        "id": "Q1",
+        "order": 1,
+        "type": "choix_unique",
+        "text": "Ce soir à La Mésangère, qui portait la responsabilité principale de ce qui s'est passé ?",
+        "availableFor": "all",
+        "options": [
+          { "id": "Q1a", "text": "Maëlys — elle a tout organisé", "scoreKey": "accusation_maelys", "points": 10 },
+          { "id": "Q1b", "text": "Noé — il savait et n'a rien fait", "scoreKey": "accusation_noe", "points": 10 },
+          { "id": "Q1c", "text": "Le groupe entier — chacun a laissé faire", "scoreKey": "accusation_collective", "points": 10 },
+          { "id": "Q1d", "text": "Personne — c'était une accumulation de hasards", "scoreKey": "accusation_none", "points": 5 }
+        ],
+        "correctAnswerContext": "Dépend de la fin obtenue et des indices collectés. Voir scoring dynamique.",
+        "scoringNote": "Réponse 'juste' calculée selon truthVector.mechanism et indices vus."
+      },
+      {
+        "id": "Q2",
+        "order": 2,
+        "type": "choix_unique",
+        "text": "À quel moment Maëlys a-t-elle effectué le geste critique ?",
+        "availableFor": "all",
+        "options": [
+          { "id": "Q2a", "text": "Pendant la mise à table (S04)", "points": 2 },
+          { "id": "Q2b", "text": "Pendant le passage en cuisine, vers 21h34 (S06)", "points": 10 },
+          { "id": "Q2c", "text": "Juste avant de servir, à S08", "points": 4 },
+          { "id": "Q2d", "text": "Je n'ai pas vu ce moment", "points": 0 }
+        ],
+        "revealIfWrong": "Le reflet dans la vitre du cellier (C-11) montre le geste à 21h34 pendant la scène 06."
+      },
+      {
+        "id": "Q3",
+        "order": 3,
+        "type": "choix_unique",
+        "text": "Quel objet dans la cuisine était l'indice le plus direct ?",
+        "availableFor": "all",
+        "options": [
+          { "id": "Q3a", "text": "La photo dans le couloir", "points": 2 },
+          { "id": "Q3b", "text": "Le petit récipient en grès derrière la boîte à sel", "points": 10 },
+          { "id": "Q3c", "text": "La bouteille apportée par Inès", "points": 0 },
+          { "id": "Q3d", "text": "Le plan de table manuscrit", "points": 3 }
+        ],
+        "clueRef": "C-09"
+      },
+      {
+        "id": "Q4",
+        "order": 4,
+        "type": "choix_unique",
+        "text": "Pourquoi le plan de table comptait-il autant pour Maëlys ?",
+        "availableFor": "all",
+        "options": [
+          { "id": "Q4a", "text": "Par maniaquerie — elle est perfectionniste", "points": 0 },
+          { "id": "Q4b", "text": "Pour contrôler qui recevrait quelle assiette", "points": 10 },
+          { "id": "Q4c", "text": "Pour éviter les conflits entre Inès et Noé", "points": 3 },
+          { "id": "Q4d", "text": "Je ne sais pas", "points": 0 }
+        ],
+        "clueRef": "C-07"
+      },
+      {
+        "id": "Q5",
+        "order": 5,
+        "type": "choix_multiple",
+        "text": "Parmi ces personnages, lesquels savaient qu'il se passerait quelque chose ce soir ? (plusieurs réponses possibles)",
+        "availableFor": "all",
+        "options": [
+          { "id": "Q5a", "text": "Maëlys", "correct": true, "points": 5 },
+          { "id": "Q5b", "text": "Noé", "correct": true, "points": 5 },
+          { "id": "Q5c", "text": "Lucas", "correct": false, "points": 0, "penaltyIfChecked": -3 },
+          { "id": "Q5d", "text": "Inès", "correct": false, "points": 0, "penaltyIfChecked": -3 },
+          { "id": "Q5e", "text": "Sarah", "correct": false, "points": 0, "penaltyIfChecked": -3 },
+          { "id": "Q5f", "text": "Yanis", "correct": false, "points": 0, "penaltyIfChecked": -3 }
+        ],
+        "note": "Noé correct uniquement si C-42 ou C-44 ont été vus."
+      },
+      {
+        "id": "Q6",
+        "order": 6,
+        "type": "choix_unique",
+        "text": "Le vocal que Lucas détient depuis le printemps — qu'est-ce qu'il prouve ?",
+        "availableFor": "all",
+        "options": [
+          { "id": "Q6a", "text": "Que Maëlys savait pour Noé et Sarah", "points": 10 },
+          { "id": "Q6b", "text": "Que Lucas et Maëlys avaient une liaison", "points": 0 },
+          { "id": "Q6c", "text": "Que la maison allait être vendue", "points": 3 },
+          { "id": "Q6d", "text": "Il n'a pas encore écouté ce vocal", "points": 2 }
+        ],
+        "clueRef": "C-20"
+      },
+      {
+        "id": "Q7",
+        "order": 7,
+        "type": "slider",
+        "text": "Sur cette soirée, dans quelle mesure Lucas aurait-il pu changer le cours des choses s'il avait agi dès S06 ?",
+        "availableFor": "all",
+        "minLabel": "Pas du tout — le résultat était inévitable",
+        "maxLabel": "Totalement — il avait toutes les clés",
+        "min": 0,
+        "max": 100,
+        "scoringNote": "Pas de bonne réponse. Valeur stockée dans playerProfile.lucasAgencyBelief. Influence le commentaire de fin.",
+        "points": 5
+      },
+      {
+        "id": "Q8",
+        "order": 8,
+        "type": "choix_unique",
+        "text": "Quelle place était la plus dangereuse à table ce soir ?",
+        "availableFor": "all",
+        "options": [
+          { "id": "Q8a", "text": "Place 1 — Maëlys (tête de table)", "points": 0 },
+          { "id": "Q8b", "text": "Place 3 — Noé (face à la cuisine)", "points": 10, "clueRef": "C-08" },
+          { "id": "Q8c", "text": "Place 4 — Sarah après l'échange (face au passe)", "points": 10, "clueRef": "C-19" },
+          { "id": "Q8d", "text": "Place 6 — Yanis (angle mort de Maëlys)", "points": 3 }
+        ],
+        "note": "Double réponse correcte selon la fin obtenue. F0/F_SARAH_MORT → Place 3. F1–F6 → Place 4."
+      },
+      {
+        "id": "Q9_contextual",
+        "order": 9,
+        "type": "choix_unique",
+        "availableFor": ["F_SARAH_MORT", "F_NOE_EMPOISONNEUR", "F_NOE_DISPARAIT"],
+        "text": "Noé savait que Sarah était fragile ce soir. Qu'est-ce qui l'a empêché d'agir ?",
+        "options": [
+          { "id": "Q9a", "text": "La peur de Maëlys", "points": 5 },
+          { "id": "Q9b", "text": "L'envie de se convaincre que c'était éteint entre eux", "points": 10 },
+          { "id": "Q9c", "text": "Il ne savait pas vraiment — il avait deviné", "points": 4 },
+          { "id": "Q9d", "text": "Il voulait que ça arrive", "points": 7 }
+        ]
+      },
+      {
+        "id": "Q10_contextual",
+        "order": 10,
+        "type": "choix_unique",
+        "availableFor": ["F0", "F5", "F6", "F7", "F8", "F12", "F13"],
+        "text": "Maëlys voulait-elle vraiment tuer Noé — ou cherchait-elle autre chose ?",
+        "options": [
+          { "id": "Q10a", "text": "Oui — une mort planifiée depuis des semaines", "points": 5 },
+          { "id": "Q10b", "text": "Non — elle voulait qu'il souffre et disparaisse, pas mourir", "points": 10 },
+          { "id": "Q10c", "text": "Elle n'avait pas décidé jusqu'au dernier moment", "points": 8 },
+          { "id": "Q10d", "text": "La dose n'était pas destinée à tuer", "points": 7 }
+        ]
+      }
+    ],
+    "scoring": {
+      "totalMax": 100,
+      "grades": [
+        { "min": 85, "max": 100, "label": "Vous avez vu sous la nappe", "description": "Vous avez reconstitué le dispositif dans sa quasi-totalité. Maëlys n'avait pas prévu que quelqu'un regarderait aussi attentivement." },
+        { "min": 65, "max": 84, "label": "Vous avez senti quelque chose", "description": "Les grandes lignes sont là. Quelques détails vous ont échappé — le récipient en grès, l'ordre des places, ou le vocal de Lucas." },
+        { "min": 40, "max": 64, "label": "Vous étiez à table", "description": "Vous avez vécu la soirée sans vraiment la lire. Ce n'est pas un reproche — la plupart des convives aussi." },
+        { "min": 0, "max": 39, "label": "Vous n'avez rien vu venir", "description": "Comme Yanis. Ce n'est pas une critique." }
+      ]
+    },
+    "seatingResult": {
+      "description": "Plan de table généré selon les réponses du questionnaire. Reflète la perception du joueur sur la culpabilité et le danger.",
+      "rules": [
+        {
+          "condition": "Q1 === Q1a AND Q4 === Q4b",
+          "layout": "seating_joueur_lucide",
+          "label": "Le plan que Lucas aurait dessiné",
+          "description": "Maëlys à l'écart. Sarah protégée. Noé face à Lucas. Le plan d'un témoin qui a tout vu."
+        },
+        {
+          "condition": "Q1 === Q1b AND Q5_noe === true",
+          "layout": "seating_joueur_noe_coupable",
+          "label": "Le plan que Sarah aurait fait",
+          "description": "Noé isolé. Sarah loin du passe. Maëlys visible de tous. Le plan de quelqu'un qui s'est retourné."
+        },
+        {
+          "condition": "Q1 === Q1c",
+          "layout": "seating_joueur_collectif",
+          "label": "La table telle qu'elle était vraiment",
+          "description": "Personne n'est à l'écart. Tout le monde est trop proche. C'est exactement ça le problème."
+        },
+        {
+          "condition": "Q7_score < 30",
+          "layout": "seating_joueur_fataliste",
+          "label": "Le plan de quelqu'un qui croit au destin",
+          "description": "Les chaises sont identiques à la réalité. Vous pensez que ça n'aurait rien changé."
+        },
+        {
+          "condition": "default",
+          "layout": "seating_base",
+          "label": "Le plan du soir",
+          "description": "La disposition canonique. La soirée telle qu'elle s'est déroulée dans votre run."
+        }
+      ],
+      "layouts": {
+        "seating_joueur_lucide": {
+          "seats": [
+            { "position": 1, "character": "lucas", "note": "Tête de table. Pour voir tout le monde." },
+            { "position": 2, "character": "sarah", "note": "Dos au mur. Loin du passe." },
+            { "position": 3, "character": "yanis", "note": "Entre Sarah et Inès — tampon." },
+            { "position": 4, "character": "ines", "note": "Face à Maëlys. Pour qu'elle la surveille." },
+            { "position": 5, "character": "noe", "note": "Face à Lucas. Impossible d'éviter le regard." },
+            { "position": 6, "character": "maelys", "note": "Bout de table. Visible de tous." }
+          ]
+        },
+        "seating_joueur_noe_coupable": {
+          "seats": [
+            { "position": 1, "character": "maelys", "note": "Tête de table — visible." },
+            { "position": 2, "character": "lucas", "note": "À sa droite. Gardien." },
+            { "position": 3, "character": "ines", "note": "Côté fenêtre." },
+            { "position": 4, "character": "sarah", "note": "Loin du passe. Protégée." },
+            { "position": 5, "character": "yanis", "note": "Entre Noé et Sarah." },
+            { "position": 6, "character": "noe", "note": "Bout de table. Isolé." }
+          ]
+        },
+        "seating_joueur_collectif": {
+          "seats": [
+            { "position": 1, "character": "maelys", "note": "" },
+            { "position": 2, "character": "lucas", "note": "" },
+            { "position": 3, "character": "noe", "note": "" },
+            { "position": 4, "character": "sarah", "note": "Face au passe — comme ce soir." },
+            { "position": 5, "character": "ines", "note": "" },
+            { "position": 6, "character": "yanis", "note": "" }
+          ]
+        },
+        "seating_joueur_fataliste": {
+          "seats": [
+            { "position": 1, "character": "maelys", "note": "" },
+            { "position": 2, "character": "noe", "note": "" },
+            { "position": 3, "character": "ines", "note": "" },
+            { "position": 4, "character": "sarah", "note": "Face au passe." },
+            { "position": 5, "character": "lucas", "note": "" },
+            { "position": 6, "character": "yanis", "note": "" }
+          ]
+        },
+        "seating_base": {
+          "seats": [
+            { "position": 1, "character": "maelys", "note": "" },
+            { "position": 2, "character": "lucas", "note": "" },
+            { "position": 3, "character": "noe", "note": "" },
+            { "position": 4, "character": "sarah", "note": "" },
+            { "position": 5, "character": "ines", "note": "" },
+            { "position": 6, "character": "yanis", "note": "" }
+          ]
+        }
+      }
+    }
+  }
+]

@@ -1,0 +1,191 @@
+{
+  "version": "v1",
+  "triggerCondition": "firstPlay",
+  "description": "Séquence d'onboarding narrative — présentée uniquement à la première partie. Jamais un guide, toujours une story. Le joueur découvre les mécanismes par immersion, pas par tutoriel.",
+
+  "prelude": {
+    "id": "prelude_00",
+    "title": "Avant d'entrer",
+    "type": "narrative_overlay",
+    "canSkip": false,
+    "screens": [
+      {
+        "id": "pre_01",
+        "text": "Tu as reçu une invitation pour ce soir.\n\nDîner chez Maëlys. La Mésangère. Huit heures.\n\nTu ne sais pas encore pourquoi tu as dit oui.",
+        "mood": "dark",
+        "duration": "auto",
+        "cta": "Continuer"
+      },
+      {
+        "id": "pre_02",
+        "text": "Six personnes autour d'une table.\n\nCe qui va se passer ce soir dépend de ce que tu choisis de voir — et de ce que tu choisis de faire.",
+        "mood": "dark",
+        "duration": "auto",
+        "cta": "Continuer"
+      },
+      {
+        "id": "pre_03",
+        "text": "Tu vas jouer un personnage.\n\nIl a ses propres raisons d'être là. Ses propres angles morts.\n\nTu vas vivre la soirée de son point de vue — pas du tien.",
+        "mood": "dark",
+        "duration": "auto",
+        "cta": "Je comprends"
+      }
+    ]
+  },
+
+  "characterSelection": {
+    "id": "prelude_01",
+    "title": "Choisir un personnage",
+    "type": "narrative_overlay",
+    "text": "Avant de choisir, une chose à savoir :\n\nChaque personnage voit la soirée différemment. Certains voient moins. Certains savent plus. Aucun n'a la vérité complète.\n\nLe premier run révèle rarement tout.",
+    "mood": "neutral",
+    "cta": "Choisir mon personnage"
+  },
+
+  "firstSceneIntro": {
+    "id": "prelude_02",
+    "title": "Comment jouer",
+    "type": "diegetic_notebook",
+    "description": "Présenté comme une page du carnet du personnage — pas un écran de tutoriel. Le joueur trouve une note dans le carnet avant d'entrer dans la scène 01.",
+    "notebookEntry": {
+      "author": "system_diegetique",
+      "handwritingStyle": true,
+      "pages": [
+        {
+          "id": "nb_page_01",
+          "title": "Ce soir",
+          "content": "Tu vas prendre des décisions.\n\nCertaines seront petites. Rester assis ou se lever. Parler ou se taire. Regarder ou détourner les yeux.\n\nAucune ne sera présentée comme importante. C'est souvent les petites qui le sont.",
+          "icon": "candle"
+        },
+        {
+          "id": "nb_page_02",
+          "title": "Le carnet",
+          "content": "Ce carnet, c'est ta mémoire ce soir.\n\nQuand tu remarques quelque chose — un objet, une phrase, un geste — ça s'y inscrit. Automatiquement ou parce que tu l'as cherché.\n\nTu peux le consulter à tout moment. Il ne te dit pas quoi faire. Il te dit ce que tu as vu.",
+          "icon": "notebook",
+          "mechanic": "clues"
+        },
+        {
+          "id": "nb_page_03",
+          "title": "Les indices",
+          "content": "Certains indices sont fiables. D'autres sont des impressions — ce que tu penses avoir vu, pas ce qui s'est vraiment passé.\n\nLe carnet le précise. Un indice 'fiable' est une preuve. Un indice 'fragile' est une interprétation.\n\nLa différence compte.",
+          "icon": "magnifier",
+          "mechanic": "clue_reliability"
+        },
+        {
+          "id": "nb_page_04",
+          "title": "La tension du groupe",
+          "content": "En haut de l'écran, une ligne. Elle monte et descend selon ce qui se passe à table.\n\nQuand elle monte trop vite, quelque chose va basculer.\n\nQuand elle descend trop, quelque chose a été étouffé — et ça revient toujours.",
+          "icon": "tension_bar",
+          "mechanic": "socialTension"
+        },
+        {
+          "id": "nb_page_05",
+          "title": "Le plan de table",
+          "content": "Tu peux voir à tout moment où tout le monde est assis.\n\nCe n'est pas décoratif. Qui est assis où, face à qui, près de quoi — ça compte pour ce qui arrive.",
+          "icon": "seating",
+          "mechanic": "seating"
+        },
+        {
+          "id": "nb_page_06",
+          "title": "Ce que tu ne sauras peut-être jamais",
+          "content": "Une dernière chose.\n\nCette soirée a plusieurs fins. Tu n'en verras qu'une ce soir.\n\nCe que tu n'as pas trouvé existe quand même. Il est quelque part, dans une autre version de cette table.\n\nReviens.",
+          "icon": "moon",
+          "mechanic": "multiRun"
+        }
+      ]
+    }
+  },
+
+  "chapterUXGuidelines": {
+    "description": "Recommandations ergonomie pour alléger l'affichage des chapitres — à implémenter côté composants.",
+    "principles": [
+      {
+        "id": "ux_01",
+        "title": "Règle d'or : une information à la fois",
+        "detail": "Ne jamais afficher le texte narratif ET les choix ET la tension ET le carnet en même temps. Séquencer : narration → choix → confirmation. Les métadonnées (tension, indices) en overlay discret."
+      },
+      {
+        "id": "ux_02",
+        "title": "Choix : 2 à 4 options maximum par scène",
+        "detail": "Si le JSON contient plus de 4 choix pour un POV donné, filtrer selon les flags actifs et la pertinence narrative. Afficher en priorité les choix qui ont un effet sur socialTension ou qui débloquent un indice."
+      },
+      {
+        "id": "ux_03",
+        "title": "Le carnet n'est pas un menu",
+        "detail": "Accessible via un geste ou un bouton discret — jamais dans la barre de navigation principale. Il s'ouvre en overlay semi-transparent par-dessus la scène, pas en page séparée. L'immersion ne doit pas être cassée."
+      },
+      {
+        "id": "ux_04",
+        "title": "La tension sociale : signal, pas compteur",
+        "detail": "Ne pas afficher de chiffre. Utiliser un visuel (flamme, ligne, bougie) qui change d'état. Trois états suffisent : calme / tendu / critique. La valeur numérique reste interne."
+      },
+      {
+        "id": "ux_05",
+        "title": "Numéro de chapitre sans spoiler",
+        "detail": "Afficher uniquement le titre de la scène et une indication de progression type 'Scène 3 sur ~11' (pas le nombre exact). Éviter les barres de progression qui révèlent la durée du jeu."
+      },
+      {
+        "id": "ux_06",
+        "title": "Transitions : noir avec son, pas de loading screen",
+        "detail": "Entre deux scènes, fondu au noir + son de couverts ou de verre. Pas de spinner, pas d'écran de chargement. Si le chargement dépasse 2s, afficher une phrase atmosphérique en blanc sur noir."
+      },
+      {
+        "id": "ux_07",
+        "title": "Mobile first — une main, un pouce",
+        "detail": "Tous les éléments interactifs dans la moitié basse de l'écran. Le texte narratif dans la moitié haute. Swipe vers le haut pour ouvrir le carnet. Tap sur le plan de table pour zoomer."
+      },
+      {
+        "id": "ux_08",
+        "title": "Pas de retour arrière",
+        "detail": "Pas de bouton 'revenir au choix précédent'. Les décisions sont permanentes dans un run. Si le joueur ferme l'app, la partie reprend où elle en était — jamais au début de la scène."
+      }
+    ]
+  },
+
+  "notebookItemGlossary": [
+    {
+      "id": "item_carnet",
+      "name": "Le carnet",
+      "icon": "notebook",
+      "inGameDescription": "Ta mémoire de la soirée. Les indices que tu as collectés, les moments que tu as notés. Tu peux le consulter à tout moment — il ne juge pas, il enregistre.",
+      "mechanic": "Stocke clues collectés. Consultable en overlay. Mise à jour automatique ou par action 'examine_object'."
+    },
+    {
+      "id": "item_indices",
+      "name": "Les indices",
+      "icon": "magnifier",
+      "inGameDescription": "Quelque chose que tu as remarqué. Fiable ou fragile — le carnet te le dit. Certains indices ne révèlent leur sens qu'une fois combinés avec d'autres.",
+      "mechanic": "Objet JSON clue avec reliability + revealLayers. Peut se compléter au fil du run."
+    },
+    {
+      "id": "item_tension",
+      "name": "La tension du groupe",
+      "icon": "flame",
+      "inGameDescription": "Ce que tu ressens dans la pièce. Quand ça monte, les gens sont au bord de quelque chose. Quand ça descend trop vite, c'est que quelqu'un vient de l'étouffer.",
+      "mechanic": "Variable socialTension (0–100). Affichée en signal visuel 3 états. Impacte le déclenchement des événements automatiques."
+    },
+    {
+      "id": "item_plan_table",
+      "name": "Le plan de table",
+      "icon": "seating",
+      "inGameDescription": "Qui est assis où. Qui est face à qui. Qui est près du passe-plats. Ce n'est pas anodin.",
+      "mechanic": "Vue seating interactive. Mise à jour à S04, S07, S07b. Influe sur targetActual."
+    },
+    {
+      "id": "item_journal_lucas",
+      "name": "Journal de Lucas",
+      "icon": "eye",
+      "inGameDescription": "Uniquement disponible en POV Lucas. Ce qu'il a noté intérieurement depuis le début de la soirée. Des impressions, pas des faits. Mais les impressions comptent.",
+      "mechanic": "List string[] alimentée par actions Lucas. Dernière entrée en S11 débloque C-38 si consultée.",
+      "availableFor": "lucas"
+    },
+    {
+      "id": "item_tension_clock",
+      "name": "L'horloge de tension",
+      "icon": "clock",
+      "inGameDescription": "Tu ne la vois pas. Mais elle tourne. Plus tu laisses faire, plus elle avance. À un certain point, la soirée prend son propre élan.",
+      "mechanic": "tensionClock interne (0–100). Invisible joueur. Impacte UI à >50, >70. Déclenche événement à >80.",
+      "hiddenFromPlayer": true
+    }
+  ]
+}
