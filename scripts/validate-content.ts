@@ -51,15 +51,19 @@ function main() {
   }
 
   // --- Scenes ---
-  const scenes = load<Array<{ id: string; index: number; choices: Array<{ id: string; revealsClue?: string }> }>>('scenes.json')
+  const scenes = load<Array<{ id: string; index: number; choices: Array<{ id: string; revealsClue?: string | string[] }> }>>('scenes.json')
   if (scenes && clues) {
     ok(`scenes.json : ${scenes.length} scènes`)
     if (scenes.length !== 11) error(`Attendu 11 scènes, trouvé ${scenes.length}`)
     const clueRefs = clues.map((c) => c.ref)
     for (const scene of scenes) {
       for (const choice of scene.choices) {
-        if (choice.revealsClue && !clueRefs.includes(choice.revealsClue)) {
-          error(`Scène ${scene.id} — choix ${choice.id} référence l'indice inconnu : ${choice.revealsClue}`)
+        if (!choice.revealsClue) continue
+        const revealed = Array.isArray(choice.revealsClue) ? choice.revealsClue : [choice.revealsClue]
+        for (const ref of revealed) {
+          if (!clueRefs.includes(ref)) {
+            error(`Scène ${scene.id} — choix ${choice.id} référence l'indice inconnu : ${ref}`)
+          }
         }
       }
     }

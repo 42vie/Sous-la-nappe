@@ -170,6 +170,14 @@ function applyEffects(
     if (effect.type === 'flag_set' && effect.key === 'survivingNarrative' && effect.value) {
       variableUpdates.survivingNarrative = effect.value as RunState['variable']['survivingNarrative']
     }
+
+    // Un choix peut faire basculer la variante de placement en cours de
+    // partie (ex. Yanis fait changer tout le monde de place — chaos). C'est
+    // distinct du snapshot visuel (seating_update, ci-dessus) : c'est ce
+    // que endingCalculator.ts lit pour la fin F3.
+    if (effect.type === 'flag_set' && effect.key === 'seatingVariant' && effect.value) {
+      variableUpdates.seatingVariant = effect.value as RunState['variable']['seatingVariant']
+    }
   }
 
   return {

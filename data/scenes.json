@@ -16,10 +16,72 @@
     },
     "choices": [
       {
-        "id": "s01_c01",
+        "id": "s01_c_maelys",
         "verb": "observe",
-        "label": "Garder le souvenir flou",
-        "availableFor": "all",
+        "label": "Refermer le souvenir de la maison avant que quelqu'un ne pose une question",
+        "availableFor": [
+          "maelys"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "maelysControle",
+            "delta": 5
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 2
+          }
+        ]
+      },
+      {
+        "id": "s01_c_noe",
+        "verb": "stay_silent",
+        "label": "Se convaincre, une dernière fois, que c'est réglé",
+        "availableFor": [
+          "noe"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "noeLachete",
+            "delta": 5
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": -3
+          }
+        ]
+      },
+      {
+        "id": "s01_c_ines",
+        "verb": "examine_object",
+        "label": "Relire mentalement les chiffres avant d'entrer",
+        "availableFor": [
+          "ines"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "inesArrogance",
+            "delta": 5
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 2
+          }
+        ]
+      },
+      {
+        "id": "s01_c_lucas",
+        "verb": "observe",
+        "label": "Garder le souvenir flou, ne pas rouvrir le vocal — pas encore",
+        "availableFor": [
+          "lucas"
+        ],
         "effects": [
           {
             "type": "state_delta",
@@ -27,8 +89,45 @@
             "delta": 5
           },
           {
-            "type": "narrative_note",
-            "note": "Lucas ne force pas la mémoire. L'erreur plantée reste active."
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 2
+          }
+        ]
+      },
+      {
+        "id": "s01_c_sarah",
+        "verb": "listen",
+        "label": "Se souvenir de la phrase dite en voiture, fin septembre",
+        "availableFor": [
+          "sarah"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "sarahMemoire",
+            "delta": 8
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 1
+          }
+        ],
+        "revealsClue": "C-14"
+      },
+      {
+        "id": "s01_c_yanis",
+        "verb": "observe",
+        "label": "Se rejouer la phrase entendue à l'étage, à 17h05",
+        "availableFor": [
+          "yanis"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "yanisInsouciance",
+            "delta": -5
           },
           {
             "type": "state_delta",
@@ -36,10 +135,7 @@
             "delta": 2
           }
         ],
-        "revealsClue": [
-          "C-05",
-          "C-14"
-        ]
+        "revealsClue": "C-05"
       },
       {
         "id": "s01_c02",
@@ -105,32 +201,75 @@
     },
     "choices": [
       {
-        "id": "s02_c01",
+        "id": "s02_c_maelys",
         "verb": "observe",
-        "label": "Regarder la photo dans le couloir",
-        "availableFor": "all",
-        "revealsClue": [
-          "C-03",
-          "C-18"
+        "label": "Remarquer, en l'embrassant, que le sac de Sarah semble différent",
+        "availableFor": [
+          "maelys"
         ],
         "effects": [
           {
             "type": "state_delta",
-            "key": "lucasLucidite",
-            "delta": 5
+            "key": "maelysControle",
+            "delta": 3
           },
           {
             "type": "state_delta",
             "key": "socialTension",
             "delta": 2
           }
-        ]
+        ],
+        "revealsClue": "C-18"
       },
       {
-        "id": "s02_c02",
+        "id": "s02_c_noe",
+        "verb": "observe",
+        "label": "Vérifier une dernière fois son propre message d'invitation",
+        "availableFor": [
+          "noe"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "noeMensonge",
+            "delta": 3
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 2
+          }
+        ],
+        "revealsClue": "C-01"
+      },
+      {
+        "id": "s02_c_ines",
+        "verb": "observe",
+        "label": "Regarder la photo dans le couloir, et la juger de trop",
+        "availableFor": [
+          "ines"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "inesArrogance",
+            "delta": 3
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 2
+          }
+        ],
+        "revealsClue": "C-03"
+      },
+      {
+        "id": "s02_c_lucas",
         "verb": "speak",
-        "label": "Demander des nouvelles sincèrement",
-        "availableFor": "all",
+        "label": "Demander sincèrement des nouvelles à Maëlys",
+        "availableFor": [
+          "lucas"
+        ],
         "effects": [
           {
             "type": "state_delta",
@@ -147,29 +286,45 @@
             "key": "socialTension",
             "delta": 4
           }
-        ],
-        "revealsClue": "C-01"
+        ]
       },
       {
-        "id": "s02_c03",
+        "id": "s02_c_sarah",
         "verb": "stay_silent",
-        "label": "Entrer sans poser de question",
-        "availableFor": "all",
+        "label": "Entrer avec ce sourire qui lui coûte, sans rien demander",
+        "availableFor": [
+          "sarah"
+        ],
         "effects": [
           {
             "type": "state_delta",
-            "key": "lucasNeutralite",
-            "delta": 8
-          },
-          {
-            "type": "state_delta",
-            "key": "lucasLucidite",
-            "delta": -3
+            "key": "sarahStabilite",
+            "delta": -5
           },
           {
             "type": "state_delta",
             "key": "socialTension",
             "delta": -3
+          }
+        ]
+      },
+      {
+        "id": "s02_c_yanis",
+        "verb": "observe",
+        "label": "Prendre une photo de l'entrée, pour le souvenir",
+        "availableFor": [
+          "yanis"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "yanisJeuSocial",
+            "delta": 5
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 2
           }
         ]
       }
@@ -206,25 +361,17 @@
     },
     "choices": [
       {
-        "id": "s03_c01",
+        "id": "s03_c_maelys",
         "verb": "speak",
-        "label": "Aller parler à Sarah en premier",
-        "availableFor": "all",
+        "label": "Servir, sourire, laisser monter",
+        "availableFor": [
+          "maelys"
+        ],
         "effects": [
           {
             "type": "state_delta",
-            "key": "lucasLucidite",
-            "delta": 8
-          },
-          {
-            "type": "state_delta",
-            "key": "sarahStabilite",
-            "delta": 10
-          },
-          {
-            "type": "flag_set",
-            "key": "lucas_a_verifie_sarah",
-            "value": true
+            "key": "maelysControle",
+            "delta": 5
           },
           {
             "type": "state_delta",
@@ -234,15 +381,37 @@
         ]
       },
       {
-        "id": "s03_c02",
-        "verb": "observe",
-        "label": "Observer la tension entre Maëlys et Inès",
-        "availableFor": "all",
+        "id": "s03_c_noe",
+        "verb": "speak",
+        "label": "Dire, pour faire diversion, qu'on a tous été un peu dépassés",
+        "availableFor": [
+          "noe"
+        ],
         "effects": [
           {
             "type": "state_delta",
-            "key": "lucasLucidite",
-            "delta": 12
+            "key": "noeLachete",
+            "delta": 5
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 4
+          }
+        ]
+      },
+      {
+        "id": "s03_c_ines",
+        "verb": "speak",
+        "label": "Corriger un fait avec les chiffres, sans hausser le ton",
+        "availableFor": [
+          "ines"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "inesArrogance",
+            "delta": 8
           },
           {
             "type": "state_delta",
@@ -252,26 +421,83 @@
           {
             "type": "state_delta",
             "key": "socialTension",
-            "delta": 2
+            "delta": 5
           }
-        ],
-        "revealsClue": "C-09"
+        ]
       },
       {
-        "id": "s03_c03",
-        "verb": "listen",
-        "label": "Écouter l'ambiance générale",
-        "availableFor": "all",
+        "id": "s03_c_lucas",
+        "verb": "observe",
+        "label": "Observer la tension entre Maëlys et Inès, et s'assurer d'un regard que Sarah va bien",
+        "availableFor": [
+          "lucas"
+        ],
         "effects": [
           {
             "type": "state_delta",
-            "key": "lucasNeutralite",
+            "key": "lucasLucidite",
+            "delta": 10
+          },
+          {
+            "type": "state_delta",
+            "key": "sarahStabilite",
             "delta": 5
           },
           {
             "type": "state_delta",
             "key": "socialTension",
+            "delta": 2
+          },
+          {
+            "type": "flag_set",
+            "key": "lucas_a_verifie_sarah",
+            "value": true
+          }
+        ]
+      },
+      {
+        "id": "s03_c_sarah",
+        "verb": "observe",
+        "label": "Remarquer, dans la cuisine, un récipient en grès inhabituel",
+        "availableFor": [
+          "sarah"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "sarahMemoire",
+            "delta": 8
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
             "delta": 1
+          }
+        ],
+        "revealsClue": "C-09"
+      },
+      {
+        "id": "s03_c_yanis",
+        "verb": "listen",
+        "label": "Ouvrir une deuxième bouteille et garder l'ambiance en vie",
+        "availableFor": [
+          "yanis"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "yanisJeuSocial",
+            "delta": 8
+          },
+          {
+            "type": "state_delta",
+            "key": "yanisAlcoolCollectif",
+            "delta": 10
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": -2
           }
         ]
       }
@@ -301,24 +527,17 @@
     },
     "choices": [
       {
-        "id": "s04_c01",
+        "id": "s04_c_maelys",
         "verb": "observe",
-        "label": "Mémoriser les positions initiales",
-        "availableFor": "all",
-        "revealsClue": [
-          "C-07",
-          "C-06"
+        "label": "Indiquer les places d'un sourire — aucune n'est vraiment laissée au hasard",
+        "availableFor": [
+          "maelys"
         ],
         "effects": [
           {
             "type": "state_delta",
-            "key": "lucasLucidite",
-            "delta": 10
-          },
-          {
-            "type": "flag_set",
-            "key": "lucas_a_note_placement",
-            "value": true
+            "key": "maelysControle",
+            "delta": 8
           },
           {
             "type": "state_delta",
@@ -328,47 +547,114 @@
         ]
       },
       {
-        "id": "s04_c02",
+        "id": "s04_c_noe",
         "verb": "change_seat",
-        "label": "Choisir une place différente",
-        "availableFor": "all",
+        "label": "S'asseoir où ça semble logique, sans regarder les cartons",
+        "availableFor": [
+          "noe"
+        ],
         "effects": [
           {
             "type": "state_delta",
-            "key": "lucasNeutralite",
-            "delta": -8
-          },
-          {
-            "type": "state_delta",
-            "key": "maelysControle",
+            "key": "noeInfluenceMaelys",
             "delta": -5
-          },
-          {
-            "type": "narrative_note",
-            "note": "Lucas perturbe légèrement le plan mais Maëlys l'intègre."
           },
           {
             "type": "state_delta",
             "key": "socialTension",
             "delta": 6
+          },
+          {
+            "type": "narrative_note",
+            "note": "Noé s'assoit à la mauvaise place. Maëlys l'y ramène sans hausser le ton."
           }
         ]
       },
       {
-        "id": "s04_c03",
-        "verb": "stay_silent",
-        "label": "S'asseoir à la place prévue sans un mot",
-        "availableFor": "all",
+        "id": "s04_c_ines",
+        "verb": "observe",
+        "label": "Observer Maëlys corriger Noé, sans un mot de trop",
+        "availableFor": [
+          "ines"
+        ],
         "effects": [
           {
             "type": "state_delta",
-            "key": "lucasNeutralite",
+            "key": "inesIrritabilite",
             "delta": 5
           },
           {
             "type": "state_delta",
             "key": "socialTension",
+            "delta": 2
+          }
+        ],
+        "revealsClue": "C-07"
+      },
+      {
+        "id": "s04_c_lucas",
+        "verb": "observe",
+        "label": "Regarder Maëlys jeter un œil vers le passe avant de s'asseoir",
+        "availableFor": [
+          "lucas"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "lucasLucidite",
+            "delta": 8
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 2
+          },
+          {
+            "type": "flag_set",
+            "key": "lucas_a_note_placement",
+            "value": true
+          }
+        ],
+        "revealsClue": "C-08"
+      },
+      {
+        "id": "s04_c_sarah",
+        "verb": "stay_silent",
+        "label": "S'installer entre deux verres déjà bien entamés",
+        "availableFor": [
+          "sarah"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "sarahStabilite",
             "delta": -3
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": -2
+          }
+        ],
+        "revealsClue": "C-06"
+      },
+      {
+        "id": "s04_c_yanis",
+        "verb": "observe",
+        "label": "Trouver ça presque drôle, Noé qui se trompe de chaise",
+        "availableFor": [
+          "yanis"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "yanisInsouciance",
+            "delta": 8
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": -1
           }
         ]
       }
@@ -405,10 +691,179 @@
     },
     "choices": [
       {
-        "id": "s05_c01",
+        "id": "s05_c_maelys_pass",
+        "verb": "let_pass",
+        "label": "Laisser le jeu suivre son cours — ce n'est qu'un jeu",
+        "availableFor": [
+          "maelys"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "maelysControle",
+            "delta": 3
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": -2
+          },
+          {
+            "type": "flag_set",
+            "key": "lucas_temoin_morpion",
+            "value": true
+          }
+        ]
+      },
+      {
+        "id": "s05_c_maelys_act",
+        "verb": "intervene",
+        "label": "Couper court : proposer une autre règle avant que Sarah ne perde",
+        "availableFor": [
+          "maelys"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "maelysControle",
+            "delta": -8
+          },
+          {
+            "type": "state_delta",
+            "key": "maelysPanic",
+            "delta": 6
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 10
+          },
+          {
+            "type": "flag_set",
+            "key": "lucas_a_interrompu_morpion",
+            "value": true
+          },
+          {
+            "type": "narrative_note",
+            "note": "Déviation : Maëlys elle-même casse le jeu avant la fin. serviceHelper recalculé."
+          }
+        ]
+      },
+      {
+        "id": "s05_c_noe_pass",
+        "verb": "let_pass",
+        "label": "Regarder Sarah perdre sans intervenir, presque soulagé",
+        "availableFor": [
+          "noe"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "noeLachete",
+            "delta": 5
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": -2
+          },
+          {
+            "type": "flag_set",
+            "key": "lucas_temoin_morpion",
+            "value": true
+          }
+        ]
+      },
+      {
+        "id": "s05_c_noe_act",
+        "verb": "intervene",
+        "label": "Proposer de jouer à la place de Sarah",
+        "availableFor": [
+          "noe"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "noeInfluenceMaelys",
+            "delta": -8
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 10
+          },
+          {
+            "type": "flag_set",
+            "key": "lucas_a_interrompu_morpion",
+            "value": true
+          },
+          {
+            "type": "narrative_note",
+            "note": "Déviation majeure : serviceHelper devient noe, non sarah."
+          }
+        ]
+      },
+      {
+        "id": "s05_c_ines_pass",
+        "verb": "let_pass",
+        "label": "Trouver le jeu puéril, mais ne rien dire",
+        "availableFor": [
+          "ines"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "inesIrritabilite",
+            "delta": 3
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": -2
+          },
+          {
+            "type": "flag_set",
+            "key": "lucas_temoin_morpion",
+            "value": true
+          }
+        ]
+      },
+      {
+        "id": "s05_c_ines_act",
+        "verb": "intervene",
+        "label": "Refuser tout net que ce jeu décide de quoi que ce soit",
+        "availableFor": [
+          "ines"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "inesArrogance",
+            "delta": 8
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 10
+          },
+          {
+            "type": "flag_set",
+            "key": "lucas_a_interrompu_morpion",
+            "value": true
+          },
+          {
+            "type": "narrative_note",
+            "note": "Déviation majeure : Inès impose l'arrêt du jeu. serviceHelper recalculé."
+          }
+        ]
+      },
+      {
+        "id": "s05_c_lucas_pass",
         "verb": "let_pass",
         "label": "Ne rien dire — laisser Sarah perdre",
-        "availableFor": "all",
+        "availableFor": [
+          "lucas"
+        ],
         "effects": [
           {
             "type": "state_delta",
@@ -421,22 +876,24 @@
             "delta": 8
           },
           {
-            "type": "flag_set",
-            "key": "lucas_temoin_morpion",
-            "value": true
-          },
-          {
             "type": "state_delta",
             "key": "socialTension",
             "delta": -2
+          },
+          {
+            "type": "flag_set",
+            "key": "lucas_temoin_morpion",
+            "value": true
           }
         ]
       },
       {
-        "id": "s05_c02",
+        "id": "s05_c_lucas_act",
         "verb": "intervene",
         "label": "Proposer de prendre la place de Sarah",
-        "availableFor": "all",
+        "availableFor": [
+          "lucas"
+        ],
         "effects": [
           {
             "type": "state_delta",
@@ -454,18 +911,131 @@
             "delta": 10
           },
           {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 10
+          },
+          {
             "type": "flag_set",
             "key": "lucas_a_interrompu_morpion",
             "value": true
           },
           {
             "type": "narrative_note",
-            "note": "Déviation majeure : serviceHelper devient lucas, non sarah. targetActual probabilité recalculée."
+            "note": "Déviation majeure : serviceHelper devient lucas, non sarah."
+          }
+        ]
+      },
+      {
+        "id": "s05_c_sarah_pass",
+        "verb": "let_pass",
+        "label": "Accepter d'aider au service, sans faire d'histoire",
+        "availableFor": [
+          "sarah"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "sarahDependanceMaelys",
+            "delta": 5
+          },
+          {
+            "type": "state_delta",
+            "key": "sarahStabilite",
+            "delta": -3
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": -2
+          },
+          {
+            "type": "flag_set",
+            "key": "lucas_temoin_morpion",
+            "value": true
+          }
+        ]
+      },
+      {
+        "id": "s05_c_sarah_act",
+        "verb": "intervene",
+        "label": "Demander, pour une fois, que quelqu'un d'autre serve",
+        "availableFor": [
+          "sarah"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "sarahStabilite",
+            "delta": 8
           },
           {
             "type": "state_delta",
             "key": "socialTension",
             "delta": 10
+          },
+          {
+            "type": "flag_set",
+            "key": "lucas_a_interrompu_morpion",
+            "value": true
+          },
+          {
+            "type": "narrative_note",
+            "note": "Déviation majeure : Sarah refuse de servir. serviceHelper recalculé."
+          }
+        ]
+      },
+      {
+        "id": "s05_c_yanis_pass",
+        "verb": "let_pass",
+        "label": "Profiter du jeu qu'il a lui-même lancé, sans y penser plus loin",
+        "availableFor": [
+          "yanis"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "yanisInsouciance",
+            "delta": 8
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": -2
+          },
+          {
+            "type": "flag_set",
+            "key": "lucas_temoin_morpion",
+            "value": true
+          }
+        ]
+      },
+      {
+        "id": "s05_c_yanis_act",
+        "verb": "intervene",
+        "label": "Servir lui-même, à la place de Sarah",
+        "availableFor": [
+          "yanis"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "yanisJeuSocial",
+            "delta": 5
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 10
+          },
+          {
+            "type": "flag_set",
+            "key": "lucas_a_interrompu_morpion",
+            "value": true
+          },
+          {
+            "type": "narrative_note",
+            "note": "Déviation majeure : serviceHelper devient yanis, non sarah."
           }
         ]
       }
@@ -494,18 +1064,161 @@
     },
     "choices": [
       {
-        "id": "s06_c01",
+        "id": "s06_c_maelys_act",
+        "verb": "observe",
+        "label": "Vérifier une dernière fois que rien ne dépasse, dos à la salle",
+        "availableFor": [
+          "maelys"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "maelysControle",
+            "delta": 5
+          },
+          {
+            "type": "state_delta",
+            "key": "maelysPanic",
+            "delta": 5
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 2
+          }
+        ],
+        "revealsClue": "C-04"
+      },
+      {
+        "id": "s06_c_maelys_pass",
+        "verb": "leave_room",
+        "label": "Se dépêcher de ranger et rejoindre les autres",
+        "availableFor": [
+          "maelys"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "maelysControle",
+            "delta": 3
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": -5
+          }
+        ]
+      },
+      {
+        "id": "s06_c_noe_act",
+        "verb": "observe",
+        "label": "S'arrêter net devant le reflet dans la vitre du cellier",
+        "availableFor": [
+          "noe"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "noeMensonge",
+            "delta": -5
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 2
+          },
+          {
+            "type": "flag_set",
+            "key": "lucas_a_vu_reflet",
+            "value": true
+          }
+        ],
+        "revealsClue": "C-11"
+      },
+      {
+        "id": "s06_c_noe_pass",
+        "verb": "leave_room",
+        "label": "Passer vite, sans un regard vers la cuisine — et vérifier que le fil est bien supprimé",
+        "availableFor": [
+          "noe"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "noeLachete",
+            "delta": 8
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": -5
+          }
+        ],
+        "revealsClue": "C-23"
+      },
+      {
+        "id": "s06_c_ines_act",
+        "verb": "observe",
+        "label": "S'arrêter net devant le reflet dans la vitre du cellier",
+        "availableFor": [
+          "ines"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "inesTensionSociale",
+            "delta": 5
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 2
+          },
+          {
+            "type": "flag_set",
+            "key": "lucas_a_vu_reflet",
+            "value": true
+          }
+        ],
+        "revealsClue": "C-11"
+      },
+      {
+        "id": "s06_c_ines_pass",
+        "verb": "leave_room",
+        "label": "Sortir sans regarder, occupée à autre chose",
+        "availableFor": [
+          "ines"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "inesIrritabilite",
+            "delta": 3
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": -5
+          }
+        ]
+      },
+      {
+        "id": "s06_c_lucas_act",
         "verb": "observe",
         "label": "Fixer le reflet — essayer de comprendre",
         "availableFor": [
           "lucas"
         ],
-        "revealsClue": "C-11",
         "effects": [
           {
             "type": "state_delta",
             "key": "lucasLucidite",
             "delta": 18
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 2
           },
           {
             "type": "flag_set",
@@ -514,20 +1227,21 @@
           },
           {
             "type": "narrative_note",
-            "note": "C-11 actif : geste dirigé vers une assiette unique. La lucidité de Lucas monte mais son courage ne suit pas encore."
-          },
-          {
-            "type": "state_delta",
-            "key": "socialTension",
-            "delta": 2
+            "note": "C-11 actif : geste dirigé vers une assiette unique. La lucidité monte, le courage ne suit pas encore."
           }
+        ],
+        "revealsClue": [
+          "C-11",
+          "C-10"
         ]
       },
       {
-        "id": "s06_c02",
+        "id": "s06_c_lucas_pass",
         "verb": "leave_room",
         "label": "Sortir sans regarder",
-        "availableFor": "all",
+        "availableFor": [
+          "lucas"
+        ],
         "effects": [
           {
             "type": "state_delta",
@@ -544,8 +1258,99 @@
             "key": "socialTension",
             "delta": -5
           }
+        ]
+      },
+      {
+        "id": "s06_c_sarah_act",
+        "verb": "observe",
+        "label": "S'arrêter net devant le reflet dans la vitre du cellier",
+        "availableFor": [
+          "sarah"
         ],
-        "revealsClue": "C-23"
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "sarahMemoire",
+            "delta": 8
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 2
+          },
+          {
+            "type": "flag_set",
+            "key": "lucas_a_vu_reflet",
+            "value": true
+          }
+        ],
+        "revealsClue": "C-11"
+      },
+      {
+        "id": "s06_c_sarah_pass",
+        "verb": "leave_room",
+        "label": "Sortir sans regarder, la tête ailleurs",
+        "availableFor": [
+          "sarah"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "sarahStabilite",
+            "delta": -3
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": -5
+          }
+        ]
+      },
+      {
+        "id": "s06_c_yanis_act",
+        "verb": "observe",
+        "label": "S'arrêter net devant le reflet dans la vitre du cellier",
+        "availableFor": [
+          "yanis"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "yanisInsouciance",
+            "delta": -8
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 2
+          },
+          {
+            "type": "flag_set",
+            "key": "lucas_a_vu_reflet",
+            "value": true
+          }
+        ],
+        "revealsClue": "C-11"
+      },
+      {
+        "id": "s06_c_yanis_pass",
+        "verb": "leave_room",
+        "label": "Sortir sans regarder, prendre une photo du couloir plutôt",
+        "availableFor": [
+          "yanis"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "yanisJeuSocial",
+            "delta": 3
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": -5
+          }
+        ]
       }
     ],
     "autoRevealClues": [],
@@ -573,10 +1378,196 @@
     },
     "choices": [
       {
-        "id": "s07_c01",
+        "id": "s07_c_maelys_pass",
+        "verb": "stay_silent",
+        "label": "Amplifier, d'un mot, sans jamais paraître intervenir",
+        "availableFor": [
+          "maelys"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "maelysControle",
+            "delta": 5
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": -3
+          },
+          {
+            "type": "seating_update",
+            "key": "seating_at_critical",
+            "value": "swapB"
+          },
+          {
+            "type": "flag_set",
+            "key": "lucas_a_note_echange_places",
+            "value": true
+          }
+        ],
+        "revealsClue": "C-13"
+      },
+      {
+        "id": "s07_c_maelys_act",
+        "verb": "intervene",
+        "label": "Couper court à l'humiliation, contre ses propres intérêts",
+        "availableFor": [
+          "maelys"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "maelysControle",
+            "delta": -8
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 10
+          },
+          {
+            "type": "seating_update",
+            "key": "seating_at_critical",
+            "value": "base"
+          },
+          {
+            "type": "narrative_note",
+            "note": "Déviation : l'échange de places n'a pas lieu. targetActual probabilité fortement réduite."
+          }
+        ]
+      },
+      {
+        "id": "s07_c_noe_pass",
+        "verb": "stay_silent",
+        "label": "Ne rien dire — regarder ailleurs",
+        "availableFor": [
+          "noe"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "noeLachete",
+            "delta": 8
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": -3
+          },
+          {
+            "type": "seating_update",
+            "key": "seating_at_critical",
+            "value": "swapB"
+          },
+          {
+            "type": "flag_set",
+            "key": "lucas_a_note_echange_places",
+            "value": true
+          }
+        ],
+        "revealsClue": "C-13"
+      },
+      {
+        "id": "s07_c_noe_act",
+        "verb": "intervene",
+        "label": "Couper court à l'humiliation, pour une fois",
+        "availableFor": [
+          "noe"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "noeCruaute",
+            "delta": -5
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 10
+          },
+          {
+            "type": "seating_update",
+            "key": "seating_at_critical",
+            "value": "base"
+          },
+          {
+            "type": "narrative_note",
+            "note": "Déviation : Noé s'interpose. L'échange de places n'a pas lieu."
+          }
+        ]
+      },
+      {
+        "id": "s07_c_ines_pass",
+        "verb": "stay_silent",
+        "label": "Dire ce qu'elle pense de Sarah, sur un ton neutre, mots choisis",
+        "availableFor": [
+          "ines"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "inesArrogance",
+            "delta": 8
+          },
+          {
+            "type": "state_delta",
+            "key": "inesTensionSociale",
+            "delta": 10
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 3
+          },
+          {
+            "type": "seating_update",
+            "key": "seating_at_critical",
+            "value": "swapB"
+          },
+          {
+            "type": "flag_set",
+            "key": "lucas_a_note_echange_places",
+            "value": true
+          }
+        ]
+      },
+      {
+        "id": "s07_c_ines_act",
+        "verb": "intervene",
+        "label": "Se reprendre, trop tard, en voyant l'effet produit",
+        "availableFor": [
+          "ines"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "inesTensionSociale",
+            "delta": 15
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 10
+          },
+          {
+            "type": "seating_update",
+            "key": "seating_at_critical",
+            "value": "base"
+          },
+          {
+            "type": "narrative_note",
+            "note": "Déviation : Inès retire ce qu'elle vient de dire. L'échange de places n'a pas lieu."
+          }
+        ]
+      },
+      {
+        "id": "s07_c_lucas_pass",
         "verb": "stay_silent",
         "label": "Ne pas intervenir — observer",
-        "availableFor": "all",
+        "availableFor": [
+          "lucas"
+        ],
         "effects": [
           {
             "type": "state_delta",
@@ -589,6 +1580,11 @@
             "delta": 8
           },
           {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": -3
+          },
+          {
             "type": "seating_update",
             "key": "seating_at_critical",
             "value": "swapB"
@@ -597,20 +1593,17 @@
             "type": "flag_set",
             "key": "lucas_a_note_echange_places",
             "value": true
-          },
-          {
-            "type": "state_delta",
-            "key": "socialTension",
-            "delta": -3
           }
         ],
         "revealsClue": "C-19"
       },
       {
-        "id": "s07_c02",
+        "id": "s07_c_lucas_act",
         "verb": "intervene",
         "label": "Couper court à l'humiliation",
-        "availableFor": "all",
+        "availableFor": [
+          "lucas"
+        ],
         "effects": [
           {
             "type": "state_delta",
@@ -628,23 +1621,148 @@
             "delta": -8
           },
           {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 10
+          },
+          {
             "type": "seating_update",
             "key": "seating_at_critical",
             "value": "base"
           },
           {
             "type": "narrative_note",
-            "note": "Déviation : l'échange de places n'a pas lieu. seating_at_critical = base. targetActual probabilité fortement réduite."
+            "note": "Déviation : l'échange de places n'a pas lieu. targetActual probabilité fortement réduite."
+          }
+        ]
+      },
+      {
+        "id": "s07_c_sarah_pass",
+        "verb": "stay_silent",
+        "label": "Encaisser sans un mot, comme d'habitude",
+        "availableFor": [
+          "sarah"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "sarahStabilite",
+            "delta": -8
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": -3
+          },
+          {
+            "type": "seating_update",
+            "key": "seating_at_critical",
+            "value": "swapB"
+          },
+          {
+            "type": "flag_set",
+            "key": "lucas_a_note_echange_places",
+            "value": true
+          }
+        ]
+      },
+      {
+        "id": "s07_c_sarah_act",
+        "verb": "intervene",
+        "label": "Répondre, pour une fois, au lieu d'encaisser",
+        "availableFor": [
+          "sarah"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "sarahStabilite",
+            "delta": 5
           },
           {
             "type": "state_delta",
             "key": "socialTension",
             "delta": 10
+          },
+          {
+            "type": "seating_update",
+            "key": "seating_at_critical",
+            "value": "base"
+          },
+          {
+            "type": "narrative_note",
+            "note": "Déviation : Sarah répond. L'échange de places n'a pas lieu."
+          }
+        ]
+      },
+      {
+        "id": "s07_c_yanis_pass",
+        "verb": "stay_silent",
+        "label": "Rire un peu trop fort pour détendre, sans vraiment couper court",
+        "availableFor": [
+          "yanis"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "yanisJeuSocial",
+            "delta": 5
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": -1
+          },
+          {
+            "type": "seating_update",
+            "key": "seating_at_critical",
+            "value": "swapB"
+          },
+          {
+            "type": "flag_set",
+            "key": "lucas_a_note_echange_places",
+            "value": true
+          }
+        ]
+      },
+      {
+        "id": "s07_c_yanis_act",
+        "verb": "intervene",
+        "label": "Proposer que tout le monde change de place, pour casser la tension",
+        "availableFor": [
+          "yanis"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "yanisJeuSocial",
+            "delta": 8
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 10
+          },
+          {
+            "type": "flag_set",
+            "key": "seatingVariant",
+            "value": "chaos"
+          },
+          {
+            "type": "narrative_note",
+            "note": "Déviation : Yanis fait changer tout le monde de place. La logique du service devient impossible à tracer."
+          },
+          {
+            "type": "seating_update",
+            "key": "seating_at_critical",
+            "value": "base"
           }
         ]
       }
     ],
-    "autoRevealClues": [],
+    "autoRevealClues": [
+      "C-12"
+    ],
     "canonicalFacts": [
       "Inès et Sarah échangent de place à 21h44 — canon T0, swapB",
       "Sarah se retrouve seat 4, face au passe — position critique pour le service",
@@ -670,15 +1788,195 @@
     },
     "choices": [
       {
-        "id": "s08_c01",
+        "id": "s08_c_maelys_pass",
+        "verb": "let_pass",
+        "label": "Laisser le service se dérouler, comme prévu",
+        "availableFor": [
+          "maelys"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "maelysControle",
+            "delta": 5
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": -2
+          },
+          {
+            "type": "flag_set",
+            "key": "lucas_temoin_service_silencieux",
+            "value": true
+          },
+          {
+            "type": "narrative_note",
+            "note": "Run T0 : le service suit son cours."
+          }
+        ]
+      },
+      {
+        "id": "s08_c_maelys_act",
+        "verb": "intervene",
+        "label": "Retirer elle-même l'assiette au dernier moment, prise d'un doute",
+        "availableFor": [
+          "maelys"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "maelysPanic",
+            "delta": 30
+          },
+          {
+            "type": "state_delta",
+            "key": "maelysControle",
+            "delta": -15
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 10
+          },
+          {
+            "type": "flag_set",
+            "key": "lucas_a_interrompu_service",
+            "value": true
+          },
+          {
+            "type": "narrative_note",
+            "note": "Déviation critique : Maëlys interrompt son propre dispositif. Fin F5 possible."
+          }
+        ]
+      },
+      {
+        "id": "s08_c_noe_pass",
+        "verb": "let_pass",
+        "label": "Ne rien remarquer de particulier, complimenter la sauce",
+        "availableFor": [
+          "noe"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "noeMensonge",
+            "delta": 5
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": -2
+          },
+          {
+            "type": "flag_set",
+            "key": "lucas_temoin_service_silencieux",
+            "value": true
+          }
+        ]
+      },
+      {
+        "id": "s08_c_noe_act",
+        "verb": "intervene",
+        "label": "Retenir Sarah une seconde, sans savoir pourquoi",
+        "availableFor": [
+          "noe"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "noeInfluenceMaelys",
+            "delta": -10
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 10
+          },
+          {
+            "type": "flag_set",
+            "key": "lucas_a_interrompu_service",
+            "value": true
+          },
+          {
+            "type": "narrative_note",
+            "note": "Déviation critique : targetActual peut changer. Fin F5 possible."
+          }
+        ],
+        "requiresFlag": "lucas_a_vu_reflet"
+      },
+      {
+        "id": "s08_c_ines_pass",
+        "verb": "let_pass",
+        "label": "Manger peu, encore sur les nerfs, ne rien remarquer",
+        "availableFor": [
+          "ines"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "inesTensionSociale",
+            "delta": 5
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": -2
+          },
+          {
+            "type": "flag_set",
+            "key": "lucas_temoin_service_silencieux",
+            "value": true
+          }
+        ]
+      },
+      {
+        "id": "s08_c_ines_act",
+        "verb": "intervene",
+        "label": "Arrêter Sarah d'un geste sec, sans s'expliquer",
+        "availableFor": [
+          "ines"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "inesArrogance",
+            "delta": 5
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 10
+          },
+          {
+            "type": "flag_set",
+            "key": "lucas_a_interrompu_service",
+            "value": true
+          },
+          {
+            "type": "narrative_note",
+            "note": "Déviation critique : targetActual peut changer. Fin F5 possible."
+          }
+        ],
+        "requiresFlag": "lucas_a_vu_reflet"
+      },
+      {
+        "id": "s08_c_lucas_pass",
         "verb": "let_pass",
         "label": "Laisser le service se dérouler",
-        "availableFor": "all",
+        "availableFor": [
+          "lucas"
+        ],
         "effects": [
           {
             "type": "state_delta",
             "key": "lucasCourage",
             "delta": -15
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": -2
           },
           {
             "type": "flag_set",
@@ -688,20 +1986,16 @@
           {
             "type": "narrative_note",
             "note": "Run T0 : targetActual = sarah (via resolveTargetActual avec swapB + serviceHelper sarah)"
-          },
-          {
-            "type": "state_delta",
-            "key": "socialTension",
-            "delta": -2
           }
         ]
       },
       {
-        "id": "s08_c02",
+        "id": "s08_c_lucas_act",
         "verb": "intervene",
         "label": "Interrompre — prendre l'assiette de Sarah",
-        "availableFor": "all",
-        "requiresFlag": "lucas_a_vu_reflet",
+        "availableFor": [
+          "lucas"
+        ],
         "effects": [
           {
             "type": "state_delta",
@@ -714,20 +2008,132 @@
             "delta": 30
           },
           {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 10
+          },
+          {
             "type": "flag_set",
             "key": "lucas_a_interrompu_service",
             "value": true
           },
           {
             "type": "narrative_note",
-            "note": "Déviation critique : targetActual peut changer. Fin D1 ou D2 possible."
+            "note": "Déviation critique : targetActual peut changer. Fin F5 possible."
+          }
+        ],
+        "requiresFlag": "lucas_a_vu_reflet"
+      },
+      {
+        "id": "s08_c_sarah_pass",
+        "verb": "let_pass",
+        "label": "Servir sans réfléchir, dans l'ordre du passe — un geste qu'elle fait depuis toujours",
+        "availableFor": [
+          "sarah"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "sarahDependanceMaelys",
+            "delta": 5
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": -2
+          },
+          {
+            "type": "flag_set",
+            "key": "lucas_temoin_service_silencieux",
+            "value": true
+          }
+        ]
+      },
+      {
+        "id": "s08_c_sarah_act",
+        "verb": "intervene",
+        "label": "Hésiter une seconde sur l'ordre, et le rompre",
+        "availableFor": [
+          "sarah"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "sarahMemoire",
+            "delta": 8
           },
           {
             "type": "state_delta",
             "key": "socialTension",
             "delta": 10
+          },
+          {
+            "type": "flag_set",
+            "key": "lucas_a_interrompu_service",
+            "value": true
+          },
+          {
+            "type": "narrative_note",
+            "note": "Déviation critique : Sarah rompt elle-même l'ordre du service. Fin F5 possible."
           }
-        ]
+        ],
+        "requiresFlag": "lucas_a_vu_reflet"
+      },
+      {
+        "id": "s08_c_yanis_pass",
+        "verb": "let_pass",
+        "label": "Papoter pendant que les assiettes circulent, sans regarder qui reçoit quoi",
+        "availableFor": [
+          "yanis"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "yanisAlcoolCollectif",
+            "delta": 5
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": -2
+          },
+          {
+            "type": "flag_set",
+            "key": "lucas_temoin_service_silencieux",
+            "value": true
+          }
+        ],
+        "revealsClue": "C-19"
+      },
+      {
+        "id": "s08_c_yanis_act",
+        "verb": "intervene",
+        "label": "S'interposer, prétextant vouloir aider à servir",
+        "availableFor": [
+          "yanis"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "yanisJeuSocial",
+            "delta": 8
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 10
+          },
+          {
+            "type": "flag_set",
+            "key": "lucas_a_interrompu_service",
+            "value": true
+          },
+          {
+            "type": "narrative_note",
+            "note": "Déviation critique : Yanis s'interpose. Fin F5 possible."
+          }
+        ],
+        "requiresFlag": "lucas_a_vu_reflet"
       }
     ],
     "autoRevealClues": [],
@@ -756,10 +2162,165 @@
     },
     "choices": [
       {
-        "id": "s09_c01",
+        "id": "s09_c_maelys_help",
+        "verb": "help_service",
+        "label": "Réagir immédiatement, trop vite, trop précisément",
+        "availableFor": [
+          "maelys"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "maelysPanic",
+            "delta": 15
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": -4
+          },
+          {
+            "type": "seating_update",
+            "key": "seating_after_incident",
+            "value": "swapB"
+          }
+        ],
+        "revealsClue": "C-21"
+      },
+      {
+        "id": "s09_c_maelys_obs",
+        "verb": "observe",
+        "label": "Rester en retrait une seconde de trop avant de réagir",
+        "availableFor": [
+          "maelys"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "maelysControle",
+            "delta": -5
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 2
+          },
+          {
+            "type": "seating_update",
+            "key": "seating_after_incident",
+            "value": "swapB"
+          }
+        ]
+      },
+      {
+        "id": "s09_c_noe_help",
+        "verb": "help_service",
+        "label": "Se précipiter, un verre encore à la main",
+        "availableFor": [
+          "noe"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "noeLachete",
+            "delta": -5
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": -4
+          },
+          {
+            "type": "seating_update",
+            "key": "seating_after_incident",
+            "value": "swapB"
+          }
+        ]
+      },
+      {
+        "id": "s09_c_noe_obs",
+        "verb": "observe",
+        "label": "Rester en retrait — regarder Maëlys réagir",
+        "availableFor": [
+          "noe"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "noeMensonge",
+            "delta": 5
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 2
+          },
+          {
+            "type": "seating_update",
+            "key": "seating_after_incident",
+            "value": "swapB"
+          }
+        ],
+        "revealsClue": "C-21"
+      },
+      {
+        "id": "s09_c_ines_help",
+        "verb": "help_service",
+        "label": "Se rendre utile, pour la première fois de la soirée",
+        "availableFor": [
+          "ines"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "inesTensionSociale",
+            "delta": -5
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": -4
+          },
+          {
+            "type": "seating_update",
+            "key": "seating_after_incident",
+            "value": "swapB"
+          }
+        ]
+      },
+      {
+        "id": "s09_c_ines_obs",
+        "verb": "observe",
+        "label": "Rester en retrait — regarder Maëlys réagir",
+        "availableFor": [
+          "ines"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "inesIrritabilite",
+            "delta": 5
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 2
+          },
+          {
+            "type": "seating_update",
+            "key": "seating_after_incident",
+            "value": "swapB"
+          }
+        ],
+        "revealsClue": "C-21"
+      },
+      {
+        "id": "s09_c_lucas_help",
         "verb": "help_service",
         "label": "Aider Sarah immédiatement",
-        "availableFor": "all",
+        "availableFor": [
+          "lucas"
+        ],
         "effects": [
           {
             "type": "state_delta",
@@ -772,22 +2333,24 @@
             "delta": 15
           },
           {
-            "type": "seating_update",
-            "key": "seating_after_incident",
-            "value": "swapB"
-          },
-          {
             "type": "state_delta",
             "key": "socialTension",
             "delta": -4
+          },
+          {
+            "type": "seating_update",
+            "key": "seating_after_incident",
+            "value": "swapB"
           }
         ]
       },
       {
-        "id": "s09_c02",
+        "id": "s09_c_lucas_obs",
         "verb": "observe",
         "label": "Rester en retrait — regarder Maëlys",
-        "availableFor": "all",
+        "availableFor": [
+          "lucas"
+        ],
         "effects": [
           {
             "type": "state_delta",
@@ -800,14 +2363,115 @@
             "delta": -5
           },
           {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 2
+          },
+          {
             "type": "seating_update",
             "key": "seating_after_incident",
             "value": "swapB"
+          }
+        ],
+        "revealsClue": "C-16"
+      },
+      {
+        "id": "s09_c_sarah_help",
+        "verb": "help_service",
+        "label": "Essayer de tenir debout, seule, un instant de trop",
+        "availableFor": [
+          "sarah"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "sarahStabilite",
+            "delta": -15
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": -2
+          },
+          {
+            "type": "seating_update",
+            "key": "seating_after_incident",
+            "value": "swapB"
+          }
+        ]
+      },
+      {
+        "id": "s09_c_sarah_obs",
+        "verb": "observe",
+        "label": "Chercher Maëlys des yeux, sans trouver la force de parler",
+        "availableFor": [
+          "sarah"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "sarahDependanceMaelys",
+            "delta": 8
           },
           {
             "type": "state_delta",
             "key": "socialTension",
             "delta": 2
+          },
+          {
+            "type": "seating_update",
+            "key": "seating_after_incident",
+            "value": "swapB"
+          }
+        ]
+      },
+      {
+        "id": "s09_c_yanis_help",
+        "verb": "help_service",
+        "label": "Improviser des explications à voix haute, n'importe lesquelles",
+        "availableFor": [
+          "yanis"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "yanisInsouciance",
+            "delta": 8
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": -4
+          },
+          {
+            "type": "seating_update",
+            "key": "seating_after_incident",
+            "value": "swapB"
+          }
+        ]
+      },
+      {
+        "id": "s09_c_yanis_obs",
+        "verb": "observe",
+        "label": "Rester en retrait — regarder Maëlys sait exactement quoi faire",
+        "availableFor": [
+          "yanis"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "yanisJeuSocial",
+            "delta": -5
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 2
+          },
+          {
+            "type": "seating_update",
+            "key": "seating_after_incident",
+            "value": "swapB"
           }
         ],
         "revealsClue": "C-16"
@@ -841,19 +2505,22 @@
     },
     "choices": [
       {
-        "id": "s10_c01",
+        "id": "s10_c_maelys_pass",
         "verb": "stay_silent",
-        "label": "Laisser Noé construire le récit",
-        "availableFor": "all",
-        "revealsClue": [
-          "C-25",
-          "C-02"
+        "label": "Laisser Noé construire le récit, sans dire un mot",
+        "availableFor": [
+          "maelys"
         ],
         "effects": [
           {
             "type": "state_delta",
-            "key": "lucasCourage",
-            "delta": -12
+            "key": "maelysControle",
+            "delta": 8
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": -3
           },
           {
             "type": "flag_set",
@@ -864,25 +2531,30 @@
             "type": "flag_set",
             "key": "survivingNarrative",
             "value": "false_sarah_self_harm"
+          }
+        ],
+        "revealsClue": [
+          "C-25",
+          "C-02"
+        ]
+      },
+      {
+        "id": "s10_c_maelys_act",
+        "verb": "speak",
+        "label": "Dire quelque chose — pas tout, mais quelque chose",
+        "availableFor": [
+          "maelys"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "maelysPanic",
+            "delta": 15
           },
           {
             "type": "state_delta",
             "key": "socialTension",
-            "delta": -3
-          }
-        ]
-      },
-      {
-        "id": "s10_c02",
-        "verb": "speak",
-        "label": "Interrompre — dire ce qu'on a vu",
-        "availableFor": "all",
-        "requiresFlag": "lucas_a_vu_reflet",
-        "effects": [
-          {
-            "type": "state_delta",
-            "key": "lucasCourage",
-            "delta": 30
+            "delta": 4
           },
           {
             "type": "flag_set",
@@ -893,11 +2565,312 @@
             "type": "flag_set",
             "key": "survivingNarrative",
             "value": "truth_partial"
+          }
+        ]
+      },
+      {
+        "id": "s10_c_noe_pass",
+        "verb": "stay_silent",
+        "label": "Construire le récit, phrase après phrase, sans mentir une seule fois",
+        "availableFor": [
+          "noe"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "noeMensonge",
+            "delta": 10
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": -3
+          },
+          {
+            "type": "flag_set",
+            "key": "lucas_silence_moral",
+            "value": true
+          },
+          {
+            "type": "flag_set",
+            "key": "survivingNarrative",
+            "value": "false_sarah_self_harm"
+          }
+        ],
+        "revealsClue": "C-17"
+      },
+      {
+        "id": "s10_c_noe_act",
+        "verb": "speak",
+        "label": "Laisser échapper un doute, avant de se reprendre",
+        "availableFor": [
+          "noe"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "noeLachete",
+            "delta": -10
           },
           {
             "type": "state_delta",
             "key": "socialTension",
             "delta": 4
+          },
+          {
+            "type": "flag_set",
+            "key": "lucas_a_parle",
+            "value": true
+          },
+          {
+            "type": "flag_set",
+            "key": "survivingNarrative",
+            "value": "truth_partial"
+          }
+        ]
+      },
+      {
+        "id": "s10_c_ines_pass",
+        "verb": "stay_silent",
+        "label": "S'accrocher à la version qui tient, parce que l'alternative est trop lourde",
+        "availableFor": [
+          "ines"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "inesTensionSociale",
+            "delta": -5
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": -3
+          },
+          {
+            "type": "flag_set",
+            "key": "lucas_silence_moral",
+            "value": true
+          },
+          {
+            "type": "flag_set",
+            "key": "survivingNarrative",
+            "value": "false_sarah_self_harm"
+          }
+        ],
+        "revealsClue": "C-17"
+      },
+      {
+        "id": "s10_c_ines_act",
+        "verb": "speak",
+        "label": "Poser, malgré elle, la question qui dérange",
+        "availableFor": [
+          "ines"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "inesArrogance",
+            "delta": -5
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 4
+          },
+          {
+            "type": "flag_set",
+            "key": "lucas_a_parle",
+            "value": true
+          },
+          {
+            "type": "flag_set",
+            "key": "survivingNarrative",
+            "value": "truth_partial"
+          }
+        ]
+      },
+      {
+        "id": "s10_c_lucas_pass",
+        "verb": "stay_silent",
+        "label": "Laisser Noé construire le récit",
+        "availableFor": [
+          "lucas"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "lucasCourage",
+            "delta": -12
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": -3
+          },
+          {
+            "type": "flag_set",
+            "key": "lucas_silence_moral",
+            "value": true
+          },
+          {
+            "type": "flag_set",
+            "key": "survivingNarrative",
+            "value": "false_sarah_self_harm"
+          }
+        ],
+        "revealsClue": [
+          "C-25",
+          "C-02"
+        ]
+      },
+      {
+        "id": "s10_c_lucas_act",
+        "verb": "speak",
+        "label": "Interrompre — dire ce qu'on a vu",
+        "availableFor": [
+          "lucas"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "lucasCourage",
+            "delta": 30
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 4
+          },
+          {
+            "type": "flag_set",
+            "key": "lucas_a_parle",
+            "value": true
+          },
+          {
+            "type": "flag_set",
+            "key": "survivingNarrative",
+            "value": "truth_partial"
+          }
+        ]
+      },
+      {
+        "id": "s10_c_sarah_pass",
+        "verb": "stay_silent",
+        "label": "Ne plus être vraiment dans la pièce — personne ne demande ce qu'elle dirait",
+        "availableFor": [
+          "sarah"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "sarahStabilite",
+            "delta": -10
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": -3
+          },
+          {
+            "type": "flag_set",
+            "key": "lucas_silence_moral",
+            "value": true
+          },
+          {
+            "type": "flag_set",
+            "key": "survivingNarrative",
+            "value": "false_sarah_self_harm"
+          }
+        ]
+      },
+      {
+        "id": "s10_c_sarah_act",
+        "verb": "speak",
+        "label": "Essayer de dire un détail sensoriel, un ordre — que personne n'entend vraiment",
+        "availableFor": [
+          "sarah"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "sarahMemoire",
+            "delta": 10
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 4
+          },
+          {
+            "type": "flag_set",
+            "key": "lucas_a_parle",
+            "value": true
+          },
+          {
+            "type": "flag_set",
+            "key": "survivingNarrative",
+            "value": "truth_partial"
+          }
+        ]
+      },
+      {
+        "id": "s10_c_yanis_pass",
+        "verb": "stay_silent",
+        "label": "Se taire, pour une fois — ne pas savoir quoi ajouter",
+        "availableFor": [
+          "yanis"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "yanisInsouciance",
+            "delta": 8
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": -3
+          },
+          {
+            "type": "flag_set",
+            "key": "lucas_silence_moral",
+            "value": true
+          },
+          {
+            "type": "flag_set",
+            "key": "survivingNarrative",
+            "value": "false_sarah_self_harm"
+          }
+        ]
+      },
+      {
+        "id": "s10_c_yanis_act",
+        "verb": "speak",
+        "label": "Essayer de raconter ce qu'il a entendu en arrivant, mal, mais essayer",
+        "availableFor": [
+          "yanis"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "yanisJeuSocial",
+            "delta": -5
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 4
+          },
+          {
+            "type": "flag_set",
+            "key": "lucas_a_parle",
+            "value": true
+          },
+          {
+            "type": "flag_set",
+            "key": "survivingNarrative",
+            "value": "truth_partial"
           }
         ]
       },
@@ -954,11 +2927,18 @@
     },
     "choices": [
       {
-        "id": "s11_c01",
+        "id": "s11_c_maelys_leave",
         "verb": "leave_room",
-        "label": "Partir sans rien dire",
-        "availableFor": "all",
+        "label": "Monter à l'étage, seule, sans un mot pour personne",
+        "availableFor": [
+          "maelys"
+        ],
         "effects": [
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": -5
+          },
           {
             "type": "flag_set",
             "key": "run_complete",
@@ -968,21 +2948,182 @@
             "type": "flag_set",
             "key": "lucas_silence_final",
             "value": true
+          }
+        ]
+      },
+      {
+        "id": "s11_c_maelys_confront",
+        "verb": "confront",
+        "label": "Rester, et laisser quelqu'un poser enfin la question",
+        "availableFor": [
+          "maelys"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "maelysPanic",
+            "delta": 25
           },
           {
             "type": "state_delta",
             "key": "socialTension",
-            "delta": -5
+            "delta": 12
+          },
+          {
+            "type": "flag_set",
+            "key": "lucas_confrontation_finale",
+            "value": true
+          },
+          {
+            "type": "flag_set",
+            "key": "run_complete",
+            "value": true
           }
         ],
-        "nextScene": null
+        "revealsClue": "C-22"
       },
       {
-        "id": "s11_c02",
+        "id": "s11_c_noe_leave",
+        "verb": "leave_room",
+        "label": "Partir sans rien dire, la version tient",
+        "availableFor": [
+          "noe"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": -5
+          },
+          {
+            "type": "flag_set",
+            "key": "run_complete",
+            "value": true
+          },
+          {
+            "type": "flag_set",
+            "key": "lucas_silence_final",
+            "value": true
+          }
+        ]
+      },
+      {
+        "id": "s11_c_noe_confront",
         "verb": "confront",
         "label": "Revenir vers Maëlys avant de partir",
-        "availableFor": "all",
-        "requiresFlag": "lucas_a_vu_reflet",
+        "availableFor": [
+          "noe"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "noeInfluenceMaelys",
+            "delta": -15
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 12
+          },
+          {
+            "type": "flag_set",
+            "key": "lucas_confrontation_finale",
+            "value": true
+          },
+          {
+            "type": "flag_set",
+            "key": "run_complete",
+            "value": true
+          }
+        ]
+      },
+      {
+        "id": "s11_c_ines_leave",
+        "verb": "leave_room",
+        "label": "Partir avec la version qu'on lui a donnée à croire",
+        "availableFor": [
+          "ines"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": -5
+          },
+          {
+            "type": "flag_set",
+            "key": "run_complete",
+            "value": true
+          },
+          {
+            "type": "flag_set",
+            "key": "lucas_silence_final",
+            "value": true
+          }
+        ]
+      },
+      {
+        "id": "s11_c_ines_confront",
+        "verb": "confront",
+        "label": "Revenir vers Maëlys avant de partir",
+        "availableFor": [
+          "ines"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "inesArrogance",
+            "delta": -10
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 12
+          },
+          {
+            "type": "flag_set",
+            "key": "lucas_confrontation_finale",
+            "value": true
+          },
+          {
+            "type": "flag_set",
+            "key": "run_complete",
+            "value": true
+          }
+        ]
+      },
+      {
+        "id": "s11_c_lucas_leave",
+        "verb": "leave_room",
+        "label": "Partir sans rien dire",
+        "availableFor": [
+          "lucas"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": -5
+          },
+          {
+            "type": "flag_set",
+            "key": "run_complete",
+            "value": true
+          },
+          {
+            "type": "flag_set",
+            "key": "lucas_silence_final",
+            "value": true
+          }
+        ]
+      },
+      {
+        "id": "s11_c_lucas_confront",
+        "verb": "confront",
+        "label": "Revenir vers Maëlys avant de partir",
+        "availableFor": [
+          "lucas"
+        ],
         "effects": [
           {
             "type": "state_delta",
@@ -995,6 +3136,11 @@
             "delta": 25
           },
           {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 12
+          },
+          {
             "type": "flag_set",
             "key": "lucas_confrontation_finale",
             "value": true
@@ -1003,15 +3149,119 @@
             "type": "flag_set",
             "key": "run_complete",
             "value": true
+          }
+        ],
+        "revealsClue": "C-22"
+      },
+      {
+        "id": "s11_c_sarah_leave",
+        "verb": "leave_room",
+        "label": "Partir sans qu'on lui ait rien demandé",
+        "availableFor": [
+          "sarah"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": -5
+          },
+          {
+            "type": "flag_set",
+            "key": "run_complete",
+            "value": true
+          },
+          {
+            "type": "flag_set",
+            "key": "lucas_silence_final",
+            "value": true
+          }
+        ]
+      },
+      {
+        "id": "s11_c_sarah_confront",
+        "verb": "confront",
+        "label": "Revenir vers Maëlys avant de partir",
+        "availableFor": [
+          "sarah"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "sarahDependanceMaelys",
+            "delta": -15
           },
           {
             "type": "state_delta",
             "key": "socialTension",
             "delta": 12
+          },
+          {
+            "type": "flag_set",
+            "key": "lucas_confrontation_finale",
+            "value": true
+          },
+          {
+            "type": "flag_set",
+            "key": "run_complete",
+            "value": true
           }
+        ]
+      },
+      {
+        "id": "s11_c_yanis_leave",
+        "verb": "leave_room",
+        "label": "Partir sans vraiment comprendre ce qui vient de se passer",
+        "availableFor": [
+          "yanis"
         ],
-        "nextScene": null,
-        "revealsClue": "C-22"
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": -5
+          },
+          {
+            "type": "flag_set",
+            "key": "run_complete",
+            "value": true
+          },
+          {
+            "type": "flag_set",
+            "key": "lucas_silence_final",
+            "value": true
+          }
+        ]
+      },
+      {
+        "id": "s11_c_yanis_confront",
+        "verb": "confront",
+        "label": "Revenir vers Maëlys avant de partir",
+        "availableFor": [
+          "yanis"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "yanisInsouciance",
+            "delta": -10
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 12
+          },
+          {
+            "type": "flag_set",
+            "key": "lucas_confrontation_finale",
+            "value": true
+          },
+          {
+            "type": "flag_set",
+            "key": "run_complete",
+            "value": true
+          }
+        ]
       }
     ],
     "autoRevealClues": [],
