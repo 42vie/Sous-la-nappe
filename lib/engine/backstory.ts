@@ -213,3 +213,14 @@ export function relationshipLabel(value: number): string {
   if (value >= -69) return 'hostilité'
   return 'hostilité active'
 }
+
+/** Repère visuel rapide pour une valeur de la matrice, -100 à +100 */
+export function relationshipEmoji(value: number): string {
+  if (value >= 70) return '💚'
+  if (value >= 40) return '🤝'
+  if (value >= 10) return '🙂'
+  if (value >= -9) return '😐'
+  if (value >= -39) return '😒'
+  if (value >= -69) return '⚠️'
+  return '💔'
+}

@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { useRunStore } from '@/store/runStore'
 import { CHARACTERS } from '@/components/ui/CharacterCard'
-import { relationshipLabel } from '@/lib/engine/backstory'
+import { RelationshipBar } from '@/components/ui/RelationshipBar'
 import { ENDING_SUMMARIES } from '@/lib/engine/endingSummaries'
 import type { CharacterId } from '@/lib/types/characters'
 
@@ -602,32 +602,11 @@ export default function FinalPage() {
                     }}>
                       {from.firstName}
                     </p>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
                       {CHARACTERS.filter((to) => to.id !== from.id).map((to) => {
                         const rel = relations[to.id]
                         if (!rel) return null
-                        const positive = rel.value >= 0
-                        return (
-                          <div key={to.id}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2px' }}>
-                              <span style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', color: 'var(--color-text-muted)' }}>
-                                → {to.firstName}
-                              </span>
-                              <span style={{ fontFamily: 'var(--font-body)', fontSize: '10px', color: 'var(--color-text-faint)' }}>
-                                {relationshipLabel(rel.value)}{rel.note ? ` · ${rel.note}` : ''}
-                              </span>
-                            </div>
-                            <div style={{ height: 4, background: 'var(--color-surface-offset)', borderRadius: 999, overflow: 'hidden', position: 'relative' }}>
-                              <div style={{
-                                position: 'absolute',
-                                left: positive ? '50%' : `${50 - Math.abs(rel.value) / 2}%`,
-                                width: `${Math.abs(rel.value) / 2}%`,
-                                height: '100%',
-                                background: positive ? 'var(--color-primary)' : 'var(--color-error, #a01f1f)',
-                              }} />
-                            </div>
-                          </div>
-                        )
+                        return <RelationshipBar key={to.id} firstName={to.firstName} value={rel.value} note={rel.note} />
                       })}
                     </div>
                   </div>

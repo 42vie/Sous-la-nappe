@@ -5,9 +5,10 @@ import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { CHARACTERS } from '@/components/ui/CharacterCard'
 import { CardCarousel } from '@/components/ui/CardCarousel'
+import { RelationshipBar } from '@/components/ui/RelationshipBar'
 import { CHAPTERS, TOTAL_CHAPTERS } from '@/lib/engine/chapters'
 import { BLIND_SPOTS } from '@/lib/engine/blindSpots'
-import { CHARACTER_BIOS, CHRONOLOGY, RELATIONSHIP_MATRIX, relationshipLabel } from '@/lib/engine/backstory'
+import { CHARACTER_BIOS, CHRONOLOGY, RELATIONSHIP_MATRIX } from '@/lib/engine/backstory'
 import { getManuscriptStatus } from '@/lib/engine/manuscript'
 import type { CharacterId } from '@/lib/types/characters'
 import type { RunState } from '@/lib/types/engine'
@@ -179,32 +180,11 @@ export default function ChapterSelectPage() {
               <p style={{ fontFamily: 'var(--font-body)', fontSize: '10px', color: 'var(--color-text-faint)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 'var(--space-3)' }}>
                 Ce que {justPlayedName} ressent, envers chacun
               </p>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
                 {CHARACTERS.filter((c) => c.id !== justPlayed).map((c) => {
                   const rel = justPlayedRelations[c.id]
                   if (!rel) return null
-                  const positive = rel.value >= 0
-                  return (
-                    <div key={c.id}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2px' }}>
-                        <span style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', color: 'var(--color-text-muted)' }}>
-                          → {c.firstName}
-                        </span>
-                        <span style={{ fontFamily: 'var(--font-body)', fontSize: '10px', color: 'var(--color-text-faint)' }}>
-                          {relationshipLabel(rel.value)}{rel.note ? ` · ${rel.note}` : ''}
-                        </span>
-                      </div>
-                      <div style={{ height: 4, background: 'var(--color-surface-offset)', borderRadius: 999, overflow: 'hidden', position: 'relative' }}>
-                        <div style={{
-                          position: 'absolute',
-                          left: positive ? '50%' : `${50 - Math.abs(rel.value) / 2}%`,
-                          width: `${Math.abs(rel.value) / 2}%`,
-                          height: '100%',
-                          background: positive ? 'var(--color-primary)' : 'var(--color-error, #a01f1f)',
-                        }} />
-                      </div>
-                    </div>
-                  )
+                  return <RelationshipBar key={c.id} firstName={c.firstName} value={rel.value} note={rel.note} />
                 })}
               </div>
             </div>

@@ -10,11 +10,12 @@ import { ToneMinigame } from './ToneMinigame'
 import { DosageMinigame } from './DosageMinigame'
 import { VariableGauges } from './VariableGauges'
 import { ManuscriptPanel } from './ManuscriptPanel'
+import { RelationshipBar } from './RelationshipBar'
 import { ImageSlot } from './ImageSlot'
 import { CHARACTERS } from './CharacterCard'
 import { getChapterNumberForScene } from '@/lib/engine/chapters'
 import { SCENE_IMAGE } from '@/lib/engine/sceneImages'
-import { RELATIONSHIP_MATRIX, relationshipLabel } from '@/lib/engine/backstory'
+import { RELATIONSHIP_MATRIX } from '@/lib/engine/backstory'
 import { computeImpairment, scrambleText } from '@/lib/engine/overheard'
 import type { CharacterId } from '@/lib/types/characters'
 import type { SceneId } from '@/lib/types/scenes'
@@ -103,13 +104,38 @@ export function SceneEngine({ runId, playerPov, initialSceneId, run }: SceneEngi
         blurPx,
       }))
       setChoices(distortedChoices)
-      const hasMinigame = Boolean(data.scene.minigameId) && IMPLEMENTED_MINIGAMES.includes(data.scene.minigameId)
-      setActiveMinigame(hasMinigame ? data.scene.minigameId : null)
-      setPhase(hasMinigame ? 'minigame' : 'narrative')
+
       // Appliquer les effets d'entrée de scène en local
       if (data.onEnterUpdates && Object.keys(data.onEnterUpdates).length > 0) {
         useRunStore.getState().updateRunLocal(data.onEnterUpdates)
       }
+
+      // Le morpion n'oppose que Sarah et Yanis (canon) — le proposer comme
+      // mini-jeu interactif aux quatre autres POV n'a pas de sens : ils
+      // finissaient par cliquer des cases pour un jeu qui n'est pas le
+      // leur. Pour ces POV-là, le résultat est déjà écrit dans le texte de
+      // la scène elle-même (chaque narrativeBlocks non-participant décrit
+      // Sarah perdre) — pas de mini-jeu, juste ce résultat appliqué avant
+      // les choix normaux de la scène.
+      const isTicTacToe = data.scene.minigameId === 'tictactoe_hidden'
+      const isParticipant = playerPov === 'sarah' || playerPov === 'yanis'
+      const hasMinigame = Boolean(data.scene.minigameId)
+        && IMPLEMENTED_MINIGAMES.includes(data.scene.minigameId)
+        && (!isTicTacToe || isParticipant)
+
+      if (isTicTacToe && !isParticipant) {
+        const liveVariable = (storeRun ?? run).variable
+        if (liveVariable.serviceHelper !== 'sarah') {
+          await syncMinigameVariable({ ...liveVariable, serviceHelper: 'sarah' })
+        } else {
+          setActiveMinigame(null)
+          setPhase('narrative')
+        }
+        return
+      }
+
+      setActiveMinigame(hasMinigame ? data.scene.minigameId : null)
+      setPhase(hasMinigame ? 'minigame' : 'narrative')
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erreur inconnue')
       setPhase('narrative')
@@ -434,32 +460,11 @@ export function SceneEngine({ runId, playerPov, initialSceneId, run }: SceneEngi
           }}>
             Ce que {CHARACTERS.find((c) => c.id === playerPov)?.firstName} ressent, envers chacun
           </p>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
             {CHARACTERS.filter((c) => c.id !== playerPov).map((c) => {
               const rel = RELATIONSHIP_MATRIX[playerPov]?.[c.id]
               if (!rel) return null
-              const positive = rel.value >= 0
-              return (
-                <div key={c.id}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2px' }}>
-                    <span style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', color: 'var(--color-text-muted)' }}>
-                      → {c.firstName}
-                    </span>
-                    <span style={{ fontFamily: 'var(--font-body)', fontSize: '10px', color: 'var(--color-text-faint)' }}>
-                      {relationshipLabel(rel.value)}{rel.note ? ` · ${rel.note}` : ''}
-                    </span>
-                  </div>
-                  <div style={{ height: 4, background: 'var(--color-surface)', borderRadius: 999, overflow: 'hidden', position: 'relative' }}>
-                    <div style={{
-                      position: 'absolute',
-                      left: positive ? '50%' : `${50 - Math.abs(rel.value) / 2}%`,
-                      width: `${Math.abs(rel.value) / 2}%`,
-                      height: '100%',
-                      background: positive ? 'var(--color-primary)' : 'var(--color-error, #a01f1f)',
-                    }} />
-                  </div>
-                </div>
-              )
+              return <RelationshipBar key={c.id} firstName={c.firstName} value={rel.value} note={rel.note} />
             })}
           </div>
         </div>
