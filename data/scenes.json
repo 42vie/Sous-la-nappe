@@ -29,6 +29,11 @@
           {
             "type": "narrative_note",
             "note": "Lucas ne force pas la mémoire. L'erreur plantée reste active."
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 2
           }
         ],
         "revealsClue": [
@@ -60,6 +65,11 @@
             "type": "flag_set",
             "key": "lucas_a_reecouté_vocal",
             "value": true
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 1
           }
         ]
       }
@@ -108,6 +118,11 @@
             "type": "state_delta",
             "key": "lucasLucidite",
             "delta": 5
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 2
           }
         ]
       },
@@ -126,6 +141,11 @@
             "type": "state_delta",
             "key": "lucasNeutralite",
             "delta": -5
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 4
           }
         ],
         "revealsClue": "C-01"
@@ -144,6 +164,11 @@
           {
             "type": "state_delta",
             "key": "lucasLucidite",
+            "delta": -3
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
             "delta": -3
           }
         ]
@@ -200,6 +225,11 @@
             "type": "flag_set",
             "key": "lucas_a_verifie_sarah",
             "value": true
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 4
           }
         ]
       },
@@ -218,6 +248,11 @@
             "type": "state_delta",
             "key": "inesTensionSociale",
             "delta": 5
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 2
           }
         ],
         "revealsClue": "C-09"
@@ -232,6 +267,11 @@
             "type": "state_delta",
             "key": "lucasNeutralite",
             "delta": 5
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 1
           }
         ]
       }
@@ -279,6 +319,11 @@
             "type": "flag_set",
             "key": "lucas_a_note_placement",
             "value": true
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 2
           }
         ]
       },
@@ -301,6 +346,11 @@
           {
             "type": "narrative_note",
             "note": "Lucas perturbe légèrement le plan mais Maëlys l'intègre."
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 6
           }
         ]
       },
@@ -314,6 +364,11 @@
             "type": "state_delta",
             "key": "lucasNeutralite",
             "delta": 5
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": -3
           }
         ]
       }
@@ -369,6 +424,11 @@
             "type": "flag_set",
             "key": "lucas_temoin_morpion",
             "value": true
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": -2
           }
         ]
       },
@@ -401,6 +461,11 @@
           {
             "type": "narrative_note",
             "note": "Déviation majeure : serviceHelper devient lucas, non sarah. targetActual probabilité recalculée."
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 10
           }
         ]
       }
@@ -450,6 +515,11 @@
           {
             "type": "narrative_note",
             "note": "C-11 actif : geste dirigé vers une assiette unique. La lucidité de Lucas monte mais son courage ne suit pas encore."
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 2
           }
         ]
       },
@@ -467,6 +537,11 @@
           {
             "type": "state_delta",
             "key": "lucasCourage",
+            "delta": -5
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
             "delta": -5
           }
         ],
@@ -522,6 +597,11 @@
             "type": "flag_set",
             "key": "lucas_a_note_echange_places",
             "value": true
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": -3
           }
         ],
         "revealsClue": "C-19"
@@ -555,6 +635,11 @@
           {
             "type": "narrative_note",
             "note": "Déviation : l'échange de places n'a pas lieu. seating_at_critical = base. targetActual probabilité fortement réduite."
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 10
           }
         ]
       }
@@ -603,6 +688,11 @@
           {
             "type": "narrative_note",
             "note": "Run T0 : targetActual = sarah (via resolveTargetActual avec swapB + serviceHelper sarah)"
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": -2
           }
         ]
       },
@@ -631,6 +721,11 @@
           {
             "type": "narrative_note",
             "note": "Déviation critique : targetActual peut changer. Fin D1 ou D2 possible."
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 10
           }
         ]
       }
@@ -680,6 +775,11 @@
             "type": "seating_update",
             "key": "seating_after_incident",
             "value": "swapB"
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": -4
           }
         ]
       },
@@ -703,6 +803,11 @@
             "type": "seating_update",
             "key": "seating_after_incident",
             "value": "swapB"
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 2
           }
         ],
         "revealsClue": "C-16"
@@ -759,6 +864,11 @@
             "type": "flag_set",
             "key": "survivingNarrative",
             "value": "false_sarah_self_harm"
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": -3
           }
         ]
       },
@@ -783,6 +893,11 @@
             "type": "flag_set",
             "key": "survivingNarrative",
             "value": "truth_partial"
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 4
           }
         ]
       },
@@ -805,6 +920,11 @@
             "type": "flag_set",
             "key": "lucas_a_reecouté_vocal",
             "value": true
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 1
           }
         ]
       }
@@ -848,6 +968,11 @@
             "type": "flag_set",
             "key": "lucas_silence_final",
             "value": true
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": -5
           }
         ],
         "nextScene": null
@@ -878,6 +1003,11 @@
             "type": "flag_set",
             "key": "run_complete",
             "value": true
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 12
           }
         ],
         "nextScene": null,

@@ -141,12 +141,20 @@ function applyEffects(
 
   for (const effect of effects) {
     if (effect.type === 'state_delta' && effect.key && effect.delta !== undefined) {
-      const current = (charState as Record<string, unknown>)[effect.key]
-      if (typeof current === 'number') {
-        ;(charState as unknown as Record<string, number>)[effect.key] = Math.max(
-          0,
-          Math.min(100, current + effect.delta)
-        )
+      if (effect.key === 'socialTension') {
+        // Tension collective — n'est pas un attribut par personnage
+        // (characterState), c'est un compteur global de variable qui pilote
+        // l'escalade des fins (voir endingCalculator.ts).
+        const current = variableUpdates.socialTension ?? state.variable.socialTension ?? 0
+        variableUpdates.socialTension = Math.max(0, Math.min(100, current + effect.delta))
+      } else {
+        const current = (charState as Record<string, unknown>)[effect.key]
+        if (typeof current === 'number') {
+          ;(charState as unknown as Record<string, number>)[effect.key] = Math.max(
+            0,
+            Math.min(100, current + effect.delta)
+          )
+        }
       }
     }
 

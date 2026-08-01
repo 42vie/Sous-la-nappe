@@ -12,6 +12,7 @@ import { buildFinalReport } from '@/lib/engine/endingCalculator'
 import { getManuscriptStatus } from '@/lib/engine/manuscript'
 import { getPovSummaries } from '@/lib/engine/povSummary'
 import { buildEpilogue } from '@/lib/engine/epilogue'
+import { buildRecap } from '@/lib/engine/recap'
 import type { RunState } from '@/types'
 
 const SEAT_IDS = [1, 2, 3, 4, 5, 6]
@@ -49,6 +50,8 @@ export async function GET(
     const baseScore = manuscriptScore(state)
     const seatingSubmitted = state.finalSeatingGuess != null
     const score = seatingSubmitted ? (state.finalScore ?? baseScore) : baseScore
+    const epilogue = buildEpilogue(state)
+    const deceased = epilogue.statuses.find((s) => s.condition === 'decede')
 
     return NextResponse.json({
       report,
@@ -59,9 +62,15 @@ export async function GET(
       seatingBonusAvailable: !seatingSubmitted,
       seatingGuess: state.finalSeatingGuess ?? null,
       manuscript: getManuscriptStatus(state),
-      epilogue: buildEpilogue(state),
+      epilogue,
+      recap: buildRecap(state),
       povHistory: state.povHistory ?? [state.playerPov],
       povSummaries: getPovSummaries(state),
+      // Vérité canonique (chapitre 2 de la bible) : Maëlys a organisé la
+      // soirée sous un faux prétexte dans tous les runs — ce n'est pas
+      // aléatoire, c'est un des 9 invariants du canon.
+      culprit: 'maelys',
+      deceasedCharacter: deceased?.character ?? null,
     })
   } catch (err) {
     console.error('[GET /api/run/[runId]/final]', err)

@@ -112,6 +112,7 @@ export default function FinalPage() {
   const [report, setReport] = useState<FinalReport | null>(null)
   const [manuscript, setManuscript] = useState<ManuscriptEntryData[]>([])
   const [epilogue, setEpilogue] = useState<EpilogueData | null>(null)
+  const [recap, setRecap] = useState<string[]>([])
   const [povHistory, setPovHistory] = useState<CharacterId[]>([])
   const [povSummaries, setPovSummaries] = useState<PovSummaryData[]>([])
   const [endingId, setEndingId] = useState<string | null>(null)
@@ -122,6 +123,12 @@ export default function FinalPage() {
   const [seatingGuess, setSeatingGuess] = useState<Record<number, CharacterId>>({})
   const [submittingSeating, setSubmittingSeating] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+  const [culprit, setCulprit] = useState<CharacterId | null>(null)
+  const [deceasedCharacter, setDeceasedCharacter] = useState<CharacterId | null>(null)
+  const [culpritGuess, setCulpritGuess] = useState<CharacterId | null>(null)
+  const [deathGuess, setDeathGuess] = useState<CharacterId | 'none' | null>(null)
+  const [revealed, setRevealed] = useState(false)
 
   useEffect(() => {
     if (!runId) return
@@ -141,6 +148,9 @@ export default function FinalPage() {
         setClueCount(data.discoveredCluesCount ?? run?.discoveredClues?.length ?? 0)
         setScore(data.score ?? null)
         setSeatingBonusAvailable(Boolean(data.seatingBonusAvailable))
+        setRecap(data.recap ?? [])
+        setCulprit(data.culprit ?? null)
+        setDeceasedCharacter(data.deceasedCharacter ?? null)
       })
       .catch((err) => setError(err instanceof Error ? err.message : 'Erreur inconnue'))
       .finally(() => setLoading(false))
@@ -198,6 +208,137 @@ export default function FinalPage() {
             border: '1px solid var(--color-error)', borderRadius: 'var(--radius-md)',
             marginBottom: 'var(--space-8)',
           }}>{error}</p>
+        )}
+
+        {/* Avant la révélation — deviner, une dernière fois, avant de savoir */}
+        {!revealed && (
+          <div>
+            <p style={{
+              fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', color: 'var(--color-text-faint)',
+              textTransform: 'uppercase', letterSpacing: '0.12em', marginBottom: 'var(--space-4)',
+            }}>
+              Avant de savoir
+            </p>
+            <h1 style={{
+              fontFamily: 'var(--font-display)', fontSize: 'var(--text-2xl)', color: 'var(--color-text)',
+              fontWeight: 400, fontStyle: 'italic', marginBottom: 'var(--space-8)', lineHeight: 1.2,
+            }}>
+              Qu&apos;est-ce qui s&apos;est vraiment passé, selon vous ?
+            </h1>
+
+            <div style={{ marginBottom: 'var(--space-8)' }}>
+              <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)', color: 'var(--color-text)', marginBottom: 'var(--space-3)' }}>
+                Qui a organisé ce qui est arrivé, ce soir-là ?
+              </p>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--space-2)' }}>
+                {CHARACTERS.map((c) => (
+                  <button
+                    key={c.id}
+                    onClick={() => setCulpritGuess(c.id)}
+                    style={{
+                      padding: 'var(--space-2) var(--space-4)',
+                      background: culpritGuess === c.id ? `${c.color}20` : 'var(--color-surface)',
+                      border: `1px solid ${culpritGuess === c.id ? c.color : 'var(--color-border)'}`,
+                      borderRadius: 'var(--radius-md)',
+                      fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)',
+                      color: culpritGuess === c.id ? c.color : 'var(--color-text-muted)',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    {c.firstName}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div style={{ marginBottom: 'var(--space-10)' }}>
+              <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)', color: 'var(--color-text)', marginBottom: 'var(--space-3)' }}>
+                Qui n&apos;a pas survécu à cette nuit ?
+              </p>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--space-2)' }}>
+                <button
+                  onClick={() => setDeathGuess('none')}
+                  style={{
+                    padding: 'var(--space-2) var(--space-4)',
+                    background: deathGuess === 'none' ? 'var(--color-surface-offset)' : 'var(--color-surface)',
+                    border: `1px solid ${deathGuess === 'none' ? 'var(--color-text-muted)' : 'var(--color-border)'}`,
+                    borderRadius: 'var(--radius-md)',
+                    fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)',
+                    color: deathGuess === 'none' ? 'var(--color-text)' : 'var(--color-text-muted)',
+                    cursor: 'pointer',
+                  }}
+                >
+                  Personne
+                </button>
+                {CHARACTERS.map((c) => (
+                  <button
+                    key={c.id}
+                    onClick={() => setDeathGuess(c.id)}
+                    style={{
+                      padding: 'var(--space-2) var(--space-4)',
+                      background: deathGuess === c.id ? `${c.color}20` : 'var(--color-surface)',
+                      border: `1px solid ${deathGuess === c.id ? c.color : 'var(--color-border)'}`,
+                      borderRadius: 'var(--radius-md)',
+                      fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)',
+                      color: deathGuess === c.id ? c.color : 'var(--color-text-muted)',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    {c.firstName}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <button
+              onClick={() => setRevealed(true)}
+              disabled={!culpritGuess || !deathGuess}
+              style={{
+                padding: 'var(--space-3) var(--space-8)',
+                background: 'var(--color-primary)',
+                color: 'var(--color-text-inverse)',
+                border: 'none',
+                borderRadius: 'var(--radius-md)',
+                fontFamily: 'var(--font-body)',
+                fontSize: 'var(--text-sm)',
+                letterSpacing: '0.04em',
+                cursor: culpritGuess && deathGuess ? 'pointer' : 'not-allowed',
+                opacity: culpritGuess && deathGuess ? 1 : 0.5,
+              }}
+            >
+              Découvrir la suite →
+            </button>
+          </div>
+        )}
+
+        {revealed && (
+        <>
+        {/* Verdict — vos intuitions, confrontées aux faits */}
+        {culprit && deathGuess && (
+          <div style={{
+            marginBottom: 'var(--space-10)',
+            padding: 'var(--space-5)',
+            background: 'var(--color-surface)',
+            border: '1px solid var(--color-divider)',
+            borderRadius: 'var(--radius-lg)',
+          }}>
+            <p style={{
+              fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', color: 'var(--color-text-faint)',
+              textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 'var(--space-3)',
+            }}>
+              Votre intuition
+            </p>
+            <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)', color: 'var(--color-text-muted)', marginBottom: 'var(--space-2)', lineHeight: 1.7 }}>
+              {culpritGuess === culprit ? '✓ ' : '✗ '}
+              Vous {culpritGuess === culprit ? 'aviez' : 'n\'aviez pas'} deviné que {CHARACTERS.find((c) => c.id === culprit)?.firstName} avait organisé la soirée.
+            </p>
+            <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)', color: 'var(--color-text-muted)', lineHeight: 1.7 }}>
+              {(deathGuess === 'none' ? deceasedCharacter === null : deathGuess === deceasedCharacter) ? '✓ ' : '✗ '}
+              {deceasedCharacter
+                ? `Vous ${deathGuess === deceasedCharacter ? 'aviez' : 'n\'aviez pas'} deviné que ${CHARACTERS.find((c) => c.id === deceasedCharacter)?.firstName} n'allait pas survivre.`
+                : `Vous ${deathGuess === 'none' ? 'aviez' : 'n\'aviez pas'} deviné que tout le monde allait s'en sortir.`}
+            </p>
+          </div>
         )}
 
         {/* Titre fin */}
@@ -314,6 +455,25 @@ export default function FinalPage() {
                 )
               })}
             </div>
+          </div>
+        )}
+
+        {/* Moments marquants — recap concret de ce qui s'est vraiment passé cette partie */}
+        {recap.length > 0 && (
+          <div style={{ marginBottom: 'var(--space-12)' }}>
+            <p style={{
+              fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', color: 'var(--color-text-muted)',
+              textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 'var(--space-4)',
+            }}>
+              Moments marquants
+            </p>
+            <ul style={{ margin: 0, paddingLeft: 'var(--space-5)', display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
+              {recap.map((line, i) => (
+                <li key={i} style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)', color: 'var(--color-text-muted)', lineHeight: 1.7 }}>
+                  {line}
+                </li>
+              ))}
+            </ul>
           </div>
         )}
 
@@ -486,7 +646,11 @@ export default function FinalPage() {
           </div>
         )}
 
-        {/* Le manuscrit — la vérité établie au fil de cette partie */}
+        {/* Le manuscrit — uniquement ce qui a été réellement établi. Ce qui
+            n'a pas été débloqué ne s'affiche pas ici, même en teaser flouté :
+            à ce stade (fin de partie), le montrer spoilerait la prochaine
+            partie avec un autre point de vue plutôt que de donner envie d'y
+            revenir. */}
         {manuscript.length > 0 && (
           <div style={{ marginBottom: 'var(--space-12)' }}>
             <p style={{
@@ -499,29 +663,32 @@ export default function FinalPage() {
             }}>
               Le manuscrit — {manuscript.filter((e) => e.status === 'complete').length} / {manuscript.length} vérités établies
             </p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
-              {manuscript.map((entry) => (
-                <div
-                  key={entry.id}
-                  style={{
-                    padding: 'var(--space-3) var(--space-4)',
-                    borderRadius: 'var(--radius-md)',
-                    border: '1px solid var(--color-border)',
-                    background: entry.status === 'complete' ? 'var(--color-primary-highlight)' : 'var(--color-surface)',
-                  }}
-                >
-                  <p style={{
-                    fontFamily: entry.status === 'complete' ? 'var(--font-display)' : 'var(--font-body)',
-                    fontStyle: entry.status === 'complete' ? 'italic' : 'normal',
-                    fontSize: entry.status === 'complete' ? 'var(--text-sm)' : 'var(--text-xs)',
-                    color: entry.status === 'locked' ? 'var(--color-text-faint)' : 'var(--color-text-muted)',
-                    lineHeight: 1.6,
-                  }}>
-                    {entry.text}
-                  </p>
-                </div>
-              ))}
-            </div>
+            {manuscript.some((e) => e.status === 'complete') ? (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
+                {manuscript.filter((e) => e.status === 'complete').map((entry) => (
+                  <div
+                    key={entry.id}
+                    style={{
+                      padding: 'var(--space-3) var(--space-4)',
+                      borderRadius: 'var(--radius-md)',
+                      border: '1px solid var(--color-border)',
+                      background: 'var(--color-primary-highlight)',
+                    }}
+                  >
+                    <p style={{
+                      fontFamily: 'var(--font-display)', fontStyle: 'italic', fontSize: 'var(--text-sm)',
+                      color: 'var(--color-text-muted)', lineHeight: 1.6,
+                    }}>
+                      {entry.text}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', color: 'var(--color-text-faint)', fontStyle: 'italic' }}>
+                Aucune vérité établie cette fois-ci — rien à montrer que vous n&apos;ayez pas vous-même découvert.
+              </p>
+            )}
           </div>
         )}
 
@@ -587,6 +754,8 @@ export default function FinalPage() {
         }}>
           {lastLine(endingId ?? 'F1')}
         </p>
+        </>
+        )}
 
       </div>
     </main>
