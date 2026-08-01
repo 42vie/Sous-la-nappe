@@ -526,21 +526,8 @@ export function SceneEngine({ runId, playerPov, initialSceneId, run }: SceneEngi
                     borderRadius: 'var(--radius-md)',
                     cursor: 'pointer',
                     transition: 'all var(--transition)',
-                    display: 'flex',
-                    alignItems: 'baseline',
-                    gap: 'var(--space-3)',
                   }}
                 >
-                  <span style={{
-                    fontFamily: 'var(--font-body)',
-                    fontSize: 'var(--text-xs)',
-                    color: 'var(--color-primary)',
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.08em',
-                    flexShrink: 0,
-                  }}>
-                    {choice.verb}
-                  </span>
                   <span style={{
                     fontFamily: 'var(--font-body)',
                     fontSize: 'var(--text-sm)',
