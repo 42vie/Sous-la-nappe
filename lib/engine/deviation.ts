@@ -72,6 +72,14 @@ export function resolveTargetActual(
     seatingAtCritical: SeatingSnapshot
   }
 ): CharacterId[] {
+  // Variante chaos : Yanis a fait changer tout le monde de place. Dans ce
+  // désordre, il existe une chance résiduelle que ce soit Maëlys
+  // elle-même qui se retrouve avec l'assiette qu'elle a préparée — la
+  // "chute ironique" décrite dans la bible narrative étendue (fin F4).
+  if (state.seatingVariant === 'chaos' && Math.random() < 0.2) {
+    return ['maelys']
+  }
+
   // Probabilité de base selon la variante de sièges
   const baseRisk: Record<SeatingVariant, number> = {
     base:  0.12,
@@ -100,7 +108,12 @@ export function resolveTargetActual(
 
   if (!targetSeat) return [state.targetPlanned]
 
-  // La cible est la personne assise à la place prévue
-  const actualSeatId: SeatId = 2 // position 2 = assiette chargée dans l'ordre
+  // La cible est la personne assise à la place 4 au moment critique — c'est
+  // la position que Maëlys a marquée pour Noé (scène 8 : « La position 4
+  // était censée être Noé. La position 4 est maintenant Sarah. »). Seules
+  // les places 3/4 varient entre BASE_SEATING et SWAP_B_SEATING (Inès et
+  // Sarah s'y échangent) ; la place 2 ne varie jamais, donc l'utiliser ici
+  // rendait la déviation structurellement impossible à atteindre.
+  const actualSeatId: SeatId = 4
   return [criticalSeating[actualSeatId] ?? state.targetPlanned]
 }

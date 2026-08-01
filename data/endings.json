@@ -1,58 +1,65 @@
 [
   {
+    "id": "F0",
+    "title": "Noé à l'hôpital",
+    "description": "Fin canonique : Noé reçoit l'assiette visée, fait une détresse sévère, part à l'hôpital, survit — et sa survie ouvre une vérité plus sale que sa mort n'en aurait ouvert.",
+    "playerMessage": "Ce n'est plus « qui a empoisonné ? » qui compte, mais qui a laissé la mécanique aller jusqu'au bout.",
+    "conditions": { "targetActual": ["noe"], "note": "cas par défaut si aucun autre déclencheur (F5-F8) ne s'applique" }
+  },
+  {
     "id": "F1",
-    "title": "La cible atteinte",
-    "description": "Le plan a fonctionné. C'est la fin la plus vide du jeu.",
-    "playerMessage": "Vous avez obtenu exactement ce qui était prévu et n'avez rien appris.",
-    "conditions": { "seatingVariant": "base", "serviceHelper": "maelys" }
+    "title": "Sarah touchée, récit faux dominant",
+    "description": "La mauvaise personne a reçu l'assiette. La bonne version — celle qui arrange tout le monde — est sortie quand même.",
+    "playerMessage": "Vous avez vu le bon geste. Vous avez cru le mauvais récit.",
+    "conditions": { "targetActual": ["sarah"] }
   },
   {
     "id": "F2",
-    "title": "La mauvaise personne",
-    "description": "Sarah meurt, Inès survit, Noé n'est pas touché. Personne n'a eu ce qu'il voulait.",
-    "playerMessage": "Vous avez compris qui voulait punir. Pas qui a payé.",
-    "conditions": { "seatingVariant": "swapB", "serviceHelper": "sarah" }
+    "title": "Inès touchée à la place de Noé",
+    "description": "Vous avez compris qui voulait punir. Pas qui, finalement, a payé.",
+    "playerMessage": "Elle a protégé son frère pendant des années. Elle a fini par payer une dette qui n'était pas la sienne.",
+    "conditions": { "targetActual": ["ines"] }
   },
   {
     "id": "F3",
-    "title": "Le faux coupable crédible",
-    "description": "La version 'Sarah s'est fait du mal' s'impose et tient.",
-    "playerMessage": "Vous avez vu le bon geste. Vous avez cru le mauvais récit.",
-    "conditions": { "accompliceType": "moral" }
+    "title": "Double contamination — Sarah et Inès",
+    "description": "Un message précis, adressé à un seul homme, devenu un désastre collectif.",
+    "playerMessage": "Ce qui devait rester un incident ciblé s'est transformé en catastrophe collective.",
+    "conditions": { "targetActual": ["sarah", "ines"] }
   },
   {
     "id": "F4",
-    "title": "Le silence collectif",
-    "description": "Plusieurs ont compris. Aucun n'assume.",
-    "playerMessage": "Vous avez identifié la blessure de départ, pas l'erreur de trajectoire.",
-    "conditions": {}
+    "title": "Maëlys auto-contaminée",
+    "description": "La seule fin où elle est physiquement punie. Ce n'est pas une rédemption.",
+    "playerMessage": "Elle a tout contrôlé, sauf le fait qu'elle était aussi dans la pièce.",
+    "conditions": { "targetActual": ["maelys"] }
   },
   {
     "id": "F5",
-    "title": "La vérité trop tard",
-    "description": "Le joueur a raison et a déjà agi contre sa propre conclusion.",
-    "playerMessage": "Vous avez gagné une partie de morpion à 21h26.",
-    "conditions": {}
-  },
-  {
-    "id": "D1",
-    "title": "Double victime",
-    "description": "Inès et Sarah. Le plan devient méconnaissable.",
-    "playerMessage": "L'enquête réelle commence après le jeu.",
-    "conditions": { "seatingVariant": "chaos" }
-  },
-  {
-    "id": "D2",
-    "title": "L'auto-contamination",
-    "description": "Maëlys est atteinte elle-même.",
-    "playerMessage": "La seule fin où elle est physiquement punie. Ce n'est pas une rédemption.",
-    "conditions": {}
-  },
-  {
-    "id": "S1",
-    "title": "L'interruption",
-    "description": "Le seul run où personne ne meurt. Le prix : Lucas accuse publiquement Maëlys sans preuve.",
+    "title": "Lucas interrompt, accuse trop tôt",
+    "description": "Personne ne meurt. Et c'est presque pire : plus personne ne saura jamais avec certitude.",
     "playerMessage": "Vous ne saurez jamais avec certitude si vous aviez raison.",
-    "conditions": { "playerCharacter": "lucas", "accompliceType": "none" }
+    "conditions": { "flags": ["lucas_a_interrompu_service", "lucas_a_interrompu_morpion", "lucas_confrontation_finale sans preuve suffisante"] }
+  },
+  {
+    "id": "F6",
+    "title": "Noé comprend trop tard, force Sarah à se taire",
+    "description": "Survie physique, destruction morale maximale.",
+    "playerMessage": "Noé a survécu. Sarah a été condamnée par son existence même dans la soirée.",
+    "conditions": { "targetActual": ["noe"], "flags": ["lucas_a_parle = false"] }
+  },
+  {
+    "id": "F7",
+    "title": "Vérité complète, post-hôpital",
+    "description": "La vérité n'est pas sortie du dîner. Elle est sortie de l'hôpital.",
+    "playerMessage": "Ce n'est pas une fin de justice nette, mais c'est la seule où la vérité sort réellement de la maison.",
+    "conditions": { "targetActual": ["noe"], "clues": ["C-19", "C-20", "C-22"], "flags": ["lucas_a_parle"] }
+  },
+  {
+    "id": "F8",
+    "title": "Fin noire — Noé détruit Sarah publiquement",
+    "description": "Deux survivants avaient tous les deux quelque chose à cacher. Un seul avait le pouvoir de choisir lequel comptait.",
+    "playerMessage": "La soirée a produit deux survivants qui avaient tous les deux quelque chose à cacher.",
+    "conditions": { "targetActual": ["noe"], "survivingNarrative": "false_sarah_self_harm", "socialTension": ">= 60" }
   }
 ]

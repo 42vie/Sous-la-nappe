@@ -1,69 +1,105 @@
-// Calcul de la fin selon l'état du run
+// Calcul de la fin selon l'état du run — taxonomie F0-F8, réécrite depuis
+// la bible narrative étendue (2026-08-01). F0 est la nouvelle fin
+// canonique : Noé reçoit l'assiette visée, fait une détresse sévère, part
+// à l'hôpital, survit — et sa survie ouvre une vérité plus sale que sa
+// mort n'en aurait ouvert. Les anciennes fins déviées (D1/D2) et secrète
+// (S1) sont repliées dans la nouvelle taxonomie : mêmes déclencheurs,
+// nouveaux noms — voir ENDING_TRIGGERS pour le détail affichable au joueur.
 import type { RunState } from '@/types'
 import type { EndingId } from '@/lib/types/endings'
+import type { ClueId } from '@/lib/types/clues'
 import { countCriticalClues } from './clueResolver'
 import { isRunComplete } from './transitions'
+
+/** Indices dont la présence assemble le dossier post-hôpital (photo, vocal, carnet). */
+const KEY_EVIDENCE_CLUES: ClueId[] = ['C-19', 'C-20', 'C-22']
+
+function hasKeyEvidence(state: RunState): boolean {
+  const discovered = new Set(state.discoveredClues.map((dc) => dc.clueId))
+  return KEY_EVIDENCE_CLUES.some((id) => discovered.has(id))
+}
 
 /**
  * Déterminer la fin en fonction de l'état final du run.
  *
- * Fins disponibles :
- * F1 — Canon : silence complet, narrative = false_sarah_self_harm
- * F2 — Témoin partiel : Lucas parle mais incomplètement
- * F3 — Vérité incomplète : truth_partial, peu d'indices
- * F4 — Confrontation : Lucas confronte Maëlys
- * F5 — Accélération : Lucas interrompt le service + vocal utilisé
- * D1 — Déviée 1 : Lucas prend l'assiette de Sarah
- * D2 — Déviée 2 : Lucas interrompt le morpion
- * S1 — Secrète : tous les indices critiques + confrontation
+ * Ordre de priorité :
+ * 1. F5 — le service ou le morpion sont interrompus, ou une confrontation a
+ *    lieu sans preuve suffisante : la mécanique s'arrête avant d'aller au
+ *    bout, personne n'est physiquement touché.
+ * 2. Qui a été réellement atteint (targetActual, moteur de déviation,
+ *    lib/engine/deviation.ts) détermine la branche principale :
+ *    Maëlys elle-même → F4, Sarah et Inès → F3, Inès seule → F2,
+ *    Sarah seule → F1, Noé (le cas par défaut, canon) → F0/F6/F7/F8.
+ * 3. Dans la branche Noé, ce qui se passe APRÈS l'hôpital distingue les
+ *    quatre issues : F7 si le dossier s'assemble et que quelqu'un parle,
+ *    F8 si le récit qui sort écrase Sarah dans une tension déjà haute,
+ *    F6 si le silence tient malgré tout, F0 sinon (fin canonique nette).
  */
 export function calculateEnding(state: RunState): EndingId {
-  if (!isRunComplete(state)) return 'F1'
+  if (!isRunComplete(state)) return 'F0'
 
-  const criticalCount = countCriticalClues(state)
   const flags = state.flags
+  const criticalCount = countCriticalClues(state)
+  const tension = state.variable.socialTension ?? 0
+  const targetActual = state.variable.targetActual ?? []
+  const hitSarah = targetActual.includes('sarah')
+  const hitInes = targetActual.includes('ines')
+  const hitMaelys = targetActual.includes('maelys')
 
-  // Fin secrète : tout vu, confrontation finale
+  // F5 — la mécanique s'arrête avant d'aller au bout.
   if (
-    criticalCount >= 6 &&
-    flags['lucas_a_parle'] &&
-    flags['lucas_confrontation_finale']
-  ) return 'S1'
+    flags['lucas_a_interrompu_service'] ||
+    flags['lucas_a_interrompu_morpion'] ||
+    (flags['lucas_confrontation_finale'] && criticalCount < 6)
+  ) return 'F5'
 
-  // Déviée 1 : Lucas a pris l'assiette
-  if (flags['lucas_a_interrompu_service']) return 'D1'
+  // F4 — Maëlys, ironiquement, atteinte par son propre dispositif : soit le
+  // moteur de déviation l'a littéralement désignée (chance résiduelle dans
+  // le chaos, voir resolveTargetActual), soit elle a servi elle-même sans
+  // relais dans une soirée déjà trop tendue pour qu'elle garde la main sur
+  // sa propre logistique. Vérifié avant F3 : si le chaos l'a désignée
+  // elle, ce n'est plus une "double contamination", c'est l'auto-
+  // contamination.
+  if (hitMaelys || (state.variable.serviceHelper === 'maelys' && tension >= 70)) return 'F4'
 
-  // Déviée 2 : Lucas a interrompu le morpion
-  if (flags['lucas_a_interrompu_morpion']) return 'D2'
+  // F3 — double contamination : la variante de placement "chaos" (Yanis
+  // relance tout le monde à changer de place) déborde le calcul normal à
+  // une seule cible — la soirée devient catastrophe collective plutôt
+  // qu'incident ciblé, qu'elle ait ou non touché Sarah/Inès individuellement.
+  if (state.variable.seatingVariant === 'chaos' || (hitSarah && hitInes)) return 'F3'
 
-  // F5 : vocal utilisé + service interrompu
-  if (flags['lucas_a_reecouté_vocal'] && flags['lucas_a_parle']) return 'F5'
+  // F2 — erreur de correction : Inès prend la place de Noé.
+  if (hitInes) return 'F2'
 
-  // F4 : confrontation mais sans avoir tout dit
-  if (flags['lucas_confrontation_finale']) return 'F4'
+  // F1 — Sarah touchée, le récit faux s'impose.
+  if (hitSarah) return 'F1'
 
-  // Au-delà des déclencheurs explicites ci-dessus, la tension sociale
-  // accumulée pendant la soirée (state.variable.socialTension, 0–100)
-  // pousse vers une sortie plus dramatique même sans confrontation directe :
-  // plus la pression est montée, plus la fin est dure.
-  const tension = state.variable.socialTension
-  if (tension >= 70) return 'F5'
-  if (tension >= 45) return 'F4'
+  // Noé est la cible réellement atteinte — ce qui se passe après l'hôpital tranche.
 
-  // F2 : Lucas a parlé, narrative = truth_partial
-  if (
-    flags['lucas_a_parle'] &&
-    state.variable.survivingNarrative === 'truth_partial'
-  ) return 'F2'
+  // F7 — le dossier s'assemble (photo, vocal ou carnet) et quelqu'un a parlé.
+  if (hasKeyEvidence(state) && flags['lucas_a_parle']) return 'F7'
 
-  // F3 : truth_partial mais Lucas n'a pas vraiment parlé
-  if (
-    state.variable.survivingNarrative === 'truth_partial' &&
-    criticalCount >= 3
-  ) return 'F3'
+  // F8 — fin noire : le récit qui sort écrase Sarah, dans une tension déjà haute.
+  if (state.variable.survivingNarrative === 'false_sarah_self_harm' && tension >= 60) return 'F8'
 
-  // F1 : défaut — silence moral, narrative false_sarah_self_harm
-  return 'F1'
+  // F6 — Noé survit mais le silence tient : personne n'a vraiment parlé.
+  if (!flags['lucas_a_parle']) return 'F6'
+
+  // F0 — fin canonique : Noé survit, la vérité ne peut plus être complètement enterrée.
+  return 'F0'
+}
+
+/** Description courte, affichable au joueur, de ce qui a déclenché sa fin — la "matrice" de la bible en version lisible. */
+export const ENDING_TRIGGERS: Record<EndingId, string> = {
+  F0: "Noé a reçu l'assiette visée, a fait une détresse sévère, est parti à l'hôpital, et a survécu — sans qu'aucun autre déclencheur (interruption, preuve assemblée, silence total) ne prenne le dessus.",
+  F1: "L'assiette visée n'a pas atteint Noé : elle a atteint Sarah. Le récit faux qui circule après coup s'est imposé sans contestation sérieuse.",
+  F2: "L'assiette visée n'a pas atteint Noé : elle a atteint Inès, à la place initialement prévue avant tout déplacement.",
+  F3: "L'assiette visée a fini par toucher Sarah et Inès à la fois — la soirée a basculé en catastrophe collective plutôt qu'en incident ciblé.",
+  F4: "Le service a fini par se retourner contre Maëlys elle-même — la seule fin où elle est physiquement atteinte par son propre dispositif.",
+  F5: "Le service ou le morpion ont été interrompus avant d'aller au bout, ou une confrontation a eu lieu sans réunir assez de preuves : personne n'est physiquement touché, mais le groupe se fracture avant toute certitude.",
+  F6: "Noé a survécu à l'hôpital, mais personne n'a vraiment parlé — le silence a tenu, et la vérité est restée enterrée malgré la gravité de ce qui venait de se passer.",
+  F7: "Noé a survécu, et assez de preuves matérielles (une photo, un vocal, un carnet) ont fini par s'assembler pendant que quelqu'un acceptait enfin de parler.",
+  F8: "Noé a survécu, mais le récit qui est sorti de la maison a fini par écraser Sarah — dans une tension déjà montée trop haut pour que quiconque la défende.",
 }
 
 /**

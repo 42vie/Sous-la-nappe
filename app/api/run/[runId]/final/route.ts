@@ -11,7 +11,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { adminDb } from '@/lib/firebase/admin'
 import { COLLECTIONS } from '@/types/firebase'
-import { buildFinalReport } from '@/lib/engine/endingCalculator'
+import { buildFinalReport, ENDING_TRIGGERS } from '@/lib/engine/endingCalculator'
 import { getManuscriptStatus } from '@/lib/engine/manuscript'
 import { getPovSummaries } from '@/lib/engine/povSummary'
 import { buildEpilogue } from '@/lib/engine/epilogue'
@@ -58,6 +58,7 @@ export async function GET(
     return NextResponse.json({
       report,
       ending: state.ending ?? null,
+      endingTrigger: state.ending ? ENDING_TRIGGERS[state.ending] : null,
       discoveredCluesCount: state.discoveredClues?.length ?? 0,
       score,
       baseScore,

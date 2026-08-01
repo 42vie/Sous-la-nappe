@@ -77,13 +77,13 @@
       "planned": {
         "targetWho": "Noé",
         "targetWhy": "Maëlys voulait le rendre malade — mobile : trahison financière et émotionnelle",
-        "mechanism": "Sauce dosée, assiette en position 2 du passe (place de Noé dans le plan initial)",
+        "mechanism": "Sauce dosée, assiette en position 4 du passe (place de Noé dans le plan initial)",
         "whoKnew": "Maëlys seule",
         "whatsaid": "Soirée de réconciliation"
       },
       "actual": {
         "targetWho": "Sarah",
-        "targetWhy": "Trois hypothèses fausses simultanées : Noé en retard (place 2 vide), échange Inès/Sarah (swapB), Sarah devient serviceHelper",
+        "targetWhy": "Trois hypothèses fausses simultanées : Noé en retard (place 4 vide), échange Inès/Sarah (swapB), Sarah devient serviceHelper",
         "mechanism": "Sarah sert les assiettes dans l'ordre du passe et récupère l'assiette chargée",
         "whoKnew": "Lucas (lucidité partielle, silence moral)",
         "whatsaid": "Sarah a fait une crise, probablement un mélange médicamenteux"

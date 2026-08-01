@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation'
 import { useRunStore } from '@/store/runStore'
 import { CHARACTERS } from '@/components/ui/CharacterCard'
 import { relationshipLabel } from '@/lib/engine/backstory'
+import { ENDING_SUMMARIES } from '@/lib/engine/endingSummaries'
 import type { CharacterId } from '@/lib/types/characters'
 
 interface ManuscriptEntryData {
@@ -60,41 +61,6 @@ const CONDITION_LABELS: Record<CharacterCondition, { label: string; color: strin
   decede: { label: 'N’a pas survécu', color: '#6b0f0f' },
 }
 
-const ENDING_LABELS: Record<string, { title: string; description: string }> = {
-  F1: {
-    title: 'Silence moral',
-    description: 'La version de Sarah-fragile-aux-médicaments est la seule qui restera. Vous étiez là. Vous n\'avez rien dit.',
-  },
-  F2: {
-    title: 'Témoin incomplet',
-    description: 'Vous avez parlé, mais pas assez. Il manquait quelque chose — et ce qui manque laisse de la place pour les autres versions.',
-  },
-  F3: {
-    title: 'Vérité partielle',
-    description: 'Vous avez vu juste sur une partie. Ce que vous n\'avez pas dit sera dit par quelqu\'un d\'autre, dans dix ans, différemment.',
-  },
-  F4: {
-    title: 'Confrontation',
-    description: 'Vous avez parlé à Maëlys, pas au groupe. La vérité s\'est arrêtée là où vous avez décidé qu\'elle s\'arrêterait.',
-  },
-  F5: {
-    title: 'Accélération',
-    description: 'Le vocal et la parole au même moment — trop, trop vite. La vérité a percuté quelque chose avant d\'atterrir.',
-  },
-  D1: {
-    title: 'Déviation — L\'assiette',
-    description: 'Vous avez pris l\'assiette de Sarah. La chaîne s\'est interrompue. L\'incident n\'a pas eu lieu de la même façon.',
-  },
-  D2: {
-    title: 'Déviation — Le jeu',
-    description: 'Vous avez interrompu le morpion. Yanis a servi. La cible prévue n\'a pas été la cible atteinte.',
-  },
-  S1: {
-    title: 'La charpente vraie',
-    description: 'Vous avez tout vu, tout rassemblé, et tout dit. Il y a une version de la soirée qui est vraie — et c\'est la vôtre.',
-  },
-}
-
 interface FinalReport {
   planned: Record<string, string>
   actual: Record<string, string>
@@ -107,15 +73,6 @@ const COLUMN_LABELS: Record<string, string> = {
   mechanism: 'Comment',
   whoKnew: 'Qui savait',
   whatsaid: 'Ce qui a été dit',
-}
-
-// Chapitre 14 de la bible : la dernière ligne, seule, sans commentaire.
-// Sarah n'est épargnée que dans la fin déviée D1 (« Vous avez pris l'assiette
-// de Sarah — la chaîne s'est interrompue »).
-function lastLine(endingId: string): string {
-  return endingId === 'D1'
-    ? "Elle n'a rien dit. On ne lui a rien demandé."
-    : 'Sarah Kessler avait raison sur tout, sauf sur l\'ordre.'
 }
 
 export default function FinalPage() {
@@ -133,6 +90,7 @@ export default function FinalPage() {
   const [povHistory, setPovHistory] = useState<CharacterId[]>([])
   const [povSummaries, setPovSummaries] = useState<PovSummaryData[]>([])
   const [endingId, setEndingId] = useState<string | null>(null)
+  const [endingTrigger, setEndingTrigger] = useState<string | null>(null)
   const [clueCount, setClueCount] = useState<number>(0)
   const [loading, setLoading] = useState(true)
   const [score, setScore] = useState<number | null>(null)
@@ -161,7 +119,8 @@ export default function FinalPage() {
         setEpilogue(data.epilogue ?? null)
         setPovHistory(data.povHistory ?? [])
         setPovSummaries(data.povSummaries ?? [])
-        setEndingId(data.ending ?? run?.ending ?? 'F1')
+        setEndingId(data.ending ?? run?.ending ?? 'F0')
+        setEndingTrigger(data.endingTrigger ?? null)
         setClueCount(data.discoveredCluesCount ?? run?.discoveredClues?.length ?? 0)
         setScore(data.score ?? null)
         setSeatingBonusAvailable(Boolean(data.seatingBonusAvailable))
@@ -197,7 +156,7 @@ export default function FinalPage() {
     }
   }
 
-  const ending = ENDING_LABELS[endingId ?? 'F1'] ?? ENDING_LABELS.F1
+  const ending = ENDING_SUMMARIES[(endingId ?? 'F0') as keyof typeof ENDING_SUMMARIES] ?? ENDING_SUMMARIES.F0
   const seatingComplete = SEAT_IDS.every((seat) => seatingGuess[seat])
 
   if (loading) {
@@ -389,10 +348,37 @@ export default function FinalPage() {
           fontSize: 'var(--text-base)',
           color: 'var(--color-text-muted)',
           lineHeight: '1.8',
-          marginBottom: 'var(--space-12)',
+          marginBottom: 'var(--space-6)',
         }}>
-          {ending.description}
+          {ending.short}
         </p>
+
+        {/* Récit détaillé de la fin */}
+        <p style={{
+          fontFamily: 'var(--font-body)',
+          fontSize: 'var(--text-sm)',
+          color: 'var(--color-text-muted)',
+          lineHeight: '1.9',
+          marginBottom: endingTrigger ? 'var(--space-4)' : 'var(--space-12)',
+        }}>
+          {ending.detail}
+        </p>
+
+        {/* Pourquoi cette fin — la matrice de déclenchement, en version lisible */}
+        {endingTrigger && (
+          <p style={{
+            fontFamily: 'var(--font-body)',
+            fontSize: 'var(--text-xs)',
+            color: 'var(--color-text-faint)',
+            fontStyle: 'italic',
+            lineHeight: '1.7',
+            marginBottom: 'var(--space-12)',
+            paddingLeft: 'var(--space-4)',
+            borderLeft: '2px solid var(--color-divider)',
+          }}>
+            Pourquoi cette fin — {endingTrigger}
+          </p>
+        )}
 
         {/* Score indices */}
         <div style={{
@@ -865,7 +851,7 @@ export default function FinalPage() {
           paddingTop: 'var(--space-8)',
           borderTop: '1px solid var(--color-divider)',
         }}>
-          {lastLine(endingId ?? 'F1')}
+          {ending.lastLine}
         </p>
         </>
         )}
