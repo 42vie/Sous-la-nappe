@@ -54,7 +54,10 @@ function main() {
   const scenes = load<Array<{ id: string; index: number; choices: Array<{ id: string; revealsClue?: string | string[] }> }>>('scenes.json')
   if (scenes && clues) {
     ok(`scenes.json : ${scenes.length} scènes`)
-    if (scenes.length !== 11) error(`Attendu 11 scènes, trouvé ${scenes.length}`)
+    // 11 scènes canoniques + scènes inter-chapitres de l'expansion v3
+    // (S01b-S09b) — le total grandit à mesure que l'expansion avance
+    // (docs/expansion-v3-histoires-interactions.md), plus un compte fixe.
+    if (scenes.length < 11) error(`Attendu au moins 11 scènes, trouvé ${scenes.length}`)
     const clueRefs = clues.map((c) => c.ref)
     for (const scene of scenes) {
       for (const choice of scene.choices) {

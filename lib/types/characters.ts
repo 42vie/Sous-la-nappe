@@ -56,6 +56,14 @@ export interface CharacterState {
   yanisAlcoolCollectif: number;
   yanisInsouciance: number;
   yanisDuoShift: boolean;
+  yanisDoute: number;         // 0–100, doute grandissant sur son invitation (expansion v3)
+
+  // Variables d'expansion (docs/expansion-v3-histoires-interactions.md,
+  // histoires de fond 1-4) — alimentées par les scènes inter-chapitres S01b-S09b
+  lucasRancuneNoe: number;      // 0–100
+  maelysAmbivalence: number;    // 0–100
+  inesAttachementNoe: number;   // 0–100
+  inesCompliciteMorale: number; // 0–100
 }
 
 export const INITIAL_CHARACTER_STATE: CharacterState = {
@@ -89,6 +97,12 @@ export const INITIAL_CHARACTER_STATE: CharacterState = {
   yanisAlcoolCollectif: 40,
   yanisInsouciance: 70,
   yanisDuoShift: false,
+  yanisDoute: 0,
+
+  lucasRancuneNoe: 55,
+  maelysAmbivalence: 45,
+  inesAttachementNoe: 85,
+  inesCompliciteMorale: 0,
 };
 
 /** Static character data (identity, voice, blind spots) */

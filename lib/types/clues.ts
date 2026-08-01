@@ -5,6 +5,8 @@
  * C-26 à C-37 : ajoutés par l'expansion des intrigues parallèles
  * (docs/roadmap-v2-expansion.md §2, docs/expansion-v3-histoires-interactions.md)
  * — hors PDF d'origine, branchés sur des choix existants des scènes S01-S11.
+ * C-38 à C-43 : ajoutés par les scènes inter-chapitres de l'expansion v3
+ * (S01b à S09b, docs/expansion-v3-histoires-interactions.md).
  * fiabilite: 'low' | 'medium' | 'high' | 'very_high'
  * The 'misleads' field is the most important column: what it makes you believe (often wrong).
  */
@@ -17,7 +19,8 @@ export type ClueId =
   | 'C-21' | 'C-22' | 'C-23' | 'C-24' | 'C-25'
   | 'C-26' | 'C-27' | 'C-28' | 'C-29' | 'C-30'
   | 'C-31' | 'C-32' | 'C-33' | 'C-34' | 'C-35'
-  | 'C-36' | 'C-37';
+  | 'C-36' | 'C-37' | 'C-38' | 'C-39' | 'C-40'
+  | 'C-41' | 'C-42' | 'C-43';
 
 export type ClueReliability = 'low' | 'medium' | 'high' | 'very_high';
 

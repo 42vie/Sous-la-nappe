@@ -48,6 +48,15 @@ const RULES: FlagRecapRule[] = [
   { flag: 'lucas_a_parle', scene: 'scene_10_aftermath', line: (w) => `${w.name} a pris la parole — pas tout dit, mais assez pour que ça compte.` },
   { flag: 'lucas_confrontation_finale', scene: 'scene_11_reconstruction', line: (w) => `${w.name} a confronté Maëlys en tête-à-tête, juste avant de partir.` },
   { flag: 'lucas_silence_final', scene: 'scene_11_reconstruction', line: (w) => `${w.name} est ${w.il === 'elle' ? 'partie' : 'parti'} sans un mot, laissant la version de Noé tenir telle quelle.` },
+
+  // Scènes inter-chapitres (expansion v3)
+  { flag: 'lucas_note_palier', scene: 'scene_01b_conversation_palier', line: (w) => `${w.name} a compris, dès le palier, que Maëlys testait ce qu'${w.il === 'elle' ? 'elle' : 'il'} savait encore de la brouille avec Noé.` },
+  { flag: 'yanis_doute_invitation', scene: 'scene_02b_telephone_yanis', line: (w) => `${w.name} a commencé à douter, dès l'entrée, de la raison pour laquelle ${w.il === 'elle' ? 'elle avait été' : 'il avait été'} invité·e ce soir.` },
+  { flag: 'lucas_previent_sarah', scene: 'scene_03b_confidence_sarah', line: (w) => `${w.name} a proposé à Sarah de rentrer chercher son traitement — elle a refusé.` },
+  { flag: 'lucas_contact_ami_yanis', scene: 'scene_06b_lucas_yanis_dehors', line: (w) => `${w.name} a appelé l'ami que Yanis remplaçait ce soir — la peur qu'il décrivait était réelle.` },
+  { flag: 'yanis_veut_partir', scene: 'scene_06b_lucas_yanis_dehors', line: (w) => `${w.name} a proposé qu'ils partent tous les deux, sur la terrasse — ils sont restés.` },
+  { flag: 'lucas_photo_couloir', scene: 'scene_09b_couloir_incident', line: (w) => `${w.name} a pris une photo discrète du couloir, juste avant que la version officielle ne se fige.` },
+  { flag: 'samu_appele_tot', scene: 'scene_09b_couloir_incident', line: (w) => `${w.name} a appelé le SAMU immédiatement, sans attendre que quelqu'un d'autre ne s'en charge.` },
 ]
 
 export function buildRecap(state: RunState): string[] {

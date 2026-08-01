@@ -299,7 +299,7 @@ export function SceneEngine({ runId, playerPov, initialSceneId, run }: SceneEngi
           textTransform: 'uppercase',
           letterSpacing: '0.08em',
         }}>
-          {scene ? `Scène ${scene.index} / 11${scene.time ? ` — ${scene.time}` : ''}` : '…'}
+          {scene ? `Scène ${scene.index} / 19${scene.time ? ` — ${scene.time}` : ''}` : '…'}
         </p>
         <div style={{ display: 'flex', gap: 'var(--space-4)' }}>
           <button

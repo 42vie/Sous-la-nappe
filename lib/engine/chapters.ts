@@ -13,17 +13,29 @@ export const CHAPTERS: ChapterDef[] = [
   {
     id: 1,
     title: 'Avant le service',
-    sceneIds: ['scene_01_opening_memory', 'scene_02_arrival', 'scene_03_first_exchanges'],
+    sceneIds: [
+      'scene_01_opening_memory', 'scene_01b_conversation_palier',
+      'scene_02_arrival', 'scene_02b_telephone_yanis',
+      'scene_03_first_exchanges', 'scene_03b_confidence_sarah',
+    ],
   },
   {
     id: 2,
     title: 'La table se met en place',
-    sceneIds: ['scene_04_seating', 'scene_05_social_game_1', 'scene_06_kitchen_aside'],
+    sceneIds: [
+      'scene_04_seating', 'scene_04b_echange_regards',
+      'scene_05_social_game_1', 'scene_05b_remarque_ines',
+      'scene_06_kitchen_aside', 'scene_06b_lucas_yanis_dehors',
+    ],
   },
   {
     id: 3,
     title: 'Le service critique',
-    sceneIds: ['scene_07_social_game_2', 'scene_08_critical_service', 'scene_09_incident'],
+    sceneIds: [
+      'scene_07_social_game_2', 'scene_07b_demande_noe_lucas',
+      'scene_08_critical_service',
+      'scene_09_incident', 'scene_09b_couloir_incident',
+    ],
   },
   {
     id: 4,

@@ -50,6 +50,14 @@ export const CLUE_POINTS: Record<ClueId, number> = {
   'C-35': 4,
   'C-36': 3,
   'C-37': 2,
+
+  // Scènes inter-chapitres (docs/expansion-v3-histoires-interactions.md, S01b-S09b)
+  'C-38': 2,
+  'C-39': 2,
+  'C-40': 4,
+  'C-41': 4,
+  'C-42': 5,
+  'C-43': 6,
 }
 
 /** Somme totale du barème — calculée, pas recopiée, pour ne jamais désynchroniser du tableau ci-dessus. */
