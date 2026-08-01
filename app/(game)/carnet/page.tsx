@@ -3,9 +3,6 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { db } from '@/lib/firebase/client'
-import { collection, query, where, getDocs } from 'firebase/firestore'
-import { useAuthStore } from '@/store/authStore'
 import achievementsData from '@/data/achievements.json'
 import storyBlocksData from '@/data/story_blocks.json'
 import cluesData from '@/data/clues.json'
@@ -54,7 +51,6 @@ const ENDING_LABELS: Record<string, string> = {
 }
 
 export default function CarnetPage() {
-  const { user, isReady } = useAuthStore()
   const router = useRouter()
   const [runs, setRuns] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
@@ -79,31 +75,26 @@ export default function CarnetPage() {
   }
 
   useEffect(() => {
-    // isReady ne passe à true qu'une fois que Firebase Auth a confirmé
-    // l'état (onAuthStateChanged, async) — tant que ce n'est pas arrivé,
-    // "user" vaut encore null même pour quelqu'un de connecté. Rediriger
-    // sur ce seul test envoyait tout le monde vers /login au premier rendu,
-    // qui rebondissait ensuite vers /dashboard une fois l'auth confirmée —
-    // "le carnet redirige direct sur l'accueil". Plus net en PWA (démarrage
-    // à froid), où la réhydratation de l'auth est plus lente. On attend
-    // isReady avant de trancher.
-    if (!isReady) return
-    if (!user) { router.push('/login'); return }
-    // Un seul filtre d'égalité (playerId — le champ réellement écrit par
-    // /api/run/new et /api/run/[runId]/advance, jamais "userId") : le tri
-    // et le filtre "terminé" se font ensuite côté client, pour ne pas
-    // dépendre d'un index composite Firestore qui n'existe pas. Même
-    // logique que /api/run/current.
-    const q = query(collection(db, 'runs'), where('playerId', '==', user.uid))
-    getDocs(q).then((snap) => {
-      const completed = snap.docs
-        .map((d) => ({ id: d.id, ...d.data() }))
-        .filter((r: any) => r.isComplete)
-        .sort((a: any, b: any) => (b.updatedAt ?? 0) - (a.updatedAt ?? 0))
-      setRuns(completed)
-      setLoading(false)
-    })
-  }, [user, isReady, router])
+    // Route serveur, authentifiée par le cookie de session httpOnly — pas
+    // par le SDK Firebase Auth côté client. Le carnet dépendait auparavant
+    // de useAuthStore (onAuthStateChanged, persistance localStorage/IndexedDB) :
+    // en PWA installée, cette persistance peut être réhydratée en retard ou,
+    // sur certaines versions d'iOS, carrément vidée par l'OS entre deux
+    // lancements — le joueur restait connecté côté serveur (cookie valide,
+    // le dashboard fonctionnait) mais le carnet le renvoyait quand même vers
+    // /login. Le cookie de session est déjà ce que /api/run/current et les
+    // autres routes utilisent ; le carnet suit maintenant le même chemin,
+    // ce qui élimine toute dépendance à l'état d'auth du client.
+    fetch('/api/run/completed')
+      .then(async (res) => {
+        if (res.status === 401) { router.push('/login'); return }
+        if (!res.ok) throw new Error('Impossible de charger le carnet')
+        const data = await res.json()
+        setRuns(data.runs ?? [])
+      })
+      .catch(() => setRuns([]))
+      .finally(() => setLoading(false))
+  }, [router])
 
   // ── Calcul des succès débloqués ──────────────────────────────────────────
   const allCluesFound = new Set(runs.flatMap((r) => (r.discoveredClues ?? []).map((dc: any) => dc.clueId)))

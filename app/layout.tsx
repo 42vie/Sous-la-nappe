@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next'
 import { AuthProvider } from '@/components/providers/AuthProvider'
 import { Providers } from '@/components/providers'
 import { PwaRegister } from '@/components/PwaRegister'
+import { PwaInstallPrompt } from '@/components/PwaInstallPrompt'
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -49,6 +50,7 @@ export default function RootLayout({
           </AuthProvider>
         </Providers>
         <PwaRegister />
+        <PwaInstallPrompt />
       </body>
     </html>
   )
