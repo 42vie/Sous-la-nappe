@@ -593,7 +593,7 @@ export function SceneEngine({ runId, playerPov, initialSceneId, run }: SceneEngi
 
       {/* ── Scène normale ── */}
       {(phase === 'narrative' || phase === 'choices' || phase === 'transition' || phase === 'done') && scene && (
-        <>
+        <div key={scene.id} style={{ animation: 'fadeInUp 340ms ease-out' }}>
           {/* Illustration de scène — n'occupe aucun espace tant que le fichier n'existe pas, voir docs/images-manifest.md */}
           {SCENE_IMAGE[scene.id as SceneId] && (
             <ImageSlot
@@ -791,7 +791,7 @@ export function SceneEngine({ runId, playerPov, initialSceneId, run }: SceneEngi
               </button>
             </div>
           )}
-        </>
+        </div>
       )}
     </div>
   )

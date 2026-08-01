@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation'
 import { useRunStore } from '@/store/runStore'
 import { CHARACTERS } from '@/components/ui/CharacterCard'
 import { RelationshipBar } from '@/components/ui/RelationshipBar'
+import { EndingQuiz } from '@/components/ui/EndingQuiz'
 import { ENDING_SUMMARIES } from '@/lib/engine/endingSummaries'
 import type { CharacterId } from '@/lib/types/characters'
 
@@ -98,6 +99,8 @@ export default function FinalPage() {
   const [seatingGuess, setSeatingGuess] = useState<Record<number, CharacterId>>({})
   const [submittingSeating, setSubmittingSeating] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+  const [quizDone, setQuizDone] = useState(false)
 
   const [culprit, setCulprit] = useState<CharacterId | null>(null)
   const [deceasedCharacter, setDeceasedCharacter] = useState<CharacterId | null>(null)
@@ -469,6 +472,21 @@ export default function FinalPage() {
           )}
         </div>
 
+        {/* Le bilan de compréhension — donne un but explicite : pas juste
+            "vous avez trouvé X indices", mais "qu'avez-vous compris". Le
+            reste du rapport (bilan, chronologie, relations…) n'apparaît
+            qu'une fois ce cap franchi. */}
+        {!quizDone && (
+          <EndingQuiz
+            endingId={endingId ?? 'F0'}
+            recap={recap}
+            clueCount={clueCount}
+            onDone={() => setQuizDone(true)}
+          />
+        )}
+
+        {quizDone && (
+        <>
         {/* Bilan de la soirée — épilogue selon la tension accumulée */}
         {epilogue && (
           <div style={{ marginBottom: 'var(--space-12)' }}>
@@ -844,8 +862,10 @@ export default function FinalPage() {
             </p>
           )
         })()}
+        </>
+        )}
 
-        {/* CTA rejouer */}
+        {/* CTA rejouer — toujours accessible, même sans avoir terminé le bilan */}
         <div style={{ display: 'flex', gap: 'var(--space-4)', flexWrap: 'wrap', marginBottom: 'var(--space-12)' }}>
           <button
             onClick={() => router.push('/dashboard')}

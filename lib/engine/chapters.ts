@@ -1,6 +1,10 @@
 // Découpage en 4 chapitres — un personnage différent par chapitre.
 // Les 11 scènes existantes ne changent pas ; seul le regroupement et le
 // choix du POV à chaque frontière de chapitre sont nouveaux.
+//
+// Titres : repères pour se situer dans la soirée, sans rien spoiler de ce
+// qui va s'y passer (pas de "Le drame", pas de "La révélation") — le 4e
+// reprend le titre du jeu lui-même, en écho, pour le dernier chapitre.
 import type { SceneId } from '@/lib/types/scenes'
 
 export interface ChapterDef {
@@ -12,7 +16,7 @@ export interface ChapterDef {
 export const CHAPTERS: ChapterDef[] = [
   {
     id: 1,
-    title: 'Avant le service',
+    title: 'Sous les sourires',
     sceneIds: [
       'scene_01_opening_memory', 'scene_01b_conversation_palier',
       'scene_02_arrival', 'scene_02b_telephone_yanis',
@@ -21,7 +25,7 @@ export const CHAPTERS: ChapterDef[] = [
   },
   {
     id: 2,
-    title: 'La table se met en place',
+    title: 'La mise en place',
     sceneIds: [
       'scene_04_seating', 'scene_04b_echange_regards',
       'scene_05_social_game_1', 'scene_05b_remarque_ines',
@@ -30,7 +34,7 @@ export const CHAPTERS: ChapterDef[] = [
   },
   {
     id: 3,
-    title: 'Le service critique',
+    title: 'Le service',
     sceneIds: [
       'scene_07_social_game_2', 'scene_07b_demande_noe_lucas',
       'scene_08_critical_service',
@@ -39,7 +43,7 @@ export const CHAPTERS: ChapterDef[] = [
   },
   {
     id: 4,
-    title: 'Ce qui reste',
+    title: 'Sous la nappe',
     sceneIds: ['scene_10_aftermath', 'scene_11_reconstruction'],
   },
 ]
