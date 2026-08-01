@@ -7,7 +7,7 @@
     "availablePovs": "all",
     "narrativeBlocks": {
       "default": "Tu te souviens d'une phrase. Quelque chose que Maëlys a dit, en voiture, un soir de l'automne dernier. Tu n'es pas sûr des mots exacts — mais tu es sûr de l'intention derrière. Ce soir, en acceptant cette invitation, tu sais que quelque chose va se fermer. Tu ne sais pas encore quoi.",
-      "lucas": "Le vocal est toujours dans ton téléphone. Tu ne l'as pas effacé. Tu ne sais pas pourquoi.",
+      "lucas": "Le vocal est toujours dans ton téléphone, quarante-huit secondes enregistrées au printemps dernier. Tu ne l'as pas effacé, tu ne sais toujours pas pourquoi — par prudence, te dis-tu. Ce soir, en répondant à une invitation qui sonne légèrement faux, tu sais que ce vocal va compter. Tu ne sais juste pas encore comment.",
       "maelys": "Tu te souviens du premier hiver dans la maison, sans chauffage. Noé avait dit « on est chez nous ». Tu y as cru pendant cinq ans. Ce soir, tu reçois tout le monde dans cette maison qui ne porte pas ton nom, et tu souris à l'entrée comme si de rien n'était.",
       "noe": "Tu repenses au jour où tu as signé seul pour la maison. Tu te souviens d'avoir hésité, longtemps, avant de parapher. Ce soir, en prenant la route pour La Mésangère, cette hésitation te paraît être la preuve que tu n'es pas si mauvais que ça.",
       "ines": "Tu te souviens d'un dîner, il y a des années, où Maëlys t'a reprise devant tout le monde — sèchement, publiquement. Tu n'as jamais oublié. Ce soir tu comptes bien ne pas te laisser faire une deuxième fois.",
@@ -36,6 +36,31 @@
         ]
       },
       {
+        "id": "s01_c_maelys_act",
+        "verb": "examine_object",
+        "label": "Se rejouer, une dernière fois, le jour où elle a découvert la maison à son seul nom",
+        "availableFor": [
+          "maelys"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "maelysColere",
+            "delta": 8
+          },
+          {
+            "type": "state_delta",
+            "key": "maelysControle",
+            "delta": -3
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 3
+          }
+        ]
+      },
+      {
         "id": "s01_c_noe",
         "verb": "stay_silent",
         "label": "Se convaincre, une dernière fois, que c'est réglé",
@@ -56,6 +81,26 @@
         ]
       },
       {
+        "id": "s01_c_noe_act",
+        "verb": "examine_object",
+        "label": "Répéter dans sa tête l'excuse qu'il donnera s'il arrive en retard",
+        "availableFor": [
+          "noe"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "noeMensonge",
+            "delta": 6
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 2
+          }
+        ]
+      },
+      {
         "id": "s01_c_ines",
         "verb": "examine_object",
         "label": "Relire mentalement les chiffres avant d'entrer",
@@ -72,6 +117,26 @@
             "type": "state_delta",
             "key": "socialTension",
             "delta": 2
+          }
+        ]
+      },
+      {
+        "id": "s01_c_ines_act",
+        "verb": "observe",
+        "label": "Décider, avant d'entrer, qu'elle ne laissera rien passer ce soir",
+        "availableFor": [
+          "ines"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "inesIrritabilite",
+            "delta": 6
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 3
           }
         ]
       },
@@ -117,6 +182,26 @@
         "revealsClue": "C-14"
       },
       {
+        "id": "s01_c_sarah_act",
+        "verb": "stay_silent",
+        "label": "Se raccrocher à l'idée que Maëlys l'a toujours protégée",
+        "availableFor": [
+          "sarah"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "sarahDependanceMaelys",
+            "delta": 8
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": -2
+          }
+        ]
+      },
+      {
         "id": "s01_c_yanis",
         "verb": "observe",
         "label": "Se rejouer la phrase entendue à l'étage, à 17h05",
@@ -136,6 +221,26 @@
           }
         ],
         "revealsClue": "C-05"
+      },
+      {
+        "id": "s01_c_yanis_act",
+        "verb": "examine_object",
+        "label": "Se dire que cette soirée va enfin sceller sa place dans le groupe",
+        "availableFor": [
+          "yanis"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "yanisJeuSocial",
+            "delta": 5
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": -1
+          }
+        ]
       },
       {
         "id": "s01_c02",
@@ -192,7 +297,7 @@
     "availablePovs": "all",
     "narrativeBlocks": {
       "default": "La Mésangère. Tu connais cette maison depuis des années. Ce soir elle semble identique à toutes les autres fois — et pourtant quelque chose dans la lumière du couloir, dans la façon dont Maëlys t'ouvre la porte, est légèrement décalé. Une seule photo dans le couloir. Tu ne te souviens pas qu'elle en avait enlevé d'autres.",
-      "lucas": "Maëlys est souriante. Trop souriante pour quelqu'un qui vient de traverser ce qu'elle prétend avoir traversé.",
+      "lucas": "Maëlys t'ouvre la porte avec ce sourire qu'elle calibre pour chaque visage — tu reconnais le geste, tu fais le même au travail quand une médiation tourne mal. Une seule photo dans le couloir, une place trop nette pour l'endroit. Ton métier t'a appris à repérer ce genre de détail. Ce soir, tu voudrais ne pas l'avoir remarqué.",
       "maelys": "Tu accueilles chacun à la porte, un sourire calibré pour chaque visage. Tu as pensé la lumière, l'ordre d'arrivée, jusqu'à l'endroit où poser le carafon. Ce soir, comme toujours, tu construis un espace pour produire un effet.",
       "noe": "Tu arrives en retard, comme d'habitude. Tu ne t'excuses pas vraiment — tu racontes, une histoire de nationale et de camion, pour ne pas avoir à dire pourquoi tu as traîné dans la voiture avant d'entrer. Maëlys ne te pose aucune question. C'est pire que si elle l'avait fait.",
       "ines": "Tu arrives seule, en avance sur Noé que tu devais amener. Tu fais le tour de la maison en silence. Devant la photo du couloir, tu t'arrêtes deux secondes de trop. Personne ne te voit. C'est le seul moment de la soirée où tu te sens vulnérable, et tu comptes bien que ça reste ainsi.",
@@ -222,6 +327,26 @@
         "revealsClue": "C-18"
       },
       {
+        "id": "s02_c_maelys_act",
+        "verb": "let_pass",
+        "label": "Ne rien remarquer d'anormal — se concentrer sur le service à venir",
+        "availableFor": [
+          "maelys"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "maelysColere",
+            "delta": -3
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": -2
+          }
+        ]
+      },
+      {
         "id": "s02_c_noe",
         "verb": "observe",
         "label": "Vérifier une dernière fois son propre message d'invitation",
@@ -243,6 +368,26 @@
         "revealsClue": "C-01"
       },
       {
+        "id": "s02_c_noe_act",
+        "verb": "stay_silent",
+        "label": "Éviter le regard de Lucas en entrant, sans trop savoir pourquoi",
+        "availableFor": [
+          "noe"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "noeLachete",
+            "delta": 5
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 2
+          }
+        ]
+      },
+      {
         "id": "s02_c_ines",
         "verb": "observe",
         "label": "Regarder la photo dans le couloir, et la juger de trop",
@@ -262,6 +407,31 @@
           }
         ],
         "revealsClue": "C-03"
+      },
+      {
+        "id": "s02_c_ines_act",
+        "verb": "speak",
+        "label": "Complimenter sincèrement la décoration, pour une fois",
+        "availableFor": [
+          "ines"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "inesArrogance",
+            "delta": -5
+          },
+          {
+            "type": "state_delta",
+            "key": "inesTensionSociale",
+            "delta": -3
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": -2
+          }
+        ]
       },
       {
         "id": "s02_c_lucas",
@@ -289,6 +459,27 @@
         ]
       },
       {
+        "id": "s02_c_lucas_act",
+        "verb": "observe",
+        "label": "Observer la maison en professionnel, chercher ce qui a changé",
+        "availableFor": [
+          "lucas"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "lucasLucidite",
+            "delta": 6
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 1
+          }
+        ],
+        "revealsClue": "C-03"
+      },
+      {
         "id": "s02_c_sarah",
         "verb": "stay_silent",
         "label": "Entrer avec ce sourire qui lui coûte, sans rien demander",
@@ -309,6 +500,26 @@
         ]
       },
       {
+        "id": "s02_c_sarah_act",
+        "verb": "speak",
+        "label": "Demander à Maëlys si tout va bien — elle a l'air fatiguée",
+        "availableFor": [
+          "sarah"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "sarahDependanceMaelys",
+            "delta": 5
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 2
+          }
+        ]
+      },
+      {
         "id": "s02_c_yanis",
         "verb": "observe",
         "label": "Prendre une photo de l'entrée, pour le souvenir",
@@ -325,6 +536,26 @@
             "type": "state_delta",
             "key": "socialTension",
             "delta": 2
+          }
+        ]
+      },
+      {
+        "id": "s02_c_yanis_act",
+        "verb": "speak",
+        "label": "Complimenter bruyamment la maison, pour détendre l'atmosphère",
+        "availableFor": [
+          "yanis"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "yanisJeuSocial",
+            "delta": 6
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": -2
           }
         ]
       }
@@ -352,7 +583,7 @@
     "minigameId": "tone_puzzle",
     "narrativeBlocks": {
       "default": "Le salon. Les invités arrivent par vagues. Yanis est déjà là, expansif comme toujours. Inès arrive avec cinq minutes de retard et une bouteille. Noé n'est pas encore là — Maëlys dit qu'il sera 'un peu en retard'. Sarah arrive la dernière, discrète, avec un sourire qui lui coûte quelque chose.",
-      "lucas": "Tu regardes Sarah. Elle n'a pas l'air bien. Pas malade — autre chose. Comme quelqu'un qui sait qu'il ne devrait pas être là et qui est venu quand même.",
+      "lucas": "Tu regardes Sarah entrer, en retard sur les autres, un sourire qui lui coûte visiblement quelque chose. Pas malade — autre chose. Noé n'est toujours pas là ; Maëlys couvre son absence d'une phrase trop lisse. Entre elle et Inès, quelque chose se tend déjà, une politesse qui commence à coûter cher à tout le monde.",
       "maelys": "Tu sers, tu souris, tu laisses monter. Inès attaque sur la vente, tu remercies plutôt que de répondre — ça la déstabilise plus qu'un mot. Puis Noé dit « on a tous été un peu dépassés ». Tous. Quelque chose se ferme en toi, net, sans bruit.",
       "noe": "Tu ne sais pas quoi dire depuis vingt minutes, alors quand Yanis te pousse à parler, tu lâches une phrase pour faire diversion : « on a tous été un peu dépassés ». Personne ne réagit. Tu ne comprends pas encore que c'est justement pour ça que c'est grave.",
       "ines": "Tu le dis une fois, avec les chiffres : la maison a toujours été à son nom, ce n'est pas une opinion. Maëlys te répond « tu as raison » sans qu'aucune résistance n'apparaisse. Tu attendais un combat. Tu n'obtiens qu'un silence qui te met plus mal à l'aise que n'importe quelle dispute.",
@@ -381,6 +612,26 @@
         ]
       },
       {
+        "id": "s03_c_maelys_act",
+        "verb": "stay_silent",
+        "label": "Se taire un instant de trop après la phrase de Noé",
+        "availableFor": [
+          "maelys"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "maelysPanic",
+            "delta": 5
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 2
+          }
+        ]
+      },
+      {
         "id": "s03_c_noe",
         "verb": "speak",
         "label": "Dire, pour faire diversion, qu'on a tous été un peu dépassés",
@@ -397,6 +648,26 @@
             "type": "state_delta",
             "key": "socialTension",
             "delta": 4
+          }
+        ]
+      },
+      {
+        "id": "s03_c_noe_act",
+        "verb": "speak",
+        "label": "Essayer, cette fois, de dire quelque chose de vrai",
+        "availableFor": [
+          "noe"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "noeLachete",
+            "delta": -8
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 5
           }
         ]
       },
@@ -422,6 +693,26 @@
             "type": "state_delta",
             "key": "socialTension",
             "delta": 5
+          }
+        ]
+      },
+      {
+        "id": "s03_c_ines_act",
+        "verb": "let_pass",
+        "label": "Laisser passer la remarque de Noé, pour une fois",
+        "availableFor": [
+          "ines"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "inesIrritabilite",
+            "delta": -3
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": -2
           }
         ]
       },
@@ -456,6 +747,32 @@
         ]
       },
       {
+        "id": "s03_c_lucas_act",
+        "verb": "follow",
+        "label": "Rejoindre Sarah en cuisine sous un prétexte, pour la surveiller de plus près",
+        "availableFor": [
+          "lucas"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "lucasCourage",
+            "delta": 5
+          },
+          {
+            "type": "state_delta",
+            "key": "sarahStabilite",
+            "delta": 8
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 2
+          }
+        ],
+        "revealsClue": "C-09"
+      },
+      {
         "id": "s03_c_sarah",
         "verb": "observe",
         "label": "Remarquer, dans la cuisine, un récipient en grès inhabituel",
@@ -475,6 +792,26 @@
           }
         ],
         "revealsClue": "C-09"
+      },
+      {
+        "id": "s03_c_sarah_act",
+        "verb": "stay_silent",
+        "label": "Se resservir un verre, pour tenir jusqu'à la fin du repas",
+        "availableFor": [
+          "sarah"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "sarahStabilite",
+            "delta": -5
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": -1
+          }
+        ]
       },
       {
         "id": "s03_c_yanis",
@@ -500,6 +837,26 @@
             "delta": -2
           }
         ]
+      },
+      {
+        "id": "s03_c_yanis_act",
+        "verb": "observe",
+        "label": "Remarquer, pour une fois, que personne ne rit avec lui",
+        "availableFor": [
+          "yanis"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "yanisInsouciance",
+            "delta": -8
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 2
+          }
+        ]
       }
     ],
     "autoRevealClues": [],
@@ -518,7 +875,7 @@
     "updatesSeating": "seating_before_main",
     "narrativeBlocks": {
       "default": "Maëlys annonce qu'on passe à table. Elle indique les places — pas de cartons, mais des suggestions fermes. Noé arrive juste à ce moment. Il s'assoit ailleurs que prévu. Maëlys le ramène à sa place sans que personne ne relève vraiment.",
-      "lucas": "Tu vois Maëlys corriger la place de Noé. Ça dure deux secondes. Personne d'autre ne semble avoir remarqué. Toi oui.",
+      "lucas": "Tu vois Maëlys corriger la place de Noé — deux secondes, un geste ferme sous un sourire, personne d'autre ne relève. Toi, si. C'est un réflexe professionnel : dans ton métier, on t'apprend à repérer l'instant où quelqu'un tient à un détail plus qu'il ne devrait pouvoir l'expliquer. Ce soir, tu ne dis rien non plus.",
       "maelys": "Tu indiques les places — pas de cartons, des suggestions fermes. Quand Noé s'assoit à la mauvaise place, tu le ramènes sans hausser le ton, en souriant. Personne ne remarque que tu viens de tenir, physiquement, à un détail que tu ne peux pas expliquer.",
       "noe": "Tu t'assois où ça te semble logique, sans vraiment regarder les cartons. Maëlys te corrige doucement, presque gentiment. Tu te relèves en riant, tu changes de chaise, tu n'y penses plus. Elle, si.",
       "ines": "Tu observes Maëlys corriger Noé sans un mot de trop. Ce genre de contrôle minutieux, chez elle, ne t'étonne pas — tu l'as toujours connue comme ça. Tu t'assois à ta place, celle qu'on t'a désignée, sans faire d'histoire pour une fois.",
@@ -547,6 +904,31 @@
         ]
       },
       {
+        "id": "s04_c_maelys_act",
+        "verb": "intervene",
+        "label": "Insister, fermement mais en souriant, pour que Noé change de place",
+        "availableFor": [
+          "maelys"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "maelysControle",
+            "delta": 10
+          },
+          {
+            "type": "state_delta",
+            "key": "maelysColere",
+            "delta": 3
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 4
+          }
+        ]
+      },
+      {
         "id": "s04_c_noe",
         "verb": "change_seat",
         "label": "S'asseoir où ça semble logique, sans regarder les cartons",
@@ -571,6 +953,26 @@
         ]
       },
       {
+        "id": "s04_c_noe_act",
+        "verb": "let_pass",
+        "label": "Se relever en riant, sans vraiment y penser",
+        "availableFor": [
+          "noe"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "noeLachete",
+            "delta": 3
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": -2
+          }
+        ]
+      },
+      {
         "id": "s04_c_ines",
         "verb": "observe",
         "label": "Observer Maëlys corriger Noé, sans un mot de trop",
@@ -590,6 +992,26 @@
           }
         ],
         "revealsClue": "C-07"
+      },
+      {
+        "id": "s04_c_ines_act",
+        "verb": "stay_silent",
+        "label": "Repenser, en silence, à toutes les fois où Maëlys a dû « tenir » comme ça",
+        "availableFor": [
+          "ines"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "inesTensionSociale",
+            "delta": 5
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 1
+          }
+        ]
       },
       {
         "id": "s04_c_lucas",
@@ -618,6 +1040,26 @@
         "revealsClue": "C-08"
       },
       {
+        "id": "s04_c_lucas_act",
+        "verb": "observe",
+        "label": "Compter discrètement les chaises, comme pour vérifier que tout le monde est bien là",
+        "availableFor": [
+          "lucas"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "lucasNeutralite",
+            "delta": 5
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 1
+          }
+        ]
+      },
+      {
         "id": "s04_c_sarah",
         "verb": "stay_silent",
         "label": "S'installer entre deux verres déjà bien entamés",
@@ -639,6 +1081,26 @@
         "revealsClue": "C-06"
       },
       {
+        "id": "s04_c_sarah_act",
+        "verb": "observe",
+        "label": "Remarquer que sa place est juste en face du passe, sans y prêter vraiment attention",
+        "availableFor": [
+          "sarah"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "sarahMemoire",
+            "delta": 5
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": -1
+          }
+        ]
+      },
+      {
         "id": "s04_c_yanis",
         "verb": "observe",
         "label": "Trouver ça presque drôle, Noé qui se trompe de chaise",
@@ -655,6 +1117,26 @@
             "type": "state_delta",
             "key": "socialTension",
             "delta": -1
+          }
+        ]
+      },
+      {
+        "id": "s04_c_yanis_act",
+        "verb": "speak",
+        "label": "Proposer une blague sur le plan de table, que personne ne relève",
+        "availableFor": [
+          "yanis"
+        ],
+        "effects": [
+          {
+            "type": "state_delta",
+            "key": "yanisJeuSocial",
+            "delta": 5
+          },
+          {
+            "type": "state_delta",
+            "key": "socialTension",
+            "delta": 2
           }
         ]
       }
@@ -682,7 +1164,7 @@
     "minigameId": "tictactoe_hidden",
     "narrativeBlocks": {
       "default": "Yanis propose un jeu. Quelque chose de simple — un morpion verbal, des questions à élimination. Le ton est léger. Maëlys sourit. L'enjeu annoncé est de desservir. Sarah joue. Sarah perd.",
-      "lucas": "Tu regardes Sarah perdre. Elle rit. Maëlys rit aussi. Mais le résultat est là : Sarah va aider au service. Tu ne dis rien.",
+      "lucas": "Tu regardes Sarah perdre le jeu de Yanis. Elle rit, Maëlys rit avec elle, tout semble léger. Mais le résultat, lui, ne l'est pas : Sarah va porter les assiettes ce soir. Tu pourrais dire quelque chose, proposer de la remplacer. Tu ne le fais pas. Tu ranges ça avec le reste de ce que tu ne dis pas.",
       "maelys": "Yanis lance son jeu, prétexte léger pour désigner qui aidera au service. Sarah perd. Tu pourrais refuser qu'elle t'aide. Tu ne le fais pas. C'est une décision qui te prend une demi-seconde et que tu ne regardes jamais en face.",
       "noe": "Tu joues sans vraiment y croire, plus pour faire diversion que pour gagner. Sarah perd, rit, se porte volontaire pour le service. Tu trouves ça sympathique, presque touchant. Tu ne vois rien d'autre là-dedans.",
       "ines": "Tu trouves le jeu un peu puéril, mais tu joues quand même — refuser aurait été pire, pour l'ambiance. Sarah perd. Tu ne penses à rien de particulier. C'est un jeu, une manche de trop dans une soirée qui en compte déjà trop.",
@@ -1055,7 +1537,7 @@
     "availablePovs": "all",
     "narrativeBlocks": {
       "default": "Tu passes par la cuisine pour te resservir en eau. Maëlys est dos à toi, penchée sur le plan de travail. Dans le reflet de la vitre du cellier, tu vois quelque chose — un geste, une main vers une assiette. Pas une assiette. Une assiette en particulier.",
-      "lucas": "Tu ne comprends pas ce que tu vois. Ou tu ne veux pas comprendre. Tu reposes ton verre et tu retournes en salle à manger.",
+      "lucas": "Dans le reflet de la vitre du cellier, tu vois Maëlys faire un geste au-dessus d'une seule assiette. Tu ne comprends pas ce que tu vois — ou tu ne veux pas comprendre, ce qui revient au même ce soir-là. Tu reposes ton verre d'eau et tu retournes t'asseoir, en te disant que tu as dû mal voir.",
       "maelys": "Tu es seule en cuisine, dos à la salle à manger. Tu prépares les assiettes dans l'ordre que tu as fixé cet après-midi. Un geste, une fois, au-dessus d'une seule assiette. Tu ne te retournes pas. Tu ne sais pas qui, dans le reflet du cellier, aurait pu te voir.",
       "noe": "Tu sors sur la terrasse « passer un appel ». Tu ne passes aucun appel. Tu vérifies, une nouvelle fois, que le fil de messages avec Sarah est bien supprimé — y compris de la corbeille. Tu rentres en souriant, comme si de rien n'était.",
       "ines": "Tu restes à table pendant que les autres circulent. Tu regardes Maëlys aller et venir vers la cuisine avec cette précision qui te rappelle son métier — elle scénographie même un dîner de famille. Tu n'y vois rien d'autre qu'une manie de plus.",
@@ -1369,7 +1851,7 @@
     "updatesSeating": "seating_at_critical",
     "narrativeBlocks": {
       "default": "Inès dit quelque chose. Quelque chose sur Sarah — pas méchant en surface, mais ciblé. Sarah accuse le coup. La tension monte. Maëlys, au lieu de calmer, amplifie subtilement. La table se réorganise — Inès et Sarah échangent de place. Ce n'est pas anodin.",
-      "lucas": "Tu regardes le déplacement. Sarah est maintenant à la place 4 — face au passe. Inès à la place 3. Tu mémorises ça. Tu ne sais pas encore pourquoi ça compte.",
+      "lucas": "Inès dit quelque chose de piquant sur la mémoire de Sarah ; la table se resserre autour du malaise. Puis Yanis propose de changer de place « pour casser l'ambiance » — Sarah et Inès échangent leurs sièges. Sarah est maintenant place 4, face au passe. Tu mémorises la nouvelle disposition sans savoir encore pourquoi elle compte.",
       "maelys": "Inès humilie Sarah sur un souvenir mal restitué. Tu ne calmes pas — tu dis, sans lever les yeux, qu'elle a une très bonne mémoire, Sarah. Puis Yanis propose de changer de place « pour casser ça ». Sarah et Inès échangent. Tu regardes le nouveau plan de table sans rien laisser paraître.",
       "noe": "Tu regardes ton verre pendant qu'Inès humilie Sarah sur un détail de date. Tu ne dis rien. Yanis relance tout le monde avec son idée de changer de place. Tu bouges parce que c'est plus simple que de rester assis dans ce silence.",
       "ines": "Tu corriges Sarah sur une date — le 14 juin, tu as la facture du traiteur. Tu ne le dis pas méchamment, mais le silence qui suit te dit que tu es allée trop loin. Maëlys ajoute une phrase sur la mémoire de Sarah qui te vise plus que tu ne voudrais l'admettre.",
@@ -1779,7 +2261,7 @@
     "updatesSeating": "seating_at_critical",
     "narrativeBlocks": {
       "default": "Les plats arrivent du passe. Sarah sert. Elle distribue les assiettes dans l'ordre du passe — 1, 2, 3, 4. Maëlys avait prévu une position. Pas une assiette. La position 4 était censée être Noé. La position 4 est maintenant Sarah.",
-      "lucas": "Tu vois les assiettes partir. Tu as vu le reflet tout à l'heure. Tu additionnes. Et tu ne dis rien.",
+      "lucas": "Tu regardes Sarah porter les assiettes dans l'ordre du passe. Tu as vu le reflet en cuisine tout à l'heure, tu as vu Maëlys corriger la place de Noé, tu as vu l'échange de sièges. Tu additionnes tout ça en une seconde et demie — et dans cette seconde et demie, tu ne dis rien.",
       "maelys": "Sarah porte les deux premières assiettes. Pour poser, elle croise les bras — l'ordre s'inverse. Inès n'est plus à sa place. L'assiette prévue arrive devant elle. Tu vois. Tu as une seconde et demie pour dire quelque chose. Tu ne dis rien.",
       "noe": "Le service se déroule, tu ne remarques rien de particulier. Tu trouves la sauce excellente, tu le dis. Maëlys rit, une seconde de trop. Tu ne sais pas encore que tu viens de complimenter la dernière chose que tu aurais dû dire ce soir-là.",
       "ines": "Tu manges peu — tu es encore sur les nerfs de la confrontation. Tu ne remarques rien d'anormal dans ton assiette, sinon que le service a été un peu confus ce soir. Tu picores, tu parles, tu ingères à peine un tiers du plat.",
@@ -2153,7 +2635,7 @@
     "updatesSeating": "seating_after_incident",
     "narrativeBlocks": {
       "default": "Sarah va mal. Pas immédiatement — une dizaine de minutes après le service. D'abord une pâleur. Puis quelque chose de plus visible. La table se fige. Maëlys est la première à réagir — trop vite, trop précisément.",
-      "lucas": "Tu regardes Maëlys réagir. Et tu comprends quelque chose que tu ne pourras plus décomprendre : elle savait que ça allait arriver. Pas comme ça. Mais elle savait.",
+      "lucas": "Sarah pâlit, puis c'est plus net, plus inquiétant. La table se fige. Maëlys est la première debout — trop vite, trop précisément, comme quelqu'un qui a répété ce moment sans le savoir. Tu regardes ça et tu comprends quelque chose que tu ne pourras plus décomprendre ensuite : elle savait que ça allait arriver. Pas comme ça, précisément. Mais elle savait.",
       "maelys": "Tu comprends en cuisine, devant l'assiette vide d'Inès et le pain que Sarah a utilisé pour saucer. Tu sais, à cet instant précis, ce qui va arriver. Tu ne dis rien. Tu demandes seulement à Sarah si elle a pris son traitement. Elle dit non. Tu fermes les yeux.",
       "noe": "Inès sort de table, pâle. Puis c'est Sarah, sur le seuil du salon, brutal, sans avertissement. Tu regardes sans comprendre ce qui se passe, un verre encore à la main. Tu n'as jamais vu quelqu'un aller aussi mal aussi vite.",
       "ines": "Tu sors de table — sueurs, vision trouble. Tu penses au vin, à la soirée éprouvante, à rien d'autre. Tu ne sais pas encore que quelqu'un d'autre, dans la pièce à côté, est en train de vivre bien pire que toi.",
@@ -2496,7 +2978,7 @@
     "minigameId": "audio_reconstruction",
     "narrativeBlocks": {
       "default": "Les secours sont partis. Il reste cinq personnes dans la maison. Personne ne dit vraiment ce qui s'est passé. Noé prend la parole en premier — trois phrases, dans un ordre précis. Maëlys hoche la tête. Un récit commence à se construire.",
-      "lucas": "Tu as le vocal dans ta poche. Tu as vu le reflet. Tu as vu le service. Tu as tout. Et tu écoutes Noé construire une version propre de la soirée, et tu ne l'interromps pas.",
+      "lucas": "Tu as le vocal dans ta poche, le reflet dans les yeux, l'ordre du service en mémoire. Tu as tout ce qu'il faut pour changer la version qui est en train de se construire. Noé parle le premier, trois phrases dans un ordre trop précis pour être improvisé, et Maëlys hoche la tête. Tu écoutes. Tu ne l'interromps pas.",
       "maelys": "Tu t'appuies contre le mur du couloir pendant que Noé construit, phrase après phrase, une version de la soirée qui tient debout. Tu ne dis rien. Tu ne diras rien. C'est peut-être la seule chose, ce soir, que tu maîtrises encore complètement.",
       "noe": "Tu prends la parole en premier, parce que quelqu'un doit le faire. Elle avait bu, elle est sous traitement, elle sortait d'une période difficile. Trois phrases vraies. Tu ne mens à aucun moment. Tu ne te demandes pas ce que leur ordre est en train de fabriquer.",
       "ines": "Tu écoutes Noé expliquer ce qui s'est passé. Chaque phrase, prise seule, est vraie. Tu t'accroches à cette version parce que l'alternative — qu'il y ait autre chose derrière — est une pensée que tu n'es pas prête à avoir ce soir.",
@@ -2918,7 +3400,7 @@
     "availablePovs": "all",
     "narrativeBlocks": {
       "default": "La nuit avance. Vous êtes encore là, tous les cinq sauf Sarah. Quelques échanges de plus — des silences surtout. Puis chacun part. La maison se vide. Et la version qui sortira de là, c'est celle que vous avez tous laissé Noé énoncer.",
-      "lucas": "En partant, tu passes devant le couloir. La photo est toujours là. Tu te demandes si elle était là depuis le début ou si Maëlys l'a mise ce soir. Tu ne retournes pas vérifier.",
+      "lucas": "En partant, tu repasses devant le couloir. La photo est toujours là — tu te demandes si elle y était avant ce soir, ou si Maëlys l'a accrochée pour l'occasion. Tu ne retournes pas vérifier. Tu pars avec tout ce qu'il fallait pour dire autre chose que ce que Noé a construit, et tu ne l'as pas dit. Ce sera ta version de la soirée, désormais : celle où tu savais.",
       "maelys": "Tu montes à l'étage, seule. Tu ne détruis pas le carnet — tu en arraches une page, tu jettes le reste dans la cheminée devant deux personnes qui ne comprennent pas ce qu'elles regardent. La page reste dans la poche de ton gilet. La soirée se referme sur ce que tout le monde a laissé dire.",
       "noe": "Tu pars parmi les derniers. La version que tu as construite tient — personne ne l'a vraiment contestée. Tu te dis que c'est ce qu'il fallait faire, pour tout le monde. Tu n'es pas certain d'y croire toi-même.",
       "ines": "Tu quittes la maison avec la version qu'on t'a donnée à croire, parce qu'elle est plus simple que le doute. Tu repenses à la photo du couloir, une seconde, avant de remonter en voiture. Tu ne reviens pas la regarder.",
