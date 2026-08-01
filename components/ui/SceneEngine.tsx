@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { useRunStore } from '@/store/runStore'
 import { CluePanel } from './CluePanel'
@@ -17,6 +17,7 @@ import { getChapterNumberForScene } from '@/lib/engine/chapters'
 import { SCENE_IMAGE } from '@/lib/engine/sceneImages'
 import { RELATIONSHIP_MATRIX } from '@/lib/engine/backstory'
 import { computeImpairment, scrambleText } from '@/lib/engine/overheard'
+import { tensionTier, candlesLit, shouldTriggerSilence, SILENCE_TEXT } from '@/lib/engine/tensionAtmosphere'
 import type { CharacterId } from '@/lib/types/characters'
 import type { SceneId } from '@/lib/types/scenes'
 import type { RunState } from '@/types'
@@ -49,7 +50,7 @@ interface SceneEngineProps {
   run: RunState
 }
 
-type Phase = 'loading' | 'narrative' | 'choices' | 'minigame' | 'transition' | 'done'
+type Phase = 'loading' | 'silence' | 'narrative' | 'choices' | 'minigame' | 'transition' | 'done'
 
 // Mini-jeux effectivement implémentés en UI. audio_reconstruction (scènes
 // 10-11) n'est volontairement pas ici : il a été remplacé par les
@@ -74,6 +75,8 @@ export function SceneEngine({ runId, playerPov, initialSceneId, run }: SceneEngi
   const [showGauges, setShowGauges] = useState(false)
   const [showManuscript, setShowManuscript] = useState(false)
   const [showRelations, setShowRelations] = useState(false)
+  const [silenceSeconds, setSilenceSeconds] = useState(0)
+  const silenceShownRef = useRef<Set<string>>(new Set())
 
   const discoveredClues = storeRun?.discoveredClues ?? run.discoveredClues ?? []
 
@@ -134,6 +137,16 @@ export function SceneEngine({ runId, playerPov, initialSceneId, run }: SceneEngi
         return
       }
 
+      // Silence actif : un temps mort forcé, sans choix, juste avant que la
+      // mécanique n'aille au bout — une seule fois par scène traversée.
+      if (shouldTriggerSilence(data.scene.id, tension) && !silenceShownRef.current.has(data.scene.id)) {
+        silenceShownRef.current.add(data.scene.id)
+        setActiveMinigame(hasMinigame ? data.scene.minigameId : null)
+        setSilenceSeconds(4)
+        setPhase('silence')
+        return
+      }
+
       setActiveMinigame(hasMinigame ? data.scene.minigameId : null)
       setPhase(hasMinigame ? 'minigame' : 'narrative')
     } catch (err) {
@@ -145,6 +158,16 @@ export function SceneEngine({ runId, playerPov, initialSceneId, run }: SceneEngi
   useEffect(() => {
     fetchScene()
   }, [fetchScene])
+
+  useEffect(() => {
+    if (phase !== 'silence' || silenceSeconds <= 0) return
+    const t = setTimeout(() => setSilenceSeconds((s) => s - 1), 1000)
+    return () => clearTimeout(t)
+  }, [phase, silenceSeconds])
+
+  function handleSilenceContinue() {
+    setPhase(activeMinigame ? 'minigame' : 'narrative')
+  }
 
   async function handleChoice(choice: ChoiceData) {
     setChoiceMade(choice)
@@ -258,7 +281,49 @@ export function SceneEngine({ runId, playerPov, initialSceneId, run }: SceneEngi
     )
   }
 
+  if (phase === 'silence') {
+    return (
+      <div style={{
+        width: '100%',
+        maxWidth: 'var(--content-narrow)',
+        textAlign: 'center',
+        padding: 'var(--space-12) var(--space-4)',
+      }}>
+        <p style={{
+          fontFamily: 'var(--font-display)',
+          fontStyle: 'italic',
+          fontSize: 'var(--text-lg)',
+          color: 'var(--color-text-muted)',
+          lineHeight: 2,
+          whiteSpace: 'pre-wrap',
+          marginBottom: 'var(--space-10)',
+        }}>
+          {SILENCE_TEXT}
+        </p>
+        <button
+          onClick={handleSilenceContinue}
+          disabled={silenceSeconds > 0}
+          style={{
+            padding: 'var(--space-3) var(--space-8)',
+            background: silenceSeconds > 0 ? 'var(--color-surface-offset)' : 'var(--color-primary)',
+            color: silenceSeconds > 0 ? 'var(--color-text-faint)' : 'var(--color-text-inverse)',
+            border: 'none',
+            borderRadius: 'var(--radius-md)',
+            fontFamily: 'var(--font-body)',
+            fontSize: 'var(--text-sm)',
+            letterSpacing: '0.04em',
+            cursor: silenceSeconds > 0 ? 'default' : 'pointer',
+            transition: 'all var(--transition)',
+          }}
+        >
+          {silenceSeconds > 0 ? `…` : 'Continuer →'}
+        </button>
+      </div>
+    )
+  }
+
   const socialTension = (storeRun ?? run).variable.socialTension ?? 0
+  const tier = tensionTier(socialTension)
 
   return (
     <div style={{ width: '100%', maxWidth: 'var(--content-narrow)' }}>
@@ -545,20 +610,36 @@ export function SceneEngine({ runId, playerPov, initialSceneId, run }: SceneEngi
             fontFamily: 'var(--font-display)',
             fontSize: 'var(--text-xl)',
             color: 'var(--color-text)',
-            marginBottom: 'var(--space-6)',
+            marginBottom: 'var(--space-3)',
             fontWeight: 500,
           }}>
             {scene.title}
           </h2>
 
-          {/* Texte narratif */}
+          {/* Bougies de la table — s'éteignent avec la tension sociale */}
+          <p
+            title={`Tension : ${Math.round(socialTension)}/100`}
+            style={{
+              fontSize: 'var(--text-sm)',
+              letterSpacing: '0.15em',
+              marginBottom: 'var(--space-6)',
+              opacity: 0.8,
+            }}
+          >
+            {'🕯️'.repeat(candlesLit(socialTension))}{'  '}
+          </p>
+
+          {/* Texte narratif — se resserre et s'assombrit à mesure que la
+              tension monte (docs/expansion-v4, volet A1) */}
           <p style={{
             fontFamily: 'var(--font-body)',
             fontSize: 'var(--text-base)',
-            color: 'var(--color-text-muted)',
-            lineHeight: '1.8',
+            color: tier === 'critical' ? 'var(--color-error)' : 'var(--color-text-muted)',
+            lineHeight: tier === 'critical' ? '1.5' : tier === 'warning' ? '1.65' : '1.8',
+            letterSpacing: tier === 'critical' ? '-0.005em' : 'normal',
             marginBottom: 'var(--space-8)',
             whiteSpace: 'pre-wrap',
+            transition: 'color var(--transition), line-height var(--transition)',
           }}>
             {scene.narrative}
           </p>
