@@ -1,0 +1,137 @@
+[
+  {
+    "id": "ACH_FIRST_RUN",
+    "tier": 1,
+    "title": "Premier couvert",
+    "description": "Terminer une première partie, quelle que soit la fin.",
+    "icon": "🕯️",
+    "condition": { "type": "runs_completed", "min": 1 },
+    "revealsStoryBlock": null
+  },
+  {
+    "id": "ACH_ALL_POVS",
+    "tier": 2,
+    "title": "Six regards",
+    "description": "Terminer une partie avec chacun des six personnages.",
+    "icon": "👁️",
+    "condition": { "type": "unique_povs_used", "min": 6 },
+    "revealsStoryBlock": "STORY_FULL_TABLE"
+  },
+  {
+    "id": "ACH_FOUND_C19",
+    "tier": 2,
+    "title": "21h47",
+    "description": "Trouver la photo de Yanis dans au moins une partie.",
+    "icon": "📸",
+    "condition": { "type": "clue_found_any_run", "clueId": "C-19" },
+    "revealsStoryBlock": "STORY_PHOTO_DETAIL"
+  },
+  {
+    "id": "ACH_FOUND_C22",
+    "tier": 3,
+    "title": "Page arrachée",
+    "description": "Trouver la page du carnet de Maëlys.",
+    "icon": "📄",
+    "condition": { "type": "clue_found_any_run", "clueId": "C-22" },
+    "revealsStoryBlock": "STORY_MAELYS_PREMEDITATION"
+  },
+  {
+    "id": "ACH_FOUND_C20",
+    "tier": 2,
+    "title": "Le vocal",
+    "description": "Réécouter le message vocal de Maëlys depuis le téléphone de Lucas.",
+    "icon": "🎙️",
+    "condition": { "type": "flag_set_any_run", "flag": "lucas_a_reecouté_vocal" },
+    "revealsStoryBlock": "STORY_VOCAL_CONTENT"
+  },
+  {
+    "id": "ACH_SILENT_LUCAS",
+    "tier": 2,
+    "title": "Témoin silencieux",
+    "description": "Finir une partie avec Lucas sans jamais avoir utilisé le vocal.",
+    "icon": "🫥",
+    "condition": { "type": "pov_ending_with_flag_absent", "pov": "lucas", "flag": "lucas_a_reecouté_vocal" },
+    "revealsStoryBlock": "STORY_LUCAS_MORAL_COST"
+  },
+  {
+    "id": "ACH_NOE_HOSPITAL",
+    "tier": 3,
+    "title": "Ambulance",
+    "description": "Atteindre la fin canonique — Noé part à l'hôpital.",
+    "icon": "🚑",
+    "condition": { "type": "ending_reached", "endingId": "F0" },
+    "revealsStoryBlock": "STORY_ENDING_F0"
+  },
+  {
+    "id": "ACH_TRUTH_FULL",
+    "tier": 3,
+    "title": "Vérité complète",
+    "description": "Atteindre la fin F7 — vérité assemblée post-hôpital.",
+    "icon": "🔍",
+    "condition": { "type": "ending_reached", "endingId": "F7" },
+    "revealsStoryBlock": "STORY_ENDING_F7"
+  },
+  {
+    "id": "ACH_ALL_ENDINGS",
+    "tier": 4,
+    "title": "Toutes les nappes",
+    "description": "Voir toutes les fins possibles.",
+    "icon": "🗝️",
+    "condition": { "type": "all_endings_reached", "endingIds": ["F0","F1","F2","F3","F4","F5","F6","F7","F8","D1","D2","S1"] },
+    "revealsStoryBlock": "STORY_COMPLETE_TRUTH"
+  },
+  {
+    "id": "ACH_NOE_SECRET",
+    "tier": 2,
+    "title": "Messages supprimés",
+    "description": "Découvrir le fil supprimé entre Noé et Sarah (C-23).",
+    "icon": "💬",
+    "condition": { "type": "clue_found_any_run", "clueId": "C-23" },
+    "revealsStoryBlock": "STORY_NOE_SARAH_SECRET"
+  },
+  {
+    "id": "ACH_SARAH_POV",
+    "tier": 2,
+    "title": "Mémoire sensorielle",
+    "description": "Terminer une partie du point de vue de Sarah.",
+    "icon": "🧂",
+    "condition": { "type": "pov_completed", "pov": "sarah" },
+    "revealsStoryBlock": "STORY_SARAH_TRUTH"
+  },
+  {
+    "id": "ACH_YANIS_POSTSCENE",
+    "tier": 3,
+    "title": "La photo envoyée",
+    "description": "Déclencher la scène post-fin de Yanis.",
+    "icon": "📤",
+    "condition": { "type": "flag_set_any_run", "flag": "yanis_photo_sent" },
+    "revealsStoryBlock": "STORY_YANIS_POSTSCENE"
+  },
+  {
+    "id": "ACH_SCORE_100",
+    "tier": 4,
+    "title": "Reconstruction parfaite",
+    "description": "Obtenir 100/100 aux questions finales.",
+    "icon": "⚖️",
+    "condition": { "type": "final_score_gte", "score": 100 },
+    "revealsStoryBlock": "STORY_COMPLETE_TRUTH"
+  },
+  {
+    "id": "ACH_FOUND_C09",
+    "tier": 1,
+    "title": "Grès ébréché",
+    "description": "Remarquer le récipient derrière la boîte à sel.",
+    "icon": "🫙",
+    "condition": { "type": "clue_found_any_run", "clueId": "C-09" },
+    "revealsStoryBlock": "STORY_POISON_VECTOR"
+  },
+  {
+    "id": "ACH_MAELYS_POV",
+    "tier": 2,
+    "title": "L'hôtesse",
+    "description": "Terminer une partie du point de vue de Maëlys.",
+    "icon": "🕯️",
+    "condition": { "type": "pov_completed", "pov": "maelys" },
+    "revealsStoryBlock": "STORY_MAELYS_MOTIVE"
+  }
+]

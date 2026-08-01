@@ -1,0 +1,80 @@
+[
+  {
+    "id": "STORY_FULL_TABLE",
+    "title": "La table au complet",
+    "unlockedBy": "ACH_ALL_POVS",
+    "text": "Six personnes. Six angles morts. Chacun a vu un fragment de la même soirée et en a conclu quelque chose de différent. Maëlys a construit un dispositif. Noé a menti par morceaux depuis des mois. Lucas a vu le geste et s'est tu. Inès a déplacé Sarah phrase après phrase. Yanis a photographié la preuve sans le savoir. Sarah a senti la vérité sans avoir la séquence. Il n'existe pas de regard qui contienne la soirée entière. Il n'en a jamais existé."
+  },
+  {
+    "id": "STORY_PHOTO_DETAIL",
+    "unlockedBy": "ACH_FOUND_C19",
+    "title": "Ce que montre la photo",
+    "text": "La photo prise par Yanis à 21h47 montre six personnes autour d'une table. Si on regarde attentivement : les places ne sont plus celles du début de soirée. Inès est à la position 3. Sarah est à la position 4. La ligne d'assiettes dans le passe est visible dans le reflet de la fenêtre. Yanis a pris la photo pour garder un souvenir. Il ne savait pas ce qu'il documentait."
+  },
+  {
+    "id": "STORY_MAELYS_PREMEDITATION",
+    "unlockedBy": "ACH_FOUND_C22",
+    "title": "La page du carnet",
+    "text": "Maëlys a écrit ses intentions avant la soirée. La page arrachée, lisible à contre-jour, le prouve. Ce n'était pas une impulsion. Ce n'était pas de la panique. Elle a réfléchi, pesé, décidé. Ce qu'elle voulait n'était pas la mort — c'était la chute publique. Elle voulait que Noé soit vu comme petit, comme défaillant, comme indéfendable. Elle a utilisé le seul espace de contrôle qu'il lui restait : la table qu'il ne posséderait jamais."
+  },
+  {
+    "id": "STORY_VOCAL_CONTENT",
+    "unlockedBy": "ACH_FOUND_C20",
+    "title": "Ce que dit le vocal",
+    "text": "48 secondes. La voix de Maëlys, au printemps. Elle ne crie pas. Elle pose des questions en sachant les réponses. Elle dit 'je ne comprends pas' sur un ton qui prouve qu'elle comprend parfaitement. Lucas a gardé ce message. Il ne l'a jamais effacé et ne sait pas pourquoi. Selon la fin que vous avez atteinte, ce vocal est soit la seule preuve qui tient — soit la preuve que personne n'a voulu entendre."
+  },
+  {
+    "id": "STORY_LUCAS_MORAL_COST",
+    "unlockedBy": "ACH_SILENT_LUCAS",
+    "title": "Le prix du silence",
+    "text": "Lucas avait le vocal. Lucas a vu le reflet dans la vitre du cellier à 21h34. Lucas a noté mentalement le temps que Maëlys a passé en cuisine. Lucas est parti sans parler. Ce n'est pas de la lâcheté simple. C'est un choix construit, répété, habité. Être juste sans se salir. Présent sans s'exposer. Lucide sans devenir responsable. Il y a un événement plus ancien où il n'a pas parlé à temps. Cette soirée en est l'écho. Ce qu'il fait cette nuit-là, il l'a déjà fait."
+  },
+  {
+    "id": "STORY_ENDING_F0",
+    "unlockedBy": "ACH_NOE_HOSPITAL",
+    "title": "Ce qui s'est passé cette nuit-là",
+    "text": "Maëlys a préparé une sauce dosée, un récipient en grès, une assiette positionnée en place 2 du passe — la place de Noé. Noé est arrivé en retard. Il s'est assis à la mauvaise place. Maëlys l'a recorrigé. Plus tard, Inès et Sarah ont échangé leurs places suite à une remarque. Sarah a perdu le morpion de Yanis et s'est retrouvée à servir. Ce soir-là — dans cette branche — l'assiette est allée à Noé. Il a déclenché une détresse sévère peu avant 22h. Il a survécu. Rien d'autre n'a pu rester enterré après ça."
+  },
+  {
+    "id": "STORY_ENDING_F7",
+    "unlockedBy": "ACH_TRUTH_FULL",
+    "title": "Comment la vérité est sortie",
+    "text": "La vérité n'est pas sortie du dîner. Elle est sortie de l'hôpital. Un examen toxicologique a ouvert une enquête. Trois éléments ont convergé : la photo de Yanis (21h47, les places réelles, la ligne d'assiettes), le vocal de Lucas (48 secondes, le printemps, la voix de quelqu'un qui sait), et la page du carnet de Maëlys (lisible à contre-jour, la seule chose qu'elle n'aurait pas dû écrire). Maëlys n'a pas pu tenir. Sarah a été réhabilitée. Yanis a transmis la photo sans comprendre pleinement ce qu'il envoyait."
+  },
+  {
+    "id": "STORY_NOE_SARAH_SECRET",
+    "unlockedBy": "ACH_NOE_SECRET",
+    "title": "Noé et Sarah",
+    "text": "Il y avait une relation entre Noé et Sarah. Discrète, dissimulée au groupe. Noé a supprimé le fil de messages la veille à 23h40. Il savait ce qu'il faisait. Dans certaines fins, cette suppression lui a donné un levier narratif contre Sarah après l'incident — la décrire comme instable, jalouse, une présence à problèmes. Maëlys savait aussi. Elle avait gardé les boîtes de traitement de Sarah précisément pour ce genre de moment : brouiller les pistes si quelque chose tournait mal."
+  },
+  {
+    "id": "STORY_SARAH_TRUTH",
+    "unlockedBy": "ACH_SARAH_POV",
+    "title": "Ce que Sarah savait",
+    "text": "Sarah avait tout — mais pas dans le bon ordre. Elle avait remarqué le récipient en grès derrière la boîte à sel. Elle se souvenait de la phrase dite en voiture le 30 septembre. Elle avait senti quelque chose dans la façon dont Maëlys l'avait regardée ce soir-là. Sa mémoire est sensorielle : juste sur la matière, fragile sur la séquence. Elle n'a jamais compris qu'elle était en danger. À aucun moment de la soirée. Elle aidait, elle servait, elle souriait — parce que Maëlys l'avait un jour recueillie et que cette dette effaçait tout le reste."
+  },
+  {
+    "id": "STORY_YANIS_POSTSCENE",
+    "unlockedBy": "ACH_YANIS_POSTSCENE",
+    "title": "Trois semaines après",
+    "text": "Yanis était dans son appartement. Il regardait la photo sur son téléphone — la table, les assiettes, la ligne du passe dans le reflet. Il avait essayé d'en parler à Inès. Inès n'avait pas voulu l'entendre. Il avait essayé avec Lucas. Lucas avait reformulé ça en hypothèse puis en question logistique puis en fatigue de soirée. Yanis était seul avec une image qui prouvait quelque chose que personne ne voulait voir. Il avait appuyé sur envoyer. Ce n'est pas le groupe qui l'a perdu. C'est lui qui a choisi la vérité plutôt que le groupe."
+  },
+  {
+    "id": "STORY_POISON_VECTOR",
+    "unlockedBy": "ACH_FOUND_C09",
+    "title": "Le récipient en grès",
+    "text": "Derrière la boîte à sel, dans la cuisine de La Mésangère, il y avait un petit récipient en grès ébréché que Sarah n'avait jamais vu là avant. Elle l'a enregistré sans y penser — un détail parmi d'autres, une texture de plus dans une cuisine familière. C'était le vecteur. La sauce avait été préparée séparément, dosée, tenue à l'écart du reste jusqu'au moment du service. La liste de courses du 3 octobre est incomplète : un ingrédient a été acheté ailleurs, séparément, en dehors de toute routine."
+  },
+  {
+    "id": "STORY_MAELYS_MOTIVE",
+    "unlockedBy": "ACH_MAELYS_POV",
+    "title": "Ce que Maëlys voulait vraiment",
+    "text": "Maëlys n'a jamais voulu tuer. Elle voulait que Noé soit malade devant tout le monde — assez mal pour perdre sa superbe, assez visiblement pour ne plus pouvoir tenir le récit du type fiable, posé, raisonnable. Cinq ans à porter la maison. L'argent avancé. Les travaux. Les saisons. Le nom sur l'acte qui n'était pas le sien. Elle ne lui en voulait pas de l'avoir trahie. Elle lui en voulait de l'avoir rendue invisible. Ce soir à La Mésangère, dans la maison qui ne portait pas son nom, elle a construit la seule chose qu'il ne pouvait pas lui enlever : le moment où il tomberait."
+  },
+  {
+    "id": "STORY_COMPLETE_TRUTH",
+    "unlockedBy": "ACH_ALL_ENDINGS",
+    "title": "L'histoire complète",
+    "text": "Maëlys a préparé un dispositif culinaire destiné à rendre Noé gravement malade lors d'un dîner entre amis à La Mésangère — la maison qu'elle avait co-construite sans jamais en être propriétaire. Le mobile : une trahison financière et émotionnelle de cinq ans. Noé avait signé seul, dissimulé des dettes, maintenu une relation cachée avec Sarah, et construit un récit de sa propre vie où il restait défendable. Maëlys a sous-estimé trois choses : les déplacements de table, la logistique du service, et la complexité des sept personnes réunies autour d'elle ce soir-là. Lucas a vu le geste et s'est tu. Inès a déplacé Sarah sans le savoir. Yanis a tout photographié sans comprendre. Sarah a servi l'assiette qu'elle n'aurait pas dû porter. Selon les choix faits au long des parties, l'histoire a produit des fins différentes — mais une seule vérité, distribuée en fragments, que personne n'a jamais détenue seul."
+  }
+]
