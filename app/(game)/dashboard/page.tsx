@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { CharacterCard, CHARACTERS } from '@/components/ui/CharacterCard'
 import { DeducedSeatingPlan } from '@/components/ui/DeducedSeatingPlan'
 import { TOTAL_CHAPTERS, getChapterNumberForScene } from '@/lib/engine/chapters'
@@ -169,6 +170,38 @@ export default function DashboardPage() {
             : 'Rien n’est encore écrit. Choisissez un point de vue pour commencer.'}
         </p>
       </header>
+
+      {/* ── Entrée vers le Carnet (parties passées, succès, secrets, histoire) ── */}
+      <Link
+        href="/carnet"
+        style={{
+          width: '100%', maxWidth: 'var(--content-narrow)',
+          padding: 'var(--space-4) var(--space-6)',
+          marginBottom: 'var(--space-8)',
+          background: 'var(--color-surface)',
+          border: '1px solid var(--color-divider)',
+          borderRadius: 'var(--radius-lg)',
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 'var(--space-4)',
+          textDecoration: 'none',
+          transition: 'border-color var(--transition), background var(--transition)',
+        }}
+      >
+        <div>
+          <p style={{
+            fontFamily: 'var(--font-display)', fontSize: 'var(--text-lg)', fontStyle: 'italic',
+            color: 'var(--color-text)', margin: 0,
+          }}>
+            Le carnet
+          </p>
+          <p style={{
+            fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', color: 'var(--color-text-faint)',
+            margin: 'var(--space-1) 0 0',
+          }}>
+            Vos parties passées, les indices trouvés, les succès et les fragments d'histoire débloqués.
+          </p>
+        </div>
+        <span style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-lg)', color: 'var(--color-text-faint)', flexShrink: 0 }}>→</span>
+      </Link>
 
       {!checkingExisting && (
         <>

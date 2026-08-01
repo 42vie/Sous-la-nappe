@@ -60,6 +60,23 @@ export default function CarnetPage() {
   const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState<'parties' | 'secrets' | 'succes' | 'histoire'>('parties')
   const [openBlock, setOpenBlock] = useState<string | null>(null)
+  const [confirmingDelete, setConfirmingDelete] = useState<string | null>(null)
+  const [deleting, setDeleting] = useState<string | null>(null)
+
+  async function handleDeleteRun(runId: string) {
+    if (deleting) return
+    setDeleting(runId)
+    try {
+      const res = await fetch(`/api/run/${runId}`, { method: 'DELETE' })
+      if (!res.ok) throw new Error('Suppression impossible')
+      setRuns((prev) => prev.filter((r) => r.id !== runId))
+      setConfirmingDelete(null)
+    } catch {
+      // La partie reste affichée si la suppression échoue — pas de perte silencieuse.
+    } finally {
+      setDeleting(null)
+    }
+  }
 
   useEffect(() => {
     if (!user) { router.push('/login'); return }
@@ -143,10 +160,20 @@ export default function CarnetPage() {
       {/* Header */}
       <div style={{ marginBottom: '40px' }}>
         <Link href="/dashboard" style={{ color: 'rgba(212,207,200,0.4)', fontFamily: 'var(--font-body)', fontSize: '12px', letterSpacing: '0.1em', textDecoration: 'none', textTransform: 'uppercase', display: 'block', marginBottom: '24px' }}>← Retour</Link>
-        <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2rem,5vw,3.2rem)', color: '#f5f3ee', fontWeight: 400, fontStyle: 'italic', margin: 0 }}>Le Carnet</h1>
-        <p style={{ color: 'rgba(212,207,200,0.5)', fontFamily: 'var(--font-body)', fontSize: '13px', marginTop: '8px' }}>
-          {runs.length} partie{runs.length !== 1 ? 's' : ''} terminée{runs.length !== 1 ? 's' : ''} · {unlockedAchIds.size}/{achievementsData.length} succès · {unlockedStoryIds.size}/{storyBlocksData.length} fragments d'histoire
-        </p>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px' }}>
+          <div>
+            <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2rem,5vw,3.2rem)', color: '#f5f3ee', fontWeight: 400, fontStyle: 'italic', margin: 0 }}>Le Carnet</h1>
+            <p style={{ color: 'rgba(212,207,200,0.5)', fontFamily: 'var(--font-body)', fontSize: '13px', marginTop: '8px' }}>
+              {runs.length} partie{runs.length !== 1 ? 's' : ''} terminée{runs.length !== 1 ? 's' : ''} · {unlockedAchIds.size}/{achievementsData.length} succès · {unlockedStoryIds.size}/{storyBlocksData.length} fragments d'histoire
+            </p>
+          </div>
+          <Link href="/dashboard" style={{
+            padding: '10px 22px', background: '#8b1a1a', color: '#f5f3ee', borderRadius: '6px',
+            fontFamily: 'var(--font-body)', fontSize: '13px', letterSpacing: '0.04em', textDecoration: 'none', flexShrink: 0,
+          }}>
+            Nouvelle soirée →
+          </Link>
+        </div>
       </div>
 
       {/* Tabs */}
@@ -216,6 +243,49 @@ export default function CarnetPage() {
                   </div>
                 </div>
               )}
+
+              {/* Effacer cette partie */}
+              <div style={{ marginTop: '14px', paddingTop: '14px', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+                {confirmingDelete !== run.id ? (
+                  <button
+                    onClick={() => setConfirmingDelete(run.id)}
+                    style={{
+                      background: 'transparent', border: 'none', color: 'rgba(212,207,200,0.35)',
+                      fontFamily: 'var(--font-body)', fontSize: '11px', letterSpacing: '0.06em',
+                      textTransform: 'uppercase', cursor: 'pointer', padding: 0,
+                    }}
+                  >
+                    Effacer cette partie
+                  </button>
+                ) : (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+                    <span style={{ color: '#e07070', fontFamily: 'var(--font-body)', fontSize: '11px' }}>
+                      Définitif — confirmer ?
+                    </span>
+                    <button
+                      onClick={() => handleDeleteRun(run.id)}
+                      disabled={deleting === run.id}
+                      style={{
+                        background: '#a01f1f', border: 'none', color: '#fff', padding: '4px 12px',
+                        borderRadius: '4px', fontFamily: 'var(--font-body)', fontSize: '11px',
+                        cursor: deleting === run.id ? 'wait' : 'pointer', opacity: deleting === run.id ? 0.7 : 1,
+                      }}
+                    >
+                      {deleting === run.id ? 'Suppression…' : 'Oui, effacer'}
+                    </button>
+                    <button
+                      onClick={() => setConfirmingDelete(null)}
+                      disabled={deleting === run.id}
+                      style={{
+                        background: 'transparent', border: '1px solid rgba(255,255,255,0.1)', color: 'rgba(212,207,200,0.5)',
+                        padding: '4px 12px', borderRadius: '4px', fontFamily: 'var(--font-body)', fontSize: '11px', cursor: 'pointer',
+                      }}
+                    >
+                      Annuler
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
           ))}
         </div>
