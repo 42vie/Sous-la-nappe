@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { db } from '@/lib/firebase/client'
-import { collection, query, where, orderBy, getDocs } from 'firebase/firestore'
+import { collection, query, where, getDocs } from 'firebase/firestore'
 import { useAuthStore } from '@/store/authStore'
 import achievementsData from '@/data/achievements.json'
 import storyBlocksData from '@/data/story_blocks.json'
@@ -63,14 +63,18 @@ export default function CarnetPage() {
 
   useEffect(() => {
     if (!user) { router.push('/login'); return }
-    const q = query(
-      collection(db, 'runs'),
-      where('userId', '==', user.uid),
-      where('isComplete', '==', true),
-      orderBy('completedAt', 'desc')
-    )
+    // Un seul filtre d'égalité (playerId — le champ réellement écrit par
+    // /api/run/new et /api/run/[runId]/advance, jamais "userId") : le tri
+    // et le filtre "terminé" se font ensuite côté client, pour ne pas
+    // dépendre d'un index composite Firestore qui n'existe pas. Même
+    // logique que /api/run/current.
+    const q = query(collection(db, 'runs'), where('playerId', '==', user.uid))
     getDocs(q).then((snap) => {
-      setRuns(snap.docs.map((d) => ({ id: d.id, ...d.data() })))
+      const completed = snap.docs
+        .map((d) => ({ id: d.id, ...d.data() }))
+        .filter((r: any) => r.isComplete)
+        .sort((a: any, b: any) => (b.updatedAt ?? 0) - (a.updatedAt ?? 0))
+      setRuns(completed)
       setLoading(false)
     })
   }, [user, router])
@@ -168,7 +172,7 @@ export default function CarnetPage() {
                     Partie {runs.length - i}
                   </span>
                   <span style={{ marginLeft: '12px', fontFamily: 'var(--font-body)', fontSize: '11px', color: 'rgba(212,207,200,0.4)', letterSpacing: '0.08em', textTransform: 'uppercase' }}>
-                    {run.completedAt ? new Date(run.completedAt.seconds * 1000).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }) : '—'}
+                    {run.updatedAt ? new Date(run.updatedAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }) : '—'}
                   </span>
                 </div>
                 <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
