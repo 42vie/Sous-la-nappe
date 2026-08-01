@@ -6,7 +6,7 @@ import { CharacterCard, CHARACTERS } from '@/components/ui/CharacterCard'
 import { useRunStore } from '@/store/runStore'
 import { CHAPTERS, TOTAL_CHAPTERS } from '@/lib/engine/chapters'
 import { BLIND_SPOTS } from '@/lib/engine/blindSpots'
-import { CHARACTER_BIOS, CHRONOLOGY } from '@/lib/engine/backstory'
+import { CHARACTER_BIOS, CHRONOLOGY, RELATIONSHIP_MATRIX, relationshipLabel } from '@/lib/engine/backstory'
 import { getCharacterAction, formatCharacterAction } from '@/lib/engine/characterActions'
 import { getManuscriptStatus } from '@/lib/engine/manuscript'
 import type { CharacterId } from '@/lib/types/characters'
@@ -53,6 +53,7 @@ export default function ChapterSelectPage() {
   const justPlayedName = justPlayed ? CHARACTER_NAMES[justPlayed].split(' ')[0] : null
   const blindSpots = justPlayed ? BLIND_SPOTS[justPlayed] : []
   const justPlayedBio = justPlayed ? CHARACTER_BIOS[justPlayed] : null
+  const justPlayedRelations = justPlayed ? RELATIONSHIP_MATRIX[justPlayed] : null
   const tension = run?.variable?.socialTension ?? 0
   // La chronologie (7 ans, 6 fractures) se débloque progressivement, jamais
   // d'un coup — la phase 4 (l'invalidation, le vrai mobile) n'arrive qu'une
@@ -229,6 +230,42 @@ export default function ChapterSelectPage() {
               <strong style={{ color: 'var(--color-text)' }}>Ce que {justPlayedName === 'Sarah' || justPlayedName === 'Maëlys' || justPlayedName === 'Inès' ? 'elle' : 'il'} veut, ce soir. </strong>{justPlayedBio.wants}
             </p>
           </div>
+
+          {justPlayedRelations && (
+            <div style={{ marginTop: 'var(--space-5)', paddingTop: 'var(--space-4)', borderTop: '1px solid var(--color-divider)' }}>
+              <p style={{ fontFamily: 'var(--font-body)', fontSize: '10px', color: 'var(--color-text-faint)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 'var(--space-3)' }}>
+                Ce que {justPlayedName} ressent, envers chacun
+              </p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
+                {CHARACTERS.filter((c) => c.id !== justPlayed).map((c) => {
+                  const rel = justPlayedRelations[c.id]
+                  if (!rel) return null
+                  const positive = rel.value >= 0
+                  return (
+                    <div key={c.id}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2px' }}>
+                        <span style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', color: 'var(--color-text-muted)' }}>
+                          → {c.firstName}
+                        </span>
+                        <span style={{ fontFamily: 'var(--font-body)', fontSize: '10px', color: 'var(--color-text-faint)' }}>
+                          {relationshipLabel(rel.value)}{rel.note ? ` · ${rel.note}` : ''}
+                        </span>
+                      </div>
+                      <div style={{ height: 4, background: 'var(--color-surface-offset)', borderRadius: 999, overflow: 'hidden', position: 'relative' }}>
+                        <div style={{
+                          position: 'absolute',
+                          left: positive ? '50%' : `${50 - Math.abs(rel.value) / 2}%`,
+                          width: `${Math.abs(rel.value) / 2}%`,
+                          height: '100%',
+                          background: positive ? 'var(--color-primary)' : 'var(--color-error, #a01f1f)',
+                        }} />
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          )}
         </div>
       )}
 
