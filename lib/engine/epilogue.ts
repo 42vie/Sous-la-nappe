@@ -43,6 +43,11 @@ const ENDING_VICTIMS: Record<EndingId, CharacterId[]> = {
   F6: ['noe'],
   F7: ['noe'],
   F8: ['noe'],
+  // E1-E3 : variantes de la branche Noé (intrigues parallèles) — Noé reste
+  // le seul touché physiquement, ce qui change c'est ce qui ressort ensuite.
+  E1: ['noe'],
+  E2: ['noe'],
+  E3: ['noe'],
 }
 
 // Bump de gravité propre à certaines fins, au-delà de la tension seule :
@@ -56,7 +61,7 @@ const ENDING_GRAVITY_BUMP: Partial<Record<EndingId, number>> = {
 // Noé survit. La tension peut faire monter la gravité de son épisode
 // jusqu'au coma artificiel, jamais jusqu'à sa mort — sinon ce ne serait
 // plus ces fins-là.
-const MUST_SURVIVE_ENDINGS: Set<EndingId> = new Set(['F0', 'F6', 'F7', 'F8'])
+const MUST_SURVIVE_ENDINGS: Set<EndingId> = new Set(['F0', 'F6', 'F7', 'F8', 'E1', 'E2', 'E3'])
 
 function medicalTier(gravity: number, mustSurvive: boolean): { condition: CharacterCondition; label: string } {
   if (gravity < 25) return { condition: 'ebranle', label: 'malaise passager, remis·e sur pied dans la soirée' }

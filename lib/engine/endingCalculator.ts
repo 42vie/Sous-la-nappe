@@ -17,9 +17,43 @@ import { dynamicMutualTrustRatio } from './mutualTrust'
 /** Indices dont la présence assemble le dossier post-hôpital (photo, vocal, carnet). */
 const KEY_EVIDENCE_CLUES: ClueId[] = ['C-19', 'C-20', 'C-22']
 
+function discoveredClueSet(state: RunState): Set<ClueId> {
+  return new Set(state.discoveredClues.map((dc) => dc.clueId))
+}
+
 function hasKeyEvidence(state: RunState): boolean {
-  const discovered = new Set(state.discoveredClues.map((dc) => dc.clueId))
-  return KEY_EVIDENCE_CLUES.some((id) => discovered.has(id))
+  const discovered = discoveredClueSet(state)
+  return KEY_EVIDENCE_CLUES.some((id) => discovered.has(id)) || Boolean(state.flags['yanis_photo_vue'])
+}
+
+// E1-E3 (docs/roadmap-v2-expansion.md §2, §4) — payoff des intrigues
+// parallèles A/B/C, toutes des variantes de la branche Noé (F0/F6/F7/F8) :
+// Noé survit dans les trois cas, mais ce qui ressort après coup change de
+// sens. Vérifiées dans l'ordre A→B→C ; la première qui matche l'emporte,
+// avant même F7/F8/F6, parce qu'elle raconte une histoire plus précise que
+// "quelqu'un a parlé" ou "le récit faux a tenu".
+const DEBT_CLUES: ClueId[] = ['C-26', 'C-27', 'C-28', 'C-29']
+const PAST_CLUES: ClueId[] = ['C-30', 'C-31', 'C-32']
+
+function isCoCoupableInes(state: RunState): boolean {
+  const discovered = discoveredClueSet(state)
+  const debtRevealed = DEBT_CLUES.some((id) => discovered.has(id))
+  // Un seul personnage par chapitre : Inès ne peut pas à la fois voir les
+  // boîtes (S06, chapitre 2) ET tenir son silence en aftermath (S10,
+  // chapitre 4) dans le même run — les deux flags sont donc alternatifs,
+  // pas cumulatifs, chacun suffisant s'il tombe sur le chapitre qu'elle joue.
+  const inesComplice = Boolean(state.flags['ines_vu_boites']) || Boolean(state.flags['ines_silence_actif'])
+  return debtRevealed && inesComplice
+}
+
+function isSolidariteToxique(state: RunState): boolean {
+  const discovered = discoveredClueSet(state)
+  const pastRevealed = PAST_CLUES.some((id) => discovered.has(id))
+  return pastRevealed && Boolean(state.flags['sarah_couvre_maelys'])
+}
+
+function isPreuveEffacee(state: RunState): boolean {
+  return Boolean(state.flags['maelys_a_su_photo']) && !state.flags['yanis_photo_vue']
 }
 
 // Rééquilibrage F5 (2026-08-01) : dans la structure à 110 actions, chacun
@@ -150,6 +184,21 @@ export function calculateEnding(state: RunState): EndingId {
 
   // Noé est la cible réellement atteinte — ce qui se passe après l'hôpital tranche.
 
+  // E1 — le mobile financier de Noé sort au jour, et Inès savait depuis la
+  // cuisine (S06) sans jamais rien dire : sa survie à lui expose sa
+  // complicité à elle.
+  if (isCoCoupableInes(state)) return 'E1'
+
+  // E2 — Sarah connaissait le passé avec Maëlys avant ce soir, et choisit
+  // quand même de partir sans rien dire : une solidarité qui protège la
+  // mauvaise personne.
+  if (isSolidariteToxique(state)) return 'E2'
+
+  // E3 — Maëlys a su pour la photo de Yanis avant que quiconque d'autre ne
+  // la voie : la preuve qui aurait pu tout changer disparaît avant de
+  // compter.
+  if (isPreuveEffacee(state)) return 'E3'
+
   // F7 — le dossier s'assemble (photo, vocal ou carnet) et quelqu'un a parlé.
   if (hasKeyEvidence(state) && flags['lucas_a_parle']) return 'F7'
 
@@ -181,6 +230,9 @@ export const ENDING_TRIGGERS: Record<EndingId, string> = {
   F6: "Noé a survécu à l'hôpital, mais personne n'a vraiment parlé — le silence a tenu, et la vérité est restée enterrée malgré la gravité de ce qui venait de se passer.",
   F7: "Noé a survécu, et assez de preuves matérielles (une photo, un vocal, un carnet) ont fini par s'assembler pendant que quelqu'un acceptait enfin de parler.",
   F8: "Noé a survécu, mais le récit qui est sorti de la maison a fini par écraser Sarah — dans une tension déjà montée trop haut pour que quiconque la défende.",
+  E1: "Noé a survécu, mais le mobile financier qui pesait sur lui est sorti au jour — et Inès, qui avait vu de quoi il retournait dans la cuisine ou qui s'est tue une fois de trop en aftermath, s'est retrouvée complice par son silence.",
+  E2: "Noé a survécu, mais Sarah connaissait un passé avec Maëlys que personne d'autre ne soupçonnait — et elle a choisi de partir sans rien dire, protégeant la mauvaise personne.",
+  E3: "Noé a survécu, et la photo qui aurait pu tout prouver a existé — mais Maëlys en a su l'existence avant que quiconque d'autre ne la voie, et la preuve a disparu avant de compter.",
 }
 
 /**

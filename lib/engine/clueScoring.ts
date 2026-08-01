@@ -34,6 +34,22 @@ export const CLUE_POINTS: Record<ClueId, number> = {
   'C-23': 5,
   'C-24': 1,
   'C-25': 6,
+
+  // Intrigues parallèles (docs/roadmap-v2-expansion.md, docs/expansion-v3) —
+  // barème plus bas que le dossier canonique : ce sont des sous-intrigues,
+  // pas les indices qui prouvent le mécanisme central de la soirée.
+  'C-26': 3,
+  'C-27': 2,
+  'C-28': 3,
+  'C-29': 2,
+  'C-30': 1,
+  'C-31': 2,
+  'C-32': 1,
+  'C-33': 1,
+  'C-34': 2,
+  'C-35': 4,
+  'C-36': 3,
+  'C-37': 2,
 }
 
 /** Somme totale du barème — calculée, pas recopiée, pour ne jamais désynchroniser du tableau ci-dessus. */

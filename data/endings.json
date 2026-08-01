@@ -61,5 +61,26 @@
     "description": "Deux survivants avaient tous les deux quelque chose à cacher. Un seul avait le pouvoir de choisir lequel comptait.",
     "playerMessage": "La soirée a produit deux survivants qui avaient tous les deux quelque chose à cacher.",
     "conditions": { "targetActual": ["noe"], "survivingNarrative": "false_sarah_self_harm", "socialTension": ">= 30" }
+  },
+  {
+    "id": "E1",
+    "title": "Inès co-coupable",
+    "description": "Noé survit, mais le mobile financier qui pesait sur lui sort au jour — et Inès, qui savait, s'est tue.",
+    "playerMessage": "Elle a toujours été celle qui répare. Cette fois, il n'y avait rien à réparer — juste à se taire.",
+    "conditions": { "targetActual": ["noe"], "note": "dette financière de Noé révélée (C-26 à C-29) + Inès a vu les boîtes (S06) ou est restée silencieuse en aftermath (S10)" }
+  },
+  {
+    "id": "E2",
+    "title": "Solidarité toxique",
+    "description": "Noé survit, mais Sarah connaissait un passé avec Maëlys — et choisit de partir sans rien dire, protégeant la mauvaise personne.",
+    "playerMessage": "Ce n'est pas qu'elle ne savait pas. C'est qu'elle a choisi, encore une fois, de protéger la mauvaise personne.",
+    "conditions": { "targetActual": ["noe"], "note": "passé Sarah/Maëlys révélé (C-30 à C-32) + Sarah part sans parler en S11" }
+  },
+  {
+    "id": "E3",
+    "title": "Preuve effacée",
+    "description": "Noé survit, et la photo qui aurait pu tout prouver a existé — mais Maëlys en a su l'existence avant que quiconque d'autre ne la voie.",
+    "playerMessage": "La preuve a existé. Le temps qu'on comprenne ce qu'elle montrait, elle n'existait déjà plus.",
+    "conditions": { "targetActual": ["noe"], "note": "Maëlys découvre la photo de Yanis (S10) avant que Lucas ne la voie" }
   }
 ]

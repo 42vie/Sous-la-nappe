@@ -66,6 +66,9 @@ const ENDING_LABELS: Record<string, string> = {
   D1: 'Double victime',
   D2: 'L\'auto-contamination',
   S1: 'L\'interruption',
+  E1: 'Inès co-coupable',
+  E2: 'Solidarité toxique',
+  E3: 'Preuve effacée',
 }
 
 export default function CarnetPage() {

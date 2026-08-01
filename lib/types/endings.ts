@@ -9,7 +9,11 @@
  * critiques + confrontation + parole) alimentent F7.
  */
 
-export type EndingId = 'F0' | 'F1' | 'F2' | 'F3' | 'F4' | 'F5' | 'F6' | 'F7' | 'F8';
+// E1-E3 : payoff des intrigues parallèles (docs/roadmap-v2-expansion.md §2,
+// §4) — des variantes de la branche Noé (F0/F6/F7/F8) où ce qui sort après
+// coup n'est plus seulement "Noé a survécu" mais une complicité ou une
+// preuve qui change le sens de cette survie. Voir endingCalculator.ts.
+export type EndingId = 'F0' | 'F1' | 'F2' | 'F3' | 'F4' | 'F5' | 'F6' | 'F7' | 'F8' | 'E1' | 'E2' | 'E3';
 
 export interface EndingCondition {
   type: 'flag' | 'state' | 'variable' | 'pov';

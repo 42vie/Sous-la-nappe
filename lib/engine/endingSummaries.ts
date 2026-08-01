@@ -77,4 +77,22 @@ export const ENDING_SUMMARIES: Record<EndingId, EndingSummary> = {
     detail: "Noé survit, intact, et c'est là que tout empire. Il n'est pas touché par le doute : il comprend vite, et il choisit d'imposer une version publique où Sarah passe pour instable — sa dépression, son traitement, ses médicaments mal pris — plutôt que d'affronter ce que sa propre survie révèle. Dans une tension déjà montée trop haut, personne n'a plus la force de la défendre. La soirée produit deux survivants qui avaient tous les deux quelque chose à cacher, et un seul d'entre eux avait le pouvoir social de choisir lequel des deux secrets allait compter.",
     lastLine: 'La soirée a produit deux survivants qui avaient tous les deux quelque chose à cacher.',
   },
+  E1: {
+    title: 'Inès co-coupable',
+    short: 'Noé survit. Le mobile financier sort au jour. Inès savait, et s’est tue.',
+    detail: "Noé survit à l'hôpital, comme dans la version la plus canonique de cette nuit-là. Mais ce qui remonte ensuite ne concerne pas seulement Maëlys : un virement resté dans un tiroir, un vocal qu'il n'aurait jamais dû laisser traîner, une colonne de chiffres dans un carnet — la dette que Noé traînait envers Maëlys depuis des années finit par sortir, elle aussi. Et Inès, qui a toujours été celle qui répare, qui couvre, qui range avant que ça ne se voie, avait vu quelque chose dans cette cuisine bien avant l'incident — des boîtes qu'elle a rangées mentalement sans y penser vraiment, ou un silence qu'elle a laissé s'installer une fois de trop pendant l'aftermath, quand poser la question qui dérange aurait tout changé. Elle n'a rien préparé, rien versé dans une assiette. Mais elle savait, et elle n'a rien dit — pas par malveillance, par habitude d'être celle qui protège son frère de tout, y compris de la vérité. Ce n'est pas elle qui a empoisonné personne. C'est elle qui a laissé le silence faire le reste.",
+    lastLine: "Elle a toujours été celle qui répare. Cette fois, il n'y avait rien à réparer — juste à se taire.",
+  },
+  E2: {
+    title: 'Solidarité toxique',
+    short: 'Noé survit. Sarah savait pour Maëlys. Elle a choisi de couvrir, quand même.',
+    detail: "Noé survit à l'hôpital. Mais Sarah, dans cette version de la nuit, n'est pas seulement une victime collatérale de la mécanique de Maëlys — elle porte, depuis des années, un lien avec elle que personne d'autre à cette table n'a jamais soupçonné. Une photo de vacances laissée bien en évidence dans le couloir, un SMS jamais envoyé resté en brouillon, un regard que Maëlys a fini par lui accorder une seule fois dans toute la soirée, contre son habitude de ne jamais la regarder en face : les traces d'une proximité ancienne, coupée sans explication, que Sarah n'a jamais vraiment comprise. Alors, à la fin, quand tout le monde attend qu'elle parle — elle qui a le plus de raisons de le faire — Sarah se lève et part sans qu'on le lui ait demandé. Pas parce qu'elle ne sait pas. Parce qu'elle sait, précisément, et que ce qu'elle protège encore, malgré tout ce qui vient de se passer, c'est Maëlys. Ce n'est pas de la lâcheté au sens simple du mot. C'est une loyauté plus vieille que la soirée, et plus abîmée qu'elle n'y paraît.",
+    lastLine: "Ce n'est pas qu'elle ne savait pas. C'est qu'elle a choisi, encore une fois, de protéger la mauvaise personne.",
+  },
+  E3: {
+    title: 'Preuve effacée',
+    short: 'Noé survit. La photo qui aurait pu tout prouver existait. Elle a disparu avant de compter.',
+    detail: "Noé survit à l'hôpital. Quelque part dans la soirée, à 21h47, Yanis a pris une photo sans savoir ce qu'il capturait vraiment : le passe, les assiettes en ligne, et dans le reflet de la vitre du cellier, un geste que personne n'était censé voir. Cette photo existe. Elle est sur son téléphone, mêlée à des dizaines d'autres clichés de soirée sans importance. Mais avant que quiconque d'autre ne pense à la regarder vraiment, Maëlys — qui gère déjà tout, qui range, qui construit le récit phrase après phrase — demande à voir le téléphone de Yanis, discrètement, sous un prétexte anodin. Elle trouve ce qu'elle cherchait. Ce qui aurait pu être la preuve irréfutable, celle qui aurait changé toute l'issue de cette nuit, disparaît avant que sa valeur n'ait été comprise par personne d'autre qu'elle. Yanis ne se rend compte de rien. Il a juste, sans le vouloir, été le complice involontaire d'une preuve qu'il ne savait même pas avoir prise.",
+    lastLine: "La preuve a existé. Le temps qu'on comprenne ce qu'elle montrait, elle n'existait déjà plus.",
+  },
 }

@@ -250,7 +250,10 @@
           "lucas"
         ],
         "requiresFlag": "lucas_detient_vocal",
-        "revealsClue": "C-20",
+        "revealsClue": [
+          "C-20",
+          "C-27"
+        ],
         "effects": [
           {
             "type": "state_delta",
@@ -526,7 +529,10 @@
             "delta": 2
           }
         ],
-        "revealsClue": "C-03"
+        "revealsClue": [
+          "C-03",
+          "C-30"
+        ]
       },
       {
         "id": "s02_c_ines_act",
@@ -597,7 +603,10 @@
             "delta": 1
           }
         ],
-        "revealsClue": "C-03"
+        "revealsClue": [
+          "C-03",
+          "C-26"
+        ]
       },
       {
         "id": "s02_c_sarah",
@@ -656,8 +665,14 @@
             "type": "state_delta",
             "key": "socialTension",
             "delta": 2
+          },
+          {
+            "type": "flag_set",
+            "key": "yanis_sait_quelque_chose",
+            "value": true
           }
-        ]
+        ],
+        "revealsClue": "C-29"
       },
       {
         "id": "s02_c_yanis_act",
@@ -2314,7 +2329,8 @@
         ],
         "revealsClue": [
           "C-11",
-          "C-10"
+          "C-10",
+          "C-37"
         ]
       },
       {
@@ -2491,9 +2507,17 @@
             "type": "state_delta",
             "key": "socialTension",
             "delta": 2
+          },
+          {
+            "type": "flag_set",
+            "key": "ines_vu_boites",
+            "value": true
           }
         ],
-        "revealsClue": "C-02"
+        "revealsClue": [
+          "C-02",
+          "C-36"
+        ]
       },
       {
         "id": "s06_c_lucas_touch",
@@ -2513,7 +2537,8 @@
             "key": "socialTension",
             "delta": 1
           }
-        ]
+        ],
+        "revealsClue": "C-28"
       },
       {
         "id": "s06_c_sarah_touch",
@@ -2534,7 +2559,10 @@
             "delta": 2
           }
         ],
-        "revealsClue": "C-09"
+        "revealsClue": [
+          "C-09",
+          "C-31"
+        ]
       },
       {
         "id": "s06_c_yanis_touch",
@@ -2799,7 +2827,10 @@
             "value": true
           }
         ],
-        "revealsClue": "C-19"
+        "revealsClue": [
+          "C-19",
+          "C-32"
+        ]
       },
       {
         "id": "s07_c_lucas_act",
@@ -3817,7 +3848,10 @@
             "value": "swapB"
           }
         ],
-        "revealsClue": "C-16"
+        "revealsClue": [
+          "C-16",
+          "C-33"
+        ]
       },
       {
         "id": "s09_c_sarah_help",
@@ -4129,8 +4163,14 @@
             "type": "flag_set",
             "key": "survivingNarrative",
             "value": "truth_partial"
+          },
+          {
+            "type": "flag_set",
+            "key": "maelys_a_su_photo",
+            "value": true
           }
-        ]
+        ],
+        "revealsClue": "C-34"
       },
       {
         "id": "s10_c_noe_pass",
@@ -4220,6 +4260,11 @@
             "type": "flag_set",
             "key": "survivingNarrative",
             "value": "false_sarah_self_harm"
+          },
+          {
+            "type": "flag_set",
+            "key": "ines_silence_actif",
+            "value": true
           }
         ],
         "revealsClue": "C-17"
@@ -4542,8 +4587,14 @@
             "type": "state_delta",
             "key": "socialTension",
             "delta": 1
+          },
+          {
+            "type": "flag_set",
+            "key": "yanis_photo_vue",
+            "value": true
           }
-        ]
+        ],
+        "revealsClue": "C-35"
       },
       {
         "id": "s10_c_sarah_touch",
@@ -4858,6 +4909,11 @@
           {
             "type": "flag_set",
             "key": "lucas_silence_final",
+            "value": true
+          },
+          {
+            "type": "flag_set",
+            "key": "sarah_couvre_maelys",
             "value": true
           }
         ]
