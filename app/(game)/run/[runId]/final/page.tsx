@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { useRunStore } from '@/store/runStore'
 import { CHARACTERS } from '@/components/ui/CharacterCard'
+import { relationshipLabel } from '@/lib/engine/backstory'
 import type { CharacterId } from '@/lib/types/characters'
 
 interface ManuscriptEntryData {
@@ -41,6 +42,13 @@ interface ChronologyPhaseData {
   label: string
   text: string
 }
+
+interface RelationshipEntryData {
+  value: number
+  note?: string
+}
+
+type RelationshipMatrixData = Partial<Record<CharacterId, Partial<Record<CharacterId, RelationshipEntryData>>>>
 
 const SEAT_IDS = [1, 2, 3, 4, 5, 6]
 
@@ -121,6 +129,7 @@ export default function FinalPage() {
   const [epilogue, setEpilogue] = useState<EpilogueData | null>(null)
   const [recap, setRecap] = useState<string[]>([])
   const [chronology, setChronology] = useState<ChronologyPhaseData[]>([])
+  const [relationshipMatrix, setRelationshipMatrix] = useState<RelationshipMatrixData>({})
   const [povHistory, setPovHistory] = useState<CharacterId[]>([])
   const [povSummaries, setPovSummaries] = useState<PovSummaryData[]>([])
   const [endingId, setEndingId] = useState<string | null>(null)
@@ -158,6 +167,7 @@ export default function FinalPage() {
         setSeatingBonusAvailable(Boolean(data.seatingBonusAvailable))
         setRecap(data.recap ?? [])
         setChronology(data.chronology ?? [])
+        setRelationshipMatrix(data.relationshipMatrix ?? {})
         setCulprit(data.culprit ?? null)
         setDeceasedCharacter(data.deceasedCharacter ?? null)
       })
@@ -509,6 +519,73 @@ export default function FinalPage() {
                   </p>
                 </div>
               ))}
+            </div>
+          </div>
+        )}
+
+        {/* Matrice relationnelle — ce que chacun ressentait vraiment, avant que tout bascule */}
+        {Object.keys(relationshipMatrix).length > 0 && (
+          <div style={{ marginBottom: 'var(--space-12)' }}>
+            <p style={{
+              fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', color: 'var(--color-text-muted)',
+              textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 'var(--space-2)',
+            }}>
+              Ce que chacun ressentait vraiment
+            </p>
+            <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', color: 'var(--color-text-faint)', fontStyle: 'italic', marginBottom: 'var(--space-5)' }}>
+              L&apos;état des liens au sein du groupe, avant même que la soirée ne commence.
+            </p>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 'var(--space-4)' }}>
+              {CHARACTERS.map((from) => {
+                const relations = relationshipMatrix[from.id]
+                if (!relations) return null
+                return (
+                  <div
+                    key={from.id}
+                    style={{
+                      padding: 'var(--space-4)',
+                      borderRadius: 'var(--radius-md)',
+                      border: `1px solid ${from.color}30`,
+                      background: 'var(--color-surface)',
+                    }}
+                  >
+                    <p style={{
+                      fontFamily: 'var(--font-display)', fontStyle: 'italic', fontSize: 'var(--text-base)',
+                      color: from.color, marginBottom: 'var(--space-3)',
+                    }}>
+                      {from.firstName}
+                    </p>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
+                      {CHARACTERS.filter((to) => to.id !== from.id).map((to) => {
+                        const rel = relations[to.id]
+                        if (!rel) return null
+                        const positive = rel.value >= 0
+                        return (
+                          <div key={to.id}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2px' }}>
+                              <span style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', color: 'var(--color-text-muted)' }}>
+                                → {to.firstName}
+                              </span>
+                              <span style={{ fontFamily: 'var(--font-body)', fontSize: '10px', color: 'var(--color-text-faint)' }}>
+                                {relationshipLabel(rel.value)}{rel.note ? ` · ${rel.note}` : ''}
+                              </span>
+                            </div>
+                            <div style={{ height: 4, background: 'var(--color-surface-offset)', borderRadius: 999, overflow: 'hidden', position: 'relative' }}>
+                              <div style={{
+                                position: 'absolute',
+                                left: positive ? '50%' : `${50 - Math.abs(rel.value) / 2}%`,
+                                width: `${Math.abs(rel.value) / 2}%`,
+                                height: '100%',
+                                background: positive ? 'var(--color-primary)' : 'var(--color-error, #a01f1f)',
+                              }} />
+                            </div>
+                          </div>
+                        )
+                      })}
+                    </div>
+                  </div>
+                )
+              })}
             </div>
           </div>
         )}

@@ -13,7 +13,7 @@ import { getManuscriptStatus } from '@/lib/engine/manuscript'
 import { getPovSummaries } from '@/lib/engine/povSummary'
 import { buildEpilogue } from '@/lib/engine/epilogue'
 import { buildRecap } from '@/lib/engine/recap'
-import { CHRONOLOGY } from '@/lib/engine/backstory'
+import { CHRONOLOGY, RELATIONSHIP_MATRIX } from '@/lib/engine/backstory'
 import type { RunState } from '@/types'
 
 const SEAT_IDS = [1, 2, 3, 4, 5, 6]
@@ -69,6 +69,7 @@ export async function GET(
       // révélée, y compris la phase 6 jamais montrée en jeu (la mise en
       // scène du dîner elle-même).
       chronology: CHRONOLOGY,
+      relationshipMatrix: RELATIONSHIP_MATRIX,
       povHistory: state.povHistory ?? [state.playerPov],
       povSummaries: getPovSummaries(state),
       // Vérité canonique (chapitre 2 de la bible) : Maëlys a organisé la

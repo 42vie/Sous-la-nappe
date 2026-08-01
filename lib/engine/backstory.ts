@@ -117,3 +117,72 @@ export const CHRONOLOGY: ChronologyPhase[] = [
     text: "Yanis, entré dans le groupe dix-huit mois plus tôt, connaît une version édulcorée du passé — il croit qu'il y a eu « une rupture compliquée ». Fin septembre, Maëlys apprend que le bien va être mis en vente, et que le dossier est préparé dans l'étude où travaille Inès. Le 2 octobre, elle écrit six messages presque identiques, relus dix fois. Le 11 octobre, elle reçoit.",
   },
 ]
+
+// 4.7 — Matrice relationnelle de départ (chapitre 4.7 de la bible).
+// Échelle -100 (hostilité active) → +100 (loyauté inconditionnelle),
+// lecture ligne → colonne ("ce que [ligne] ressent pour [colonne]").
+// Jamais surfacée en jeu jusqu'ici — révélée en bloc à la toute fin,
+// avec le reste des explications, plutôt qu'étalée pendant la partie :
+// elle résume l'ensemble des rapports de force d'un coup d'œil, ce qui
+// en ferait un résumé-spoiler trop efficace si elle apparaissait avant
+// que le joueur ait vu la soirée par lui-même.
+export interface RelationshipEntry {
+  value: number
+  note?: string
+}
+
+export const RELATIONSHIP_MATRIX: Record<CharacterId, Partial<Record<CharacterId, RelationshipEntry>>> = {
+  maelys: {
+    noe: { value: -85 },
+    ines: { value: -70 },
+    lucas: { value: -20 },
+    sarah: { value: 45, note: 'instable' },
+    yanis: { value: 10 },
+  },
+  noe: {
+    maelys: { value: 30, note: 'honteux' },
+    ines: { value: 55, note: 'dépendant' },
+    lucas: { value: 65 },
+    sarah: { value: 40, note: 'caché' },
+    yanis: { value: 50 },
+  },
+  ines: {
+    maelys: { value: -75 },
+    noe: { value: 80, note: 'possessif' },
+    lucas: { value: 15 },
+    sarah: { value: -40, note: 'mépris' },
+    yanis: { value: -10 },
+  },
+  lucas: {
+    maelys: { value: 50 },
+    noe: { value: 60 },
+    ines: { value: 20 },
+    sarah: { value: 55 },
+    yanis: { value: 35 },
+  },
+  sarah: {
+    maelys: { value: 90, note: 'dette' },
+    noe: { value: 25, note: 'coupable' },
+    ines: { value: -25 },
+    lucas: { value: 60 },
+    yanis: { value: 45 },
+  },
+  yanis: {
+    maelys: { value: 40 },
+    noe: { value: 70 },
+    ines: { value: 30 },
+    lucas: { value: 45 },
+    sarah: { value: 60 },
+  },
+}
+
+/** Étiquette qualitative pour une valeur de la matrice, -100 à +100 */
+export function relationshipLabel(value: number): string {
+  if (value >= 70) return 'loyauté inconditionnelle'
+  if (value >= 40) return 'loyauté forte'
+  if (value >= 10) return 'confiance'
+  if (value >= -9) return 'neutre'
+  if (value >= -39) return 'méfiance'
+  if (value >= -69) return 'hostilité'
+  return 'hostilité active'
+}
