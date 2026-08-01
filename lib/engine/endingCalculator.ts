@@ -12,6 +12,7 @@ import type { ClueId } from '@/lib/types/clues'
 import { isRunComplete } from './transitions'
 import { clueScoreRatio } from './clueScoring'
 import { mutualTrustRatio } from './backstory'
+import { dynamicMutualTrustRatio } from './mutualTrust'
 
 /** Indices dont la présence assemble le dossier post-hôpital (photo, vocal, carnet). */
 const KEY_EVIDENCE_CLUES: ClueId[] = ['C-19', 'C-20', 'C-22']
@@ -58,10 +59,23 @@ function povForChapter(state: RunState, chapterNumber: number): CharacterId {
  * le groupe lui accorde mutuellement (mutualTrustRatio, la matrice
  * relationnelle). 0..1.
  */
+// Le crédit relationnel combine le passif (mutualTrustRatio, la matrice
+// figée d'avant-soirée) et le vécu (dynamicMutualTrustRatio, mutualTrust.ts,
+// qui bouge à chaque confrontation/silence/aide en jeu). Le vécu pèse plus
+// lourd : ce qu'on a fait CE soir compte plus, pour juger si un geste
+// tient, que ce qu'on pensait de vous avant d'arriver.
+const TRUST_STATIC_WEIGHT = 0.4
+const TRUST_DYNAMIC_WEIGHT = 0.6
+
 function interventionStanding(state: RunState, actor: CharacterId): number {
+  const staticTrust = mutualTrustRatio(actor)
+  const trust = state.variable.mutualTrust
+    ? staticTrust * TRUST_STATIC_WEIGHT + dynamicMutualTrustRatio(state.variable.mutualTrust, actor) * TRUST_DYNAMIC_WEIGHT
+    : staticTrust
+
   return (
     clueScoreRatio(state) * STANDING_CLUE_WEIGHT +
-    mutualTrustRatio(actor) * STANDING_TRUST_WEIGHT
+    trust * STANDING_TRUST_WEIGHT
   )
 }
 

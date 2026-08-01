@@ -8,6 +8,7 @@ import { hasFlag } from './flags'
 import { BASE_SEATING, SWAP_B_SEATING } from '@/lib/types/house'
 import type { SeatingSnapshot } from '@/lib/types/house'
 import { resolveTargetActual } from './deviation'
+import { applyChoiceTrustDelta } from './mutualTrust'
 
 const SEATING_SNAPSHOTS: Record<string, SeatingSnapshot> = {
   base: BASE_SEATING,
@@ -71,6 +72,18 @@ export function applyChoice(
   }
 
   const stateUpdates = applyEffects(choice.effects, state)
+
+  // Confiance mutuelle vivante : ce que ce choix fait au regard du groupe
+  // sur celui qui l'a fait (voir mutualTrust.ts) — indépendant des effects
+  // déclarés dans scenes.json, dérivé directement du verbe de l'action.
+  const baseTrust = state.variable.mutualTrust ?? undefined
+  if (baseTrust) {
+    const variable = stateUpdates.variable ?? state.variable
+    stateUpdates.variable = {
+      ...variable,
+      mutualTrust: applyChoiceTrustDelta(baseTrust, state.playerPov, choice.verb),
+    }
+  }
 
   // Couche 4 du moteur de déviation (chapitre 12) : résolution de la cible
   // réellement atteinte, au moment du service critique.

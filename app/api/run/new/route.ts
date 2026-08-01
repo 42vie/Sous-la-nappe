@@ -7,6 +7,7 @@ import type { CharacterId } from '@/lib/types/characters'
 import { BASE_SEATING } from '@/lib/types/house'
 import { resolveHostIntent, resolveSeatingVariant } from '@/lib/engine/deviation'
 import { initBackgroundFlags } from '@/lib/engine/flags'
+import { initialMutualTrust } from '@/lib/engine/mutualTrust'
 import type { RunState } from '@/types'
 
 export async function POST(req: NextRequest) {
@@ -77,6 +78,7 @@ export async function POST(req: NextRequest) {
         characterState: INITIAL_CHARACTER_STATE,
         socialTension: 0,
         memoryDistortion: 0,
+        mutualTrust: initialMutualTrust(),
       },
       subjective: {
         believedTargetPlanned: null,

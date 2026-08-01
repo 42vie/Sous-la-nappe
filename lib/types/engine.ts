@@ -7,6 +7,7 @@ import type { SceneId, SceneChoice, MinigameId } from './scenes';
 import type { ClueId, DiscoveredClue } from './clues';
 import type { SeatingHistory, SeatingVariant, SeatingSnapshot } from './house';
 import type { EndingId } from './endings';
+import type { MutualTrustMatrix } from '@/lib/engine/mutualTrust';
 
 /** The complete run state — source of truth for one game session */
 export interface RunState {
@@ -73,6 +74,8 @@ export interface VariableLayer {
   characterState: CharacterState;
   socialTension: number;   // 0–100
   memoryDistortion: number; // 0–100, affects audio reconstruction minigame
+  /** Confiance mutuelle vivante — évolue en jeu selon les actions, contrairement à RELATIONSHIP_MATRIX (passif figé). Optionnel : absent sur les runs créés avant son introduction. */
+  mutualTrust?: MutualTrustMatrix;
 }
 
 export type NarrativeVersion =
