@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { CharacterCard, CHARACTERS } from '@/components/ui/CharacterCard'
+import { CardCarousel } from '@/components/ui/CardCarousel'
 import { useRunStore } from '@/store/runStore'
 import { CHAPTERS, TOTAL_CHAPTERS } from '@/lib/engine/chapters'
 import { BLIND_SPOTS } from '@/lib/engine/blindSpots'
@@ -106,51 +107,25 @@ export default function ChapterSelectPage() {
 
   const selectedChar = available.find((c) => c.id === selected)
 
-  return (
-    <main
-      style={{
-        minHeight: '100dvh',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        padding: 'var(--space-16) var(--space-8) var(--space-24)',
-      }}
-    >
-      <header style={{ width: '100%', maxWidth: 'var(--content-wide)', textAlign: 'center', marginBottom: 'var(--space-10)' }}>
-        <p style={{
-          fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', color: 'var(--color-text-faint)',
-          textTransform: 'uppercase', letterSpacing: '0.12em', marginBottom: 'var(--space-4)',
-        }}>
-          Chapitre {nextChapterNumber} / {TOTAL_CHAPTERS}
-        </p>
-        <h1 style={{
-          fontFamily: 'var(--font-display)', fontSize: 'var(--text-2xl)', color: 'var(--color-text)',
-          fontWeight: 400, fontStyle: 'italic', marginBottom: 'var(--space-4)',
-        }}>
-          {chapter?.title ?? '—'}
-        </h1>
-        {povHistory.length > 0 && (
-          <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)', color: 'var(--color-text-faint)' }}>
-            Déjà incarné : {povHistory.map((c) => CHARACTER_NAMES[c].split(' ')[0]).join(', ')}
-          </p>
-        )}
-        {error && (
-          <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', color: 'var(--color-error)', marginTop: 'var(--space-4)' }}>
-            {error}
-          </p>
-        )}
-      </header>
+  // Les blocs de contexte (stats, bio, angles morts, chronologie) sont
+  // regroupés en cartes défilables plutôt qu'empilés verticalement — voir
+  // CardCarousel. Chaque carte garde son fond/bordure propre ; c'est le
+  // carrousel qui gère largeur et espacement.
+  const cardStyle: React.CSSProperties = {
+    padding: 'var(--space-5) var(--space-6)',
+    background: 'var(--color-surface)',
+    border: '1px solid var(--color-divider)',
+    borderRadius: 'var(--radius-lg)',
+    height: '100%',
+  }
 
-      {/* Bel accueil — résumé de ce qu'on sait déjà, avant de choisir la suite */}
-      {povHistory.length > 0 && (
-        <div style={{
-          width: '100%', maxWidth: 'var(--content-narrow)',
-          padding: 'var(--space-5) var(--space-6)',
-          marginBottom: 'var(--space-8)',
-          background: 'var(--color-surface)',
-          border: '1px solid var(--color-divider)',
-          borderRadius: 'var(--radius-lg)',
-        }}>
+  const cards: { key: string; content: React.ReactNode }[] = []
+
+  if (povHistory.length > 0) {
+    cards.push({
+      key: 'stats',
+      content: (
+        <div style={cardStyle}>
           <div style={{ display: 'flex', gap: 'var(--space-8)', marginBottom: 'var(--space-4)' }}>
             <div>
               <p style={{ fontFamily: 'var(--font-body)', fontSize: '10px', color: 'var(--color-text-faint)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '2px' }}>
@@ -202,17 +177,15 @@ export default function ChapterSelectPage() {
             </div>
           )}
         </div>
-      )}
+      ),
+    })
+  }
 
-      {justPlayedName && justPlayedBio && (
-        <div style={{
-          width: '100%', maxWidth: 'var(--content-narrow)',
-          padding: 'var(--space-5) var(--space-6)',
-          marginBottom: 'var(--space-6)',
-          background: 'var(--color-surface)',
-          border: '1px solid var(--color-divider)',
-          borderRadius: 'var(--radius-lg)',
-        }}>
+  if (justPlayedName && justPlayedBio) {
+    cards.push({
+      key: 'bio',
+      content: (
+        <div style={cardStyle}>
           <p style={{
             fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', color: 'var(--color-text-faint)',
             textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 'var(--space-3)',
@@ -267,17 +240,15 @@ export default function ChapterSelectPage() {
             </div>
           )}
         </div>
-      )}
+      ),
+    })
+  }
 
-      {justPlayedName && blindSpots.length > 0 && (
-        <div style={{
-          width: '100%', maxWidth: 'var(--content-narrow)',
-          padding: 'var(--space-5) var(--space-6)',
-          marginBottom: 'var(--space-6)',
-          background: 'var(--color-surface)',
-          border: '1px solid var(--color-divider)',
-          borderRadius: 'var(--radius-lg)',
-        }}>
+  if (justPlayedName && blindSpots.length > 0) {
+    cards.push({
+      key: 'blindspots',
+      content: (
+        <div style={cardStyle}>
           <p style={{
             fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', color: 'var(--color-text-faint)',
             textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 'var(--space-3)',
@@ -295,17 +266,15 @@ export default function ChapterSelectPage() {
             ))}
           </div>
         </div>
-      )}
+      ),
+    })
+  }
 
-      {chronology.length > 0 && (
-        <div style={{
-          width: '100%', maxWidth: 'var(--content-narrow)',
-          padding: 'var(--space-5) var(--space-6)',
-          marginBottom: 'var(--space-10)',
-          background: 'var(--color-surface)',
-          border: '1px solid var(--color-divider)',
-          borderRadius: 'var(--radius-lg)',
-        }}>
+  if (chronology.length > 0) {
+    cards.push({
+      key: 'chronology',
+      content: (
+        <div style={cardStyle}>
           <p style={{
             fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', color: 'var(--color-text-faint)',
             textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 'var(--space-4)',
@@ -328,7 +297,59 @@ export default function ChapterSelectPage() {
             ))}
           </div>
         </div>
+      ),
+    })
+  }
+
+  return (
+    <main
+      style={{
+        minHeight: '100dvh',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        padding: 'var(--space-16) var(--space-8) var(--space-24)',
+      }}
+    >
+      <header style={{ width: '100%', maxWidth: 'var(--content-wide)', textAlign: 'center', marginBottom: 'var(--space-10)' }}>
+        <p style={{
+          fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', color: 'var(--color-text-faint)',
+          textTransform: 'uppercase', letterSpacing: '0.12em', marginBottom: 'var(--space-4)',
+        }}>
+          Chapitre {nextChapterNumber} / {TOTAL_CHAPTERS}
+        </p>
+        <h1 style={{
+          fontFamily: 'var(--font-display)', fontSize: 'var(--text-2xl)', color: 'var(--color-text)',
+          fontWeight: 400, fontStyle: 'italic', marginBottom: 'var(--space-4)',
+        }}>
+          {chapter?.title ?? '—'}
+        </h1>
+        {povHistory.length > 0 && (
+          <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)', color: 'var(--color-text-faint)' }}>
+            Déjà incarné : {povHistory.map((c) => CHARACTER_NAMES[c].split(' ')[0]).join(', ')}
+          </p>
+        )}
+        {error && (
+          <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', color: 'var(--color-error)', marginTop: 'var(--space-4)' }}>
+            {error}
+          </p>
+        )}
+      </header>
+
+      {/* Ce qu'on sait déjà — carrousel de cartes plutôt qu'un long scroll : stats, bio du perso qu'on vient de jouer, ses angles morts, la chronologie du passé */}
+      {cards.length > 0 && (
+        <div style={{ width: '100%', maxWidth: 'var(--content-wide)', marginBottom: 'var(--space-10)' }}>
+          <CardCarousel cards={cards} />
+        </div>
       )}
+
+      <p style={{
+        width: '100%', maxWidth: 'var(--content-wide)',
+        fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', color: 'var(--color-text-faint)',
+        textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 'var(--space-4)',
+      }}>
+        Choisir le prochain point de vue
+      </p>
 
       <div style={{
         width: '100%', maxWidth: 'var(--content-wide)',

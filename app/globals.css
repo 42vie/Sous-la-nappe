@@ -19,6 +19,15 @@
   to   { opacity: 1; }
 }
 
+/* Masque la scrollbar d'un conteneur défilable sans en changer le comportement — utilisé par CardCarousel. */
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
 :root,
 [data-theme='light'] {
   /* Surfaces — ivoire profond */
