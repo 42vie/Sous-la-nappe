@@ -9,6 +9,34 @@ import type { CharacterId } from '@/lib/types/characters'
 import type { SceneId } from '@/lib/types/scenes'
 
 const CONVERSATIONS: Partial<Record<SceneId, Partial<Record<CharacterId, string>>>> = {
+  // Écoute clandestine (docs/expansion-v4-mecanismes-suspense-fins-noires.md,
+  // volet A6) : ce qu'on surprend sans y être invité, selon où on se trouve
+  // et qui on est. Sert directement à sentir POURQUOI la tension bouge, pas
+  // juste À QUEL POINT — la jauge dit combien, ces bribes disent pourquoi.
+  scene_06_kitchen_aside: {
+    maelys: "Tu es concentrée sur ton propre geste — tu n'entends rien de ce qui se dit ailleurs dans la maison. Tant mieux.",
+    noe: "Tu es sur la terrasse, au téléphone, la voix basse. Tu te retournes une fois, par réflexe, pour vérifier que personne n'écoute. Tu ne vois personne. Tu te trompes.",
+    ines: "Par la fenêtre de la cuisine, tu entends Noé, dehors, parler bas au téléphone : « ...c'est supprimé, elle ne saura rien. » Tu ne sais pas de quoi il parle. Tu t'en souviendras.",
+    lucas: "Par la fenêtre entrouverte, tu entends Noé dire, à voix basse : « ...c'est fait, c'est supprimé, elle ne le saura jamais. » Tu ne sais pas encore à qui il parle. Tu notes quand même.",
+    sarah: "Tu entends Maëlys s'affairer dans la cuisine, plus longtemps que d'habitude pour un simple plat. Tu n'y penses pas plus que ça.",
+    yanis: "Tu entends de la vaisselle, des pas, rien de particulier. Tu retournes à la table sans t'attarder.",
+  },
+  scene_08_critical_service: {
+    maelys: "Tu entends ta propre respiration, plus fort que tout le reste. La salle, autour, continue de parler comme si de rien n'était.",
+    noe: "Tu entends Inès dire à Sarah, à voix basse, de faire attention en portant les assiettes. Un geste ordinaire d'hôtesse. Tu n'y prêtes pas plus attention.",
+    ines: "Tu entends Maëlys compter les assiettes à voix presque inaudible, en les alignant sur le passe. Tu ne saurais pas dire pourquoi ce détail te reste.",
+    lucas: "Tu entends le bruit des assiettes qu'on aligne sur le passe, un rythme presque trop régulier pour être naturel. Personne d'autre ne semble le remarquer.",
+    sarah: "Tu entends ta propre respiration se accélérer, sans vraiment comprendre pourquoi. Le reste de la table est flou, comme sous l'eau.",
+    yanis: "Tu entends quelqu'un rire, une blague que tu n'as pas suivie. Tu ris aussi, pour ne pas être en dehors du coup.",
+  },
+  scene_09_incident: {
+    maelys: "Tu entends ta propre voix dire « ça va aller » avant même de savoir si c'est vrai. Les autres te croient sur parole — pour l'instant.",
+    noe: "Tu entends Inès dire ton prénom, deux fois, avant que tu ne réagisses vraiment. Un délai que tu n'expliqueras jamais.",
+    ines: "Tu entends Maëlys prendre les choses en main avant même que quiconque ait compris ce qui se passait. Une rapidité qui, avec le recul, te semblera étrange.",
+    lucas: "Tu entends, dans le chaos, Maëlys dire quelque chose de trop précis pour l'instant : « c'est son traitement, sûrement » — elle ne peut pas encore le savoir.",
+    sarah: "Tu entends des voix au-dessus de toi, déformées, urgentes. Tu ne distingues pas les mots. Juste l'urgence.",
+    yanis: "Tu entends le silence brutal qui suit un verre cassé — le tien. Personne ne te regarde. Tout le monde regarde ailleurs.",
+  },
   scene_10_aftermath: {
     maelys: "Depuis le couloir, tu entends Inès et Yanis dans la cuisine : « ...elle a toujours été comme ça, non ? un peu intense... » Personne ne baisse la voix pour toi. Personne n'y pense.",
     noe: "Tu entends Inès au téléphone, dans l'entrée : « ...non, tout va bien, enfin, il y a eu un souci, mais tout va bien... » Elle ment avec le même calme que toi.",

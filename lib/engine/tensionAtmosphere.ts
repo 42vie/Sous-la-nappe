@@ -31,3 +31,17 @@ export function shouldTriggerSilence(sceneId: string, tension: number): boolean 
 }
 
 export const SILENCE_TEXT = "La table est silencieuse.\n\nTu connais ce silence. C'est celui des situations où quelqu'un devrait parler, et où personne ne le fait.\n\nTu ne le feras pas non plus. Pas encore."
+
+/**
+ * Traduit le delta de tension d'un choix en une ligne qualitative — pour
+ * que le joueur comprenne POURQUOI la jauge bouge, pas juste qu'elle bouge.
+ * null sous le seuil : les petites variations ne méritent pas de commentaire,
+ * ça deviendrait du bruit après le 3e choix.
+ */
+export function tensionDeltaNote(delta: number): string | null {
+  if (delta >= 10) return 'La tension vient de monter, nettement.'
+  if (delta >= 5) return 'La tension monte d’un cran.'
+  if (delta <= -10) return 'Un vrai calme redescend sur la table.'
+  if (delta <= -5) return 'Un peu de calme revient.'
+  return null
+}

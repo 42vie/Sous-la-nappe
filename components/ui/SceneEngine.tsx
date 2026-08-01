@@ -17,7 +17,8 @@ import { getChapterNumberForScene } from '@/lib/engine/chapters'
 import { SCENE_IMAGE } from '@/lib/engine/sceneImages'
 import { RELATIONSHIP_MATRIX } from '@/lib/engine/backstory'
 import { computeImpairment, scrambleText } from '@/lib/engine/overheard'
-import { tensionTier, candlesLit, shouldTriggerSilence, SILENCE_TEXT } from '@/lib/engine/tensionAtmosphere'
+import { tensionTier, candlesLit, shouldTriggerSilence, SILENCE_TEXT, tensionDeltaNote } from '@/lib/engine/tensionAtmosphere'
+import { buildLucasJournal } from '@/lib/engine/lucasJournal'
 import type { CharacterId } from '@/lib/types/characters'
 import type { SceneId } from '@/lib/types/scenes'
 import type { RunState } from '@/types'
@@ -68,6 +69,7 @@ export function SceneEngine({ runId, playerPov, initialSceneId, run }: SceneEngi
   const [choiceMade, setChoiceMade] = useState<ChoiceData | null>(null)
   const [cluesJustRevealed, setCluesJustRevealed] = useState<string[]>([])
   const [narrativeNotes, setNarrativeNotes] = useState<string[]>([])
+  const [tensionNote, setTensionNote] = useState<string | null>(null)
   const [activeMinigame, setActiveMinigame] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [showClues, setShowClues] = useState(false)
@@ -75,6 +77,7 @@ export function SceneEngine({ runId, playerPov, initialSceneId, run }: SceneEngi
   const [showGauges, setShowGauges] = useState(false)
   const [showManuscript, setShowManuscript] = useState(false)
   const [showRelations, setShowRelations] = useState(false)
+  const [showJournal, setShowJournal] = useState(false)
   const [silenceSeconds, setSilenceSeconds] = useState(0)
   const silenceShownRef = useRef<Set<string>>(new Set())
 
@@ -182,6 +185,7 @@ export function SceneEngine({ runId, playerPov, initialSceneId, run }: SceneEngi
 
     setCluesJustRevealed(result.cluesRevealed)
     setNarrativeNotes(result.narrativeInjections)
+    setTensionNote(tensionDeltaNote(result.tensionDelta))
 
     if (result.isComplete) {
       setPhase('done')
@@ -215,6 +219,7 @@ export function SceneEngine({ runId, playerPov, initialSceneId, run }: SceneEngi
     setChoiceMade(null)
     setCluesJustRevealed([])
     setNarrativeNotes([])
+    setTensionNote(null)
     fetchScene()
   }
 
@@ -448,6 +453,23 @@ export function SceneEngine({ runId, playerPov, initialSceneId, run }: SceneEngi
           >
             🤝
           </button>
+          {playerPov === 'lucas' && (
+            <button
+              onClick={() => setShowJournal((v) => !v)}
+              title="Journal de Lucas"
+              aria-label="Journal de Lucas"
+              style={{
+                fontSize: 'var(--text-base)',
+                color: 'var(--color-text-faint)',
+                cursor: 'pointer',
+                background: 'none',
+                border: 'none',
+                lineHeight: 1,
+              }}
+            >
+              📔
+            </button>
+          )}
         </div>
       </div>
 
@@ -536,6 +558,50 @@ export function SceneEngine({ runId, playerPov, initialSceneId, run }: SceneEngi
               return <RelationshipBar key={c.id} firstName={c.firstName} value={rel.value} note={rel.note} />
             })}
           </div>
+        </div>
+      )}
+
+      {/* ── Journal de Lucas — mémoire subjective, uniquement ce POV ── */}
+      {showJournal && playerPov === 'lucas' && (
+        <div style={{
+          marginBottom: 'var(--space-6)',
+          padding: 'var(--space-4)',
+          background: 'var(--color-surface-offset)',
+          borderRadius: 'var(--radius-lg)',
+          border: '1px solid var(--color-divider)',
+        }}>
+          <p style={{
+            fontFamily: 'var(--font-body)',
+            fontSize: 'var(--text-xs)',
+            color: 'var(--color-text-muted)',
+            textTransform: 'uppercase',
+            letterSpacing: '0.08em',
+            marginBottom: 'var(--space-4)',
+          }}>
+            Ce que tu as noté, ce soir
+          </p>
+          {(() => {
+            const entries = buildLucasJournal(storeRun ?? run)
+            if (entries.length === 0) {
+              return (
+                <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', color: 'var(--color-text-faint)', fontStyle: 'italic' }}>
+                  Rien noté pour l&apos;instant.
+                </p>
+              )
+            }
+            return (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
+                {entries.map((line, i) => (
+                  <p key={i} style={{
+                    fontFamily: 'var(--font-display)', fontStyle: 'italic', fontSize: 'var(--text-sm)',
+                    color: 'var(--color-text)', lineHeight: 1.6,
+                  }}>
+                    — {line}
+                  </p>
+                ))}
+              </div>
+            )
+          })()}
         </div>
       )}
 
@@ -753,6 +819,19 @@ export function SceneEngine({ runId, playerPov, initialSceneId, run }: SceneEngi
                   {note}
                 </p>
               ))}
+
+              {/* Ce que ce choix a fait à la tension du groupe — pourquoi la jauge bouge, pas juste qu'elle bouge */}
+              {tensionNote && (
+                <p style={{
+                  fontFamily: 'var(--font-body)',
+                  fontSize: 'var(--text-xs)',
+                  color: 'var(--color-text-faint)',
+                  fontStyle: 'italic',
+                  letterSpacing: '0.02em',
+                }}>
+                  {tensionNote}
+                </p>
+              )}
 
               {/* Indices révélés */}
               {cluesJustRevealed.length > 0 && (

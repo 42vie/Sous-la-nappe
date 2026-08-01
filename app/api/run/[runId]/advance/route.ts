@@ -101,6 +101,12 @@ export async function POST(
       updatedState.isComplete = true
     }
 
+    // Delta de tension de ce choix précis — sert uniquement à afficher un
+    // commentaire qualitatif côté client (SceneEngine), pas un mécanisme.
+    const tensionBefore = state.variable.socialTension ?? 0
+    const tensionAfter = stateForCompletion.variable.socialTension ?? tensionBefore
+    const tensionDelta = tensionAfter - tensionBefore
+
     // 8. Persister dans Firestore
     await adminDb
       .collection(COLLECTIONS.runs)
@@ -116,6 +122,7 @@ export async function POST(
       minigameToLaunch: result.minigameToLaunch ?? null,
       isComplete: updatedState.isComplete ?? false,
       ending: updatedState.ending ?? null,
+      tensionDelta,
     })
   } catch (err) {
     console.error('[POST /api/run/[runId]/advance]', err)

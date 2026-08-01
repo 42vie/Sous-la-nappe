@@ -15,6 +15,7 @@ interface AdvanceResponse {
   minigameToLaunch: string | null
   isComplete: boolean
   ending: string | null
+  tensionDelta: number
 }
 
 interface RunStore {
