@@ -10,8 +10,11 @@ import { ToneMinigame } from './ToneMinigame'
 import { DosageMinigame } from './DosageMinigame'
 import { VariableGauges } from './VariableGauges'
 import { ManuscriptPanel } from './ManuscriptPanel'
+import { ImageSlot } from './ImageSlot'
 import { getChapterNumberForScene } from '@/lib/engine/chapters'
+import { SCENE_IMAGE } from '@/lib/engine/sceneImages'
 import type { CharacterId } from '@/lib/types/characters'
+import type { SceneId } from '@/lib/types/scenes'
 import type { RunState } from '@/types'
 
 interface SceneData {
@@ -426,6 +429,17 @@ export function SceneEngine({ runId, playerPov, initialSceneId, run }: SceneEngi
       {/* ── Scène normale ── */}
       {(phase === 'narrative' || phase === 'choices' || phase === 'transition' || phase === 'done') && scene && (
         <>
+          {/* Illustration de scène — n'occupe aucun espace tant que le fichier n'existe pas, voir docs/images-manifest.md */}
+          {SCENE_IMAGE[scene.id as SceneId] && (
+            <ImageSlot
+              mode="banner"
+              scrim
+              src={SCENE_IMAGE[scene.id as SceneId]!}
+              alt=""
+              style={{ marginBottom: 'var(--space-6)' }}
+            />
+          )}
+
           {/* Titre */}
           <h2 style={{
             fontFamily: 'var(--font-display)',

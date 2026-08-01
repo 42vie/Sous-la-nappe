@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { CharacterCard, CHARACTERS } from '@/components/ui/CharacterCard'
 import { DeducedSeatingPlan } from '@/components/ui/DeducedSeatingPlan'
+import { ImageSlot } from '@/components/ui/ImageSlot'
 import { TOTAL_CHAPTERS, getChapterNumberForScene } from '@/lib/engine/chapters'
 import { getCharacterAction, formatCharacterAction } from '@/lib/engine/characterActions'
 import { getManuscriptStatus, getEmptyManuscriptStatus } from '@/lib/engine/manuscript'
@@ -26,7 +27,7 @@ function ManuscriptCarnet({ manuscript }: { manuscript: ReturnType<typeof getEmp
         fontFamily: 'var(--font-body)', fontSize: '10px', color: 'var(--color-text-faint)',
         textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 'var(--space-3)',
       }}>
-        Le carnet — {complete} / {manuscript.length} vérités établies
+        🕵️ Manuscrit de la soirée — {complete} / {manuscript.length} vérités établies
       </p>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
         {manuscript.map((e) => (
@@ -125,12 +126,21 @@ export default function DashboardPage() {
       {/* En-tête */}
       <header
         style={{
+          position: 'relative',
           width: '100%',
           maxWidth: 'var(--content-wide)',
           textAlign: 'center',
           marginBottom: 'var(--space-10)',
+          padding: 'var(--space-8) var(--space-6)',
+          borderRadius: 'var(--radius-lg)',
+          overflow: 'hidden',
+          isolation: 'isolate',
         }}
       >
+        {/* Image d'accueil — voir docs/prompts-visuels.md / images-manifest.md. N'occupe aucun espace tant qu'elle n'existe pas. */}
+        <div aria-hidden style={{ position: 'absolute', inset: 0, zIndex: -1 }}>
+          <ImageSlot src="/images/hero-accueil.jpg" alt="" scrim />
+        </div>
         <p
           style={{
             fontFamily: 'var(--font-body)',
@@ -191,13 +201,13 @@ export default function DashboardPage() {
             fontFamily: 'var(--font-display)', fontSize: 'var(--text-lg)', fontStyle: 'italic',
             color: 'var(--color-text)', margin: 0,
           }}>
-            Le carnet
+            📓 Le carnet
           </p>
           <p style={{
             fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', color: 'var(--color-text-faint)',
             margin: 'var(--space-1) 0 0',
           }}>
-            Vos parties passées, les indices trouvés, les succès et les fragments d'histoire débloqués.
+            Vos parties passées (à revoir ou à effacer), les indices trouvés, les succès et les fragments d'histoire débloqués.
           </p>
         </div>
         <span style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-lg)', color: 'var(--color-text-faint)', flexShrink: 0 }}>→</span>
@@ -205,27 +215,29 @@ export default function DashboardPage() {
 
       {!checkingExisting && (
         <>
-          {/* ── Accueil : carnet + plan de table déduit, avant tout choix ── */}
-          <div style={{
-            width: '100%', maxWidth: 'var(--content-narrow)',
-            padding: 'var(--space-6)',
-            marginBottom: 'var(--space-8)',
-            background: 'var(--color-surface)',
-            border: '1px solid var(--color-divider)',
-            borderRadius: 'var(--radius-lg)',
-            display: 'flex', flexDirection: 'column', gap: 'var(--space-6)',
-          }}>
-            <ManuscriptCarnet manuscript={manuscript} />
-            <div style={{ paddingTop: 'var(--space-5)', borderTop: '1px solid var(--color-divider)' }}>
-              <p style={{
-                fontFamily: 'var(--font-body)', fontSize: '10px', color: 'var(--color-text-faint)',
-                textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 'var(--space-3)',
-              }}>
-                Plan de table reconstitué
-              </p>
-              <DeducedSeatingPlan seats={deducedSeats} />
+          {/* ── Manuscrit + plan de table déduit — seulement s'il y a une partie en cours à raconter. Vide, tout ça n'est que du texte flouté qui gêne le lancement d'une nouvelle soirée. ── */}
+          {existingRun && (
+            <div style={{
+              width: '100%', maxWidth: 'var(--content-narrow)',
+              padding: 'var(--space-6)',
+              marginBottom: 'var(--space-8)',
+              background: 'var(--color-surface)',
+              border: '1px solid var(--color-divider)',
+              borderRadius: 'var(--radius-lg)',
+              display: 'flex', flexDirection: 'column', gap: 'var(--space-6)',
+            }}>
+              <ManuscriptCarnet manuscript={manuscript} />
+              <div style={{ paddingTop: 'var(--space-5)', borderTop: '1px solid var(--color-divider)' }}>
+                <p style={{
+                  fontFamily: 'var(--font-body)', fontSize: '10px', color: 'var(--color-text-faint)',
+                  textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 'var(--space-3)',
+                }}>
+                  🍽️ Plan de table reconstitué
+                </p>
+                <DeducedSeatingPlan seats={deducedSeats} />
+              </div>
             </div>
-          </div>
+          )}
 
           {/* ── Partie en cours — reprendre ou recommencer à zéro ── */}
           {existingRun && (
@@ -258,7 +270,7 @@ export default function DashboardPage() {
                       fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)', letterSpacing: '0.04em', cursor: 'pointer',
                     }}
                   >
-                    Reprendre la partie
+                    ▶ Reprendre la partie
                   </button>
                   <button
                     onClick={() => setConfirmingReset(true)}
@@ -268,7 +280,7 @@ export default function DashboardPage() {
                       fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)', letterSpacing: '0.04em', cursor: 'pointer',
                     }}
                   >
-                    Recommencer à zéro
+                    🗑 Effacer cette sauvegarde
                   </button>
                 </div>
               ) : (
@@ -287,7 +299,7 @@ export default function DashboardPage() {
                         cursor: resetting ? 'wait' : 'pointer', opacity: resetting ? 0.7 : 1,
                       }}
                     >
-                      {resetting ? 'Suppression…' : 'Oui, tout effacer'}
+                      {resetting ? 'Suppression…' : '🗑 Oui, tout effacer'}
                     </button>
                     <button
                       onClick={() => setConfirmingReset(false)}
@@ -328,7 +340,7 @@ export default function DashboardPage() {
                 marginBottom: 'var(--space-12)',
               }}
             >
-              Commencer une nouvelle soirée →
+              🎭 Commencer une nouvelle soirée →
             </button>
           )}
 
@@ -426,7 +438,7 @@ export default function DashboardPage() {
                 transition: 'all var(--transition)',
               }}
             >
-              {loading ? 'Chargement…' : 'Jouer ce rôle →'}
+              {loading ? 'Chargement…' : '🎭 Jouer ce rôle →'}
             </button>
           </div>
           </>

@@ -1,5 +1,6 @@
 'use client'
 
+import { ImageSlot } from './ImageSlot'
 import type { CharacterId } from '@/lib/types/characters'
 
 interface CharacterDef {
@@ -168,7 +169,7 @@ export function CharacterCard({ character, isSelected, onClick, accrocheOverride
           {initial}
         </span>
 
-        {/* Silhouette SVG */}
+        {/* Silhouette SVG — repli tant que le portrait photo n'existe pas */}
         <svg
           viewBox="0 0 48 48"
           width="70%"
@@ -185,6 +186,9 @@ export function CharacterCard({ character, isSelected, onClick, accrocheOverride
           <path d={silhouettePath} />
         </svg>
 
+        {/* Portrait photo — voir docs/prompts-visuels.md / images-manifest.md. N'apparaît (et ne recouvre la silhouette) qu'une fois le fichier confirmé. */}
+        <ImageSlot src={`/images/portraits/${character.id}.jpg`} alt={firstName} scrim style={{ zIndex: 2 }} />
+
         {/* Bordure bas colorée si sélectionné */}
         {isSelected && (
           <div
@@ -196,6 +200,7 @@ export function CharacterCard({ character, isSelected, onClick, accrocheOverride
               right: 0,
               height: '3px',
               background: color,
+              zIndex: 3,
             }}
           />
         )}
